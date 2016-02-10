@@ -155,6 +155,8 @@ for(i in 1:nrow(parameters))
 {
 	message(i)
 	dat <- with(parameters[i,], make_system(n, p, r_ab, r_za, noisea, noiseb))
+	parameters$cit_AB <- cit.cp(dat$Z, dat$Ap, dat$Bp)
+	parameters$cit_BA <- cit.cp(dat$Z, dat$Bp, dat$Ap)
 	parameters$cor_aap[i] <- cor(dat$A, dat$Ap)
 	parameters$cor_bbp[i] <- cor(dat$B, dat$Bp)
 	parameters$cor_abp[i] <- cor(dat$Ap, dat$Bp)

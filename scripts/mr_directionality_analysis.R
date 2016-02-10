@@ -3,6 +3,12 @@ library(ggplot2)
 library(tidyr)
 library(psych)
 
+get_cor_from_pval <- function(p, n)
+{
+	Fval <- qf(p, 1, n-1, low=FALSE)
+	R2 <- Fval / (n - 2 + Fval)
+	return(R2)
+}
 
 load("~/repo/cit_measurement_error/results/p_comp_20160208.RData")
 
@@ -14,6 +20,12 @@ parameters$noisea <- parameters$noisea^2
 parameters$noiseb <- parameters$noiseb^2
 
 parameters$rhs <- sqrt(parameters$r_ab) * parameters$cor_bbp
+parameters$lhs <- parameters$cor_aap
+parameters$rhs_lhs_diff <- parameters$lhs - parameters$rhs
+
+a <- r.test(n=parameters$n, r12=parameters$cor_zap, r13=parameters$cor_zbp, r23=parameters$cor_abp)
+parameters$cortest_t <- a$t
+parameters$cortest_p <- -log10(a$p)
 
 table(parameters$rhs > parameters$cor_aap)
 table(parameters$correct_direction & parameters$sig_mr, parameters$rhs < parameters$cor_aap & parameters$sig_mr)
@@ -24,13 +36,37 @@ psum1 <- parameters %>%
 	summarise(
 		correct_direction=sum(correct_direction)/n(),
 		correct_direction_sig=sum(correct_direction & p_test > -log10(0.05))/n(),
-		sig_mr=sum(sig_mr)/n(),
 		cor_aap=mean(cor_aap),
 		cor_bbp=mean(cor_bbp),
 		cor_abp=mean(cor_abp),
+		cor_zap=mean(cor_zap),
+		cor_zbp=mean(cor_zbp),
+		nsim=n(),
+		prop_cortest_sign = sum(sign(cortest_t) == 1, na.rm=T)/n(),
+		prop_cortest_sig = sum(cortest_p > -log10(0.05),na.rm=T)/n(),
+		cortest_t = mean(cortest_t, na.rm=T),
 		sig_mr=sum(p_test > -log10(0.05))/n(),
-		bigna=first(bigna)
+		bigna=first(bigna),
+		rhs=mean(rhs),
+		lhs=mean(cor_aap),
+		rhs_lhs_diff=lhs-rhs
 	)
+
+
+ggplot(subset(psum1, r_za==0.1 & n == 10000), aes(y=prop_cortest_sign, x=prop_cortest_sig)) +
+geom_point(aes(colour=as.factor(r_ab))) +
+facet_grid(noisea ~ noiseb)
+
+
+parameters$cortest_sign_correct <- sign(parameters$cortest_t) == 1
+
+ggplot(subset(parameters, sig_mr), aes(x=rhs_lhs_diff, y=cortest_p)) +
+geom_point(aes(colour=cortest_sign_correct)) +
+geom_smooth(aes(group=as.factor(noisea)), se=FALSE) +
+facet_grid(n ~ r_za, scale="free_y")
+
+
+
 
 psum2 <- parameters %>%
 	filter(sig_mr) %>%
@@ -57,6 +93,22 @@ test_cor_diff_2sample <- function(A, B, Za, Zb)
 {
 
 }
+
+
+n <- 10000
+a <- rnorm(n)
+b <- rnorm(n) + a
+
+get_cor_from_pval(summary(lm(a ~ b))$coefficients[2,4], n)
+cor(a,b)^2
+
+
+qf(0.209, 1, 999, low=FALSE)
+
+
+compare cor_zap with cor_zbp
+see how often you get a significant result for the wrong direction?
+
 
 
 
