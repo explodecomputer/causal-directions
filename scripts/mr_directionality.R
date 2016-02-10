@@ -1,6 +1,7 @@
 library(reshape2)
 library(ggplot2)
 library(plyr)
+library(cit)
 
 #' 
 #' Calculate fitted values directly
@@ -142,14 +143,30 @@ TSLS <- function(A, B, Z)
 
 
 parameters <- expand.grid(
-	n = c(100, 1000, 10000),
+	n = c(100, 1000),
 	p = 0.5,
 	r_ab = sqrt(seq(0, 1, by=0.2)),
-	r_za = c(sqrt(0.01), sqrt(0.05), sqrt(0.1)),
+	r_za = c(sqrt(0.01), sqrt(0.1)),
 	noisea = sqrt(seq(0, 1, by=0.2)),
 	noiseb = sqrt(seq(0, 1, by=0.2)),
-	nsim = 1:100
+	nsim = 1:10
 )
+
+get_index_list <- function(n, mc.cores)
+{
+	mc.cores <- ifelse(mc.cores < 1, 1, mc.cores)
+	div <- floor(n / mc.cores)
+	rem <- n %% mc.cores
+	l1 <- lapply(1:div, function(x) (x-1) * mc.cores + 1:mc.cores)
+	if(rem != 0) l1[[div+1]] <- l1[[div]][mc.cores] + 1:rem
+	return(l1)
+}
+
+mc.cores <- 16
+l1 <- get_index_list(nrow(parameters), mc.cores)
+lapply()
+
+
 
 for(i in 1:nrow(parameters))
 {
