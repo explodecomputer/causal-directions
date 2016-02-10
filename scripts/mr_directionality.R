@@ -148,7 +148,7 @@ parameters <- expand.grid(
 	r_za = c(sqrt(0.01), sqrt(0.05), sqrt(0.1)),
 	noisea = sqrt(seq(0, 1, by=0.2)),
 	noiseb = sqrt(seq(0, 1, by=0.2)),
-	nsim = 1:50
+	nsim = 1:100
 )
 
 for(i in 1:nrow(parameters))
@@ -158,6 +158,8 @@ for(i in 1:nrow(parameters))
 	parameters$cor_aap[i] <- cor(dat$A, dat$Ap)
 	parameters$cor_bbp[i] <- cor(dat$B, dat$Bp)
 	parameters$cor_abp[i] <- cor(dat$Ap, dat$Bp)
+	parameters$cor_zap[i] <- cor(dat$Ap, dat$Z)
+	parameters$cor_zbp[i] <- cor(dat$Bp, dat$Z)
 	parameters$p_az[i] <- getPval(dat$Ap, dat$Z)
 	parameters$p_bz[i] <- getPval(dat$Bp, dat$Z)
 }
