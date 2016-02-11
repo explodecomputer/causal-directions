@@ -12,6 +12,12 @@ get_cor_from_pval <- function(p, n)
 
 load("~/repo/cit_measurement_error/results/p_comp_20160210.RData")
 
+parameters$p_az <- -log10(parameters$p_az)
+parameters$p_bz <- -log10(parameters$p_bz)
+parameters$sig_mr <- parameters$p_bz > -log10(0.05)
+parameters$correct_direction <- parameters$p_az > parameters$p_bz
+parameters$bigna <- parameters$noisea > parameters$noiseb
+
 parameters$p_test <- parameters$p_bz
 parameters$p_test[!parameters$correct_direction] <- parameters$p_az[!parameters$correct_direction]
 parameters$r_ab <- parameters$r_ab^2
