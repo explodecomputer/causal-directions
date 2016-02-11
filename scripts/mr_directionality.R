@@ -170,8 +170,7 @@ if(length(arguments) > 0)
 {
 	jid <- as.numeric(arguments[1])
 	splits <- as.numeric(arguments[2])
-	outdir <- arguments[3]
-	stopifnot(all(!is.na(jid), !is.na(splits), !is.na(outfile)))
+	stopifnot(all(!is.na(jid), !is.na(splits)))
 
 	first <- (jid - 1) * splits + 1
 	last <- min(nrow(parameters), jid * splits)
