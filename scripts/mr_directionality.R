@@ -184,7 +184,7 @@ message("Saving in ", outfile)
 
 for(i in 1:nrow(parameters))
 {
-	message(i)
+	message(i, " of ", nrow(parameters))
 	dat <- with(parameters[i,], make_system(n, p, r_ab, r_za, noisea, noiseb))
 	parameters$cit_AB[i] <- cit.cp(dat$Z, dat$Ap, dat$Bp)[1]
 	parameters$cit_BA[i] <- cit.cp(dat$Z, dat$Bp, dat$Ap)[1]
