@@ -141,17 +141,6 @@ TSLS <- function(A, B, Z)
 	summary(lm(B ~ ahat))
 }
 
-
-parameters <- expand.grid(
-	n = c(100, 1000),
-	p = 0.5,
-	r_ab = sqrt(seq(0, 1, by=0.2)),
-	r_za = c(sqrt(0.01), sqrt(0.1)),
-	noisea = sqrt(seq(0, 1, by=0.2)),
-	noiseb = sqrt(seq(0, 1, by=0.2)),
-	nsim = 1:10
-)
-
 get_index_list <- function(n, mc.cores)
 {
 	mc.cores <- ifelse(mc.cores < 1, 1, mc.cores)
@@ -162,18 +151,44 @@ get_index_list <- function(n, mc.cores)
 	return(l1)
 }
 
-mc.cores <- 16
-l1 <- get_index_list(nrow(parameters), mc.cores)
-lapply()
+
+parameters <- expand.grid(
+	n = c(100, 1000, 10000),
+	p = 0.5,
+	r_ab = sqrt(seq(0, 1, by=0.2)),
+	r_za = c(sqrt(0.01), sqrt(0.05), sqrt(0.1)),
+	noisea = sqrt(seq(0, 1, by=0.2)),
+	noiseb = sqrt(seq(0, 1, by=0.2)),
+	nsim = 1:100
+)
 
 
+arguments <- commandArgs(T)
+jid <- "all"
+outdir <- "~/repo/cit_measurement_error/scratch/"
+if(length(arguments) > 0)
+{
+	jid <- as.numeric(arguments[1])
+	splits <- as.numeric(arguments[2])
+	outdir <- arguments[3]
+	stopifnot(all(!is.na(jid), !is.na(splits), !is.na(outfile)))
+
+	first <- (jid - 1) * splits + 1
+	last <- min(nrow(parameters), jid * splits)
+	parameters <- parameters[first:last, ]
+}
+
+# Set output file
+outfile <- paste0(outdir, "/results_", jid, ".RData")
+message("Running ", jid, ": ", nrow(parameters), " rows")
+message("Saving in ", outfile)
 
 for(i in 1:nrow(parameters))
 {
 	message(i)
 	dat <- with(parameters[i,], make_system(n, p, r_ab, r_za, noisea, noiseb))
-	parameters$cit_AB <- cit.cp(dat$Z, dat$Ap, dat$Bp)
-	parameters$cit_BA <- cit.cp(dat$Z, dat$Bp, dat$Ap)
+	parameters$cit_AB[i] <- cit.cp(dat$Z, dat$Ap, dat$Bp)[1]
+	parameters$cit_BA[i] <- cit.cp(dat$Z, dat$Bp, dat$Ap)[1]
 	parameters$cor_aap[i] <- cor(dat$A, dat$Ap)
 	parameters$cor_bbp[i] <- cor(dat$B, dat$Bp)
 	parameters$cor_abp[i] <- cor(dat$Ap, dat$Bp)
@@ -183,10 +198,4 @@ for(i in 1:nrow(parameters))
 	parameters$p_bz[i] <- getPval(dat$Bp, dat$Z)
 }
 
-parameters$p_az <- -log10(parameters$p_az)
-parameters$p_bz <- -log10(parameters$p_bz)
-parameters$sig_mr <- parameters$p_bz > -log10(0.05)
-parameters$correct_direction <- parameters$p_az > parameters$p_bz
-parameters$bigna <- parameters$noisea > parameters$noiseb
-
-save(parameters, file="~/repo/cit_measurement_error/results/p_comp_20160208.RData")
+save(parameters, file=outfile)

@@ -10,7 +10,7 @@ get_cor_from_pval <- function(p, n)
 	return(R2)
 }
 
-load("~/repo/cit_measurement_error/results/p_comp_20160208.RData")
+load("~/repo/cit_measurement_error/results/p_comp_20160210.RData")
 
 parameters$p_test <- parameters$p_bz
 parameters$p_test[!parameters$correct_direction] <- parameters$p_az[!parameters$correct_direction]
@@ -26,9 +26,23 @@ parameters$rhs_lhs_diff <- parameters$lhs - parameters$rhs
 a <- r.test(n=parameters$n, r12=parameters$cor_zap, r13=parameters$cor_zbp, r23=parameters$cor_abp)
 parameters$cortest_t <- a$t
 parameters$cortest_p <- -log10(a$p)
+parameters$cortest_sign_correct <- sign(parameters$cortest_t) == 1
 
 table(parameters$rhs > parameters$cor_aap)
-table(parameters$correct_direction & parameters$sig_mr, parameters$rhs < parameters$cor_aap & parameters$sig_mr)
+
+parameters <- subset(parameters, ! r_ab %in% c(0, 1))
+
+parameters$cit_direction <- parameters$cit_AB < parameters$cit_BA
+table(parameters$cit_direction, sign(parameters$cortest_t))
+
+parameters$cit_p <- parameters$cit_AB
+parameters$cit_p[!parameters$cit_direction] <- parameters$cit_BA[!parameters$cit_direction]
+parameters$cit_p <- -log10(parameters$cit_p)
+
+
+ps <- parameters %>%
+	gather()
+
 
 
 psum1 <- parameters %>%
@@ -53,18 +67,33 @@ psum1 <- parameters %>%
 	)
 
 
-ggplot(subset(psum1, r_za==0.1 & n == 10000), aes(y=prop_cortest_sign, x=prop_cortest_sig)) +
+ggplot(subset(psum1, r_za==0.1 & n == 1000), aes(y=prop_cortest_sign, x=prop_cortest_sig)) +
 geom_point(aes(colour=as.factor(r_ab))) +
 facet_grid(noisea ~ noiseb)
 
 
-parameters$cortest_sign_correct <- sign(parameters$cortest_t) == 1
 
 ggplot(subset(parameters, sig_mr), aes(x=rhs_lhs_diff, y=cortest_p)) +
 geom_point(aes(colour=cortest_sign_correct)) +
-geom_smooth(aes(group=as.factor(noisea)), se=FALSE) +
 facet_grid(n ~ r_za, scale="free_y")
 
+
+
+ggplot(subset(parameters, sig_mr), aes(x=rhs_lhs_diff, y=-log10(cit_p))) +
+geom_point(aes(colour=cit_direction)) +
+facet_grid(n ~ r_za, scale="free_y")
+
+
+a <- subset(parameters, select=c(rhs_lhs_diff, cit_direction, cit_p))
+b <- subset(parameters, select=c(rhs_lhs_diff, cortest_sign_correct, cortest_p))
+a$test <- "CIT"
+b$test <- "MR"
+names(a) <- names(b) <- c("rhs_lhs_diff", "direction", "pval", "test")
+ab <- rbind(a,b)
+
+ggplot(ab, aes(x=rhs_lhs_diff, y=pval)) +
+geom_point(aes(colour=direction)) +
+facet_grid(test ~ ., scale="free_y")
 
 
 
@@ -169,5 +198,20 @@ geom_line(aes(colour=outcome)) +
 scale_fill_brewer(type="qual") +
 facet_grid(noisea ~ noiseb)
 
+
+
+
+ineq <- expand.grid(
+	noisea = seq(0, 1, by=0.02),
+	noiseb = seq(0, 1, by=0.02)
+)
+
+ineq$ab <- ineq$noisea / ineq$noiseb
+ineq$ab[ineq$ab > 1] <- NA
+
+summary(ineq$ab)
+
+library(lattice)
+wireframe(ab ~ noisea * noiseb, ineq, drape=TRUE, screen = list(x=-60,y=180), scales = list(arrows = FALSE))
 
 
