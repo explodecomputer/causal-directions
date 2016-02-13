@@ -27,8 +27,8 @@ opts_chunk$set(warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE)
 
 fig_nums <- captioner()
 tab_nums <- captioner(prefix = "Table")
-stab_nums <- captioner(prefix = "Supplementary Table")
 sfig_nums <- captioner(prefix = "Supplementary Figure")
+stab_nums <- captioner(prefix = "Supplementary Table")
 
 ```
 
@@ -49,10 +49,17 @@ tab_nums(
 cfig <- function(x) fig_nums(x, display="c")
 
 fig_nums(
-	"", 
-	caption="",
+	"cit_measurement_error_figure", 
+	caption="The CIT was performed on simulated variables where the exposure influenced the outcome and the exposure was instrumented by a SNP. The test statistic from CIT when testing if the exposure caused the outcome (the true model) is in red, and the test for the outcome causing the exposure (false model) is in green. Rows of plots represent the sample sizes used for the simulations. As measurement error increases (decreasing values on x-axis) the test statistic for the incorrect model gets stronger and the test statistic for the correct model gets weaker.",
 	display=FALSE
 )
+
+fig_nums(
+	"cit_mr_comparison_figure", 
+	caption="Outcomes were simulated to be causally influenced by exposures, with varying degrees of measurement error applied to both. CIT and MR were used to infer evidence for causality between the exposure and outcome, and to infer the direction of causality. The value of $d = \\rho_{x, x_O} & - \\rho_{x,y}\\rho_{y,y_O}$, such that when $d$ is negative we expect the Williams' test to be more likely to be wrong about the direction of causality. Rows of graphs represent the sample size used in the simulations.",
+	display=FALSE
+)
+
 
 ```
 
@@ -76,6 +83,13 @@ sfig_nums("",
 	caption="", 
 	display=FALSE
 )
+
+```
+
+```{r load_up }
+
+```
+```{r read_data }
 
 ```
 
@@ -146,7 +160,11 @@ $$
 
 Thus an observational study will find $cov(g, y - \hat{y}) = 0$ when the true model is causal only when $D = 1$. Therefore, if there is any measurement error that incurs imprecision (i.e. $var(\epsilon_m) \neq 0$) then there will remain an association between $g$ and $y|x$, which is in violation of the the 4th condition of the CIT. Note that measurement bias alone is insufficient to lead to a violation of the test statistic assumptions.
 
-An alternative method to infer causality that is in principle robust to measurement error in the exposure variable, is Mendelian randomization (MR). The origins and applications of MR have been explained in detail, but the principle in which this is achieved is straightforward. Whereas mediation makes causal inference by contrasting the association of the instrument on the outcome before and after adjusting for the exposure, MR uses the instrument as a proxy for the exposure that is assumed to be devoid of measurement error and independent of potential confounders. In this setting, the problem is reformulated: instead of the researcher being agnostic about whether the instrument, $g$, has a direct influence on $x$ or $y$, the researcher must select an instrument which is known to have a direct effect on $x$. Thus if $g$ serves as a proxy for $x$, one can reason that the influence of $g$ on $y$ is the proportion of the effect of $x$ on $y$ that is explained by the effect of $g$ on $x$. Hence the effect estimate $\beta_{MR}$ of $x$ on $y$ is estimated as
+We performed simulations to verify that this problem does arise using the CIT method. `r cfig("cit_measurement_error_figure")` shows that when there is no measurement error in the exposure ($\rho_{x, x_O}=1$) the CIT is reliable in identifying the correct causal direction. However, as measurement error increases, eventually the CIT is more likely to infer a robust causal association in the wrong direction. Also of concern here is that increasing sample size does not solve the issue, indeed it only strengthens the evidence of the incorrect inference.
+
+### Inferring direction of causality using MR
+
+If one is to select an instrument $g$ that has a direct influence on $x$ and $x$ is causally related to $y$, one can reason that the influence of $g$ on $y$ is the proportion of the effect of $x$ on $y$ that is explained by the effect of $g$ on $x$. Hence the effect estimate $\beta_{MR}$ of $x$ on $y$ is estimated as
 
 $$
 \beta_{MR} = \frac{\beta_y}{\beta_g} = \frac{cov(y, g)}{cov(x_O,g)} = \frac{cov(\beta_x x + \epsilon_x, g)}{cov(x + \epsilon_x, g)}
@@ -159,6 +177,59 @@ $$
 $$
 
 thus we obtain an estimate of the effect of $x_O$ on $y$ that is unbiased by measurement error in $x$.
+
+However, if we do not know whether the SNP $g$ has a direct influence on $x$ or $y$ then further efforts are required. A simple approach, similar in principle to that used in the CIT, is to assume that $g$ has a direct influence on the variable $x$ if its association with $x$ is larger than its association with $y$ (or vice versa). This can be formally tested using the Williams' test for a difference between $\rho_{g, x_O}$ and $\rho_{g, y_O}$. If $x$ causes $y$ and $g$ is a valid instrument for $x$ then we expect that the Williams' test will obtain the correct result if the value $d = \rho_{g, x_O} - \rho_{g, y_O}$ is greater than 0. 
+
+It can be easily shown that in the presence of measurement error, $d = \rho_{x, x_O} - \rho_{x,y}\rho_{y,y_O}$ (Appendix 1). Therefore, using the MR approach there are two potential advantages over the CIT. First, we can conduct a formal test for the direction of causality. Second the correct direction of causality can be inferred when measurement error in the exposure variable is present, as long as it is lower than the product of the measurement error in the outcome and the causal correlation between the exposure and the outcome. 
+
+We performed simulations to explore the performance of this approach in comparison to CIT. `r cfig("cit_mr_comparison_figure")` shows that, as predicted, when $d < 0$ is violated the MR analysis is liable to infer the wrong direction of causality, and that this erroneous result is more likely with increasing sample size. However, in all cases the MR analysis infers the wrong direction of causality at the same or a lower rate than the CIT. When $d > 0$ is satisfied we observe that in most cases the MR method has greater power to obtain evidence for causality than CIT, and always obtains the correct direction of causality.
+
+
+
+## Discussion
+
+
+
+
+## Appendix 1
+
+$$
+\begin{aligned}
+\rho_{g, x_O} & > \rho_{g, y_O} \\
+\rho_{g, x} \rho_{x, x_O} & > \rho_{g,y}\rho_{y,y_O}\\
+\rho_{g, x} \rho_{x, x_O} & > \rho_{g,x}\rho_{x,y}\rho_{y,y_O}\\
+\rho_{x, x_O} & > \rho_{x,y}\rho_{y,y_O}
+\end{aligned}
+$$
+
+
+
+\newpage
+
+## Tables
+
+
+
+\newpage
+
+## Figures
+
+```{r cit_measurement_error_figure }
+
+```	
+
+`r fig_nums("cit_measurement_error_figure")`
+
+\newpage
+
+## Supplementary tables
+
+
+
+\newpage
+
+## Supplementary figures
+
 
 
 

@@ -1,11 +1,10 @@
+## ---- load_up ----
 
-## ---- setup ----
-
-library(dplyr)
-library(ggplot2)
-library(tidyr)
-library(psych)
-library(lattice)
+suppressPackageStartupMessages(library(dplyr))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(tidyr))
+suppressPackageStartupMessages(library(psych))
+suppressPackageStartupMessages(library(lattice))
 
 get_cor_from_pval <- function(p, n)
 {
@@ -15,7 +14,7 @@ get_cor_from_pval <- function(p, n)
 }
 
 
-## ---- read_parameters ----
+## ---- read_data ----
 
 load("~/repo/cit_measurement_error/results/mr_directionality_20160211.RData")
 
@@ -85,6 +84,40 @@ psum1 <- pl %>%
 		prop_nonsig=sum(direction_p_value <= -log10(0.05), na.rm=T)/n()
 	)
 psum1$rhs_lhs_diff_bin <- cut(psum1$rhs_lhs_diff, breaks=10)
+
+
+## ---- cit_measurement_error_figure ----
+
+load("~/repo/cit_measurement_error/results/20141114.RData")
+dat <- gather(dat, eval, pval, GT, TG, factor_key=TRUE)
+levels(dat$eval) <- c("Correct inference", "Incorrect inference")
+
+ggplot(dat, aes(x=sqrt(rsq),y=-log10(pval))) +
+geom_point(aes(colour=eval)) +
+labs(y=expression(-log[10]*p), x=expression(cor(x, x[O])), colour="") +
+facet_grid(n ~ ., scale="free_y")
+
+
+
+## ---- cit_mr_comparison_figure ----
+
+psum2 <- gather(psum1, eval, value, prop_sig_correct, prop_sig_incorrect, prop_nonsig, factor_key=TRUE) %>%
+	group_by(n, rhs_lhs_diff_bin, r_za, eval, test) %>%
+	summarise(value=mean(value, na.rm=TRUE))	
+
+temp <- do.call(rbind, strsplit(as.character(psum2$rhs_lhs_diff_bin), split=","))
+psum2$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp[,1]))
+psum2$rhs_lhs_diff_bin_lab <- as.factor(paste0("d = ", psum2$rhs_lhs_diff_bin_numeric))
+psum2$rhs_lhs_diff_bin_lab <- factor(psum2$rhs_lhs_diff_bin_lab, levels=levels(psum2$rhs_lhs_diff_bin_lab)[order(as.numeric(as.character(levels(psum2$rhs_lhs_diff_bin_numeric))))])
+
+levels(psum2$eval) <- c("Evidence for causality with correct direction", "Evidence for causality with incorrect direction", "No evidence for causality")
+
+ggplot(subset(psum2, r_za==0.1), aes(x=test, y=value)) +
+geom_bar(stat="identity", aes(fill=eval)) +
+facet_grid(n ~ rhs_lhs_diff_bin_lab) +
+scale_fill_brewer(type="qual") +
+labs(x="Method", y="Proportion of simulations")
+
 
 
 ## ---- plot1 ----
@@ -158,23 +191,6 @@ facet_grid(n ~ rhs_lhs_diff_bin)
 
 
 
-## ---- plot6 ----
-
-psum2 <- gather(psum1, eval, value, prop_sig_correct, prop_sig_incorrect, prop_nonsig, factor_key=TRUE) %>%
-	group_by(psum2, n, rhs_lhs_diff_bin, r_za, eval, test) %>%
-	summarise(value=mean(value, na.rm=TRUE))	
-
-temp <- do.call(rbind, strsplit(as.character(psum2$rhs_lhs_diff_bin), split=","))
-psum2$rhs_lhs_diff_bin_lab <- paste0("d = ", gsub("\\(", "", temp[,1]))
-
-levels(psum2$eval) <- c("Evidence for causality with correct direction", "Evidence for causality with incorrect direction", "No evidence for causality")
-
-ggplot(subset(psum2, r_za==0.1), aes(x=test, y=value)) +
-geom_bar(stat="identity", aes(fill=eval)) +
-facet_grid(n ~ rhs_lhs_diff_bin_lab) +
-scale_fill_brewer(type="qual") +
-labs(x="Method", y="Proportion of simulations")
-
 
 
 ## ---- plot7 ----
@@ -196,8 +212,7 @@ temp <- subset(parameters, r_za==0.1 & r_ab==0.6 & noiseb==0)
 
 
 
-
-######
+## ---- misc ----
 
 
 
@@ -269,8 +284,8 @@ cor(a,b)^2
 qf(0.209, 1, 999, low=FALSE)
 
 
-compare cor_zap with cor_zbp
-see how often you get a significant result for the wrong direction?
+# compare cor_zap with cor_zbp
+# see how often you get a significant result for the wrong direction?
 
 
 
