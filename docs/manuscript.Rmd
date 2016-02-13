@@ -1,0 +1,165 @@
+---
+title: "Determining the direction of causality in the face of measurement error"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output:
+  pdf_document:
+    keep_tex: true
+bibliography: manuscript.bib
+csl: nature.csl
+---
+
+Gibran Hemani* and George Davey Smith
+
+MRC Integrative Epidemiology Unit (IEU) at the University of Bristol, School of Social and Community Medicine, Bristol, UK
+
+\* Correspondence to: g.hemani@bristol.ac.uk
+
+
+```{r setup, echo=FALSE, cache=FALSE}
+
+suppressWarnings(suppressPackageStartupMessages(library(knitr)))
+suppressWarnings(suppressPackageStartupMessages(library(pander)))
+suppressWarnings(suppressPackageStartupMessages(library(captioner)))
+panderOptions("table.caption.prefix", "")
+
+read_chunk("~/repo/cit_measurement_error/scripts/mr_directionality_analysis.R")
+opts_chunk$set(warning=FALSE, message=FALSE, cache=TRUE, echo=FALSE)
+
+fig_nums <- captioner()
+tab_nums <- captioner(prefix = "Table")
+stab_nums <- captioner(prefix = "Supplementary Table")
+sfig_nums <- captioner(prefix = "Supplementary Figure")
+
+```
+
+
+```{r tablelist, cache=FALSE}
+
+ctab <- function(x) tab_nums(x, display="c")
+
+tab_nums(
+	"", 
+	caption="", 
+	display=FALSE)
+
+```
+
+```{r figurelist, cache=FALSE}
+
+cfig <- function(x) fig_nums(x, display="c")
+
+fig_nums(
+	"", 
+	caption="",
+	display=FALSE
+)
+
+```
+
+```{r stablelist, cache=FALSE}
+
+cstab <- function(x) stab_nums(x, display="c")
+
+stab_nums(
+	"",
+	caption="",
+	display=FALSE
+)
+
+```
+
+```{r sfigurelist, cache=FALSE}
+
+csfig <- function(x) sfig_nums(x, display="c")
+
+sfig_nums("", 
+	caption="", 
+	display=FALSE
+)
+
+```
+
+### Abstract
+
+With our ability to characterize the human phenome ever improving it is becoming increasingly common to use statistical tests to infer the causal relationships between correlated variables. A simple method for inferring if an exposure is on the causal pathway to an outcome is through mediation analysis, where the effect of an instrument on the outcome is tested before and after adjusting for the exposure. We show that in the face of measurement error this can lead to erroneous results, and that increasing sample size, rather than reducing bias, can often have the alarming effect of increasing certainty in the wrong answer. We argue that because measurement error is ubiquitous in phenotypic data, that mediation-based causal inference should be treated with caution. Finally, we demonstrate that Mendelian randomization is a method for causal inference that is robust to measurement error.
+
+
+## Introduction
+
+With the explosion in data that measures the human phenome, of great interest is understanding the causal nature of the emerging putitive correlations between measures of interest. Mediation is a commonly used statistical method for making causal inference in observational data [@Millstein2009; @Schadt2005; @Gayan2010a; @Tavtigian2009], and it exists in many forms, from simple regression based systems to structural equation modeling. The principle behind mediation analysis can be explained as follows. Supposing an exposure has a causal effect on an outcome, then an ‘instrument’ that causes the exposure (a single nucleotide polymorophism (SNP), for example) should also influence the outcome. Therefore the influence of the instrument on the outcome conditional on the exposure should be zero. This forms the basis of a number of methods, such as the causal inference test (CIT) [@Millstein2009], which have been employed by a number of recent publications make causal inferences, often in large scale ‘omics datasets [@Koestler2014; @Liu2013; @Waszak2015]. 
+
+While mediation based approaches are simple and convenient to implement, it is important to note where they may lead to unreliable results. One such mechanism is measurement error [@LeCessie2012; @Nagarajan2013; @Shpitser2010; @Blakely2013]. Measurement (or observational) error is the difference between a measured value of a quantity and its true value. Such variability can arise through a whole plethora of mechanisms, which are often unique to the study design and difficult to avoid [@Houle2011; @Hernan2009]. Array technology is now commonly used to obtain high throughput phenotyping at low cost, but they come with the problem of having imperfect sensitivity, so for example methylation levels as measured by the Illumina450k chip are prone to have some amount of noise around the true value [@Harper2013; @Chen2013a]. Sensitivity is also an issue, for example if the unit of measurement of biological interest is the methylation level in a T cell, then measurement error of this value can be introduced by using methylation levels from whole blood samples because the measured value will be an assay of many cell types [@Houseman2012].
+
+Measurement error can indeed arise in more low-tech data too, for example when measuring body mass index (BMI) one is typically interested in using this as a proxy for obesity, but it is clear that the correlation between BMI and obesity is not perfect [@Ahima2013]. A similar problem of biological misspecification is unavoidable in disease diagnosis. Measurement error can also be introduced after the data has been collected, for example the transformation of non-normal data for the purpose of statistical analysis will lead to a new variable that will typically have both bias and imprecision compared to the original variable. The sources of measurement error are not limited to this list [@Hernan2009], and its impact has been explored in the context of mediation analysis in the epidemiological literature extensively [@LeCessie2012; @Blakely2013].
+
+An alternative statistical method that gained prominence at least in part as a solution to the problem of measurement error [@Ashenfelter1994] is Mendelian randomisation (MR) [@DaveySmith2004; @DaveySmithHemani2014]. Here an instrumental variable (typically a SNP) that has a robost, causal association with the exposure is used to proxy the exposure in an association test with the outcome. If there is no measurement error in the SNP then the causal association between the exposure and the outcome can be estimated by scaling the association between the SNP and the outcome by the association between the SNP and the exposure. This approach also has the useful property that it guards against unmeasured confounders driving the association between exposure and outcome; and if the biological effect of the SNP is understood then it can also aid against reverse causality driving the association.
+
+Here, however, arises a potential issue. Often the biological effect of a SNP is not known, and therefore it can be difficult to determine for which of the two variables in a putative exposure-outcome association is the SNP a valid instrument. By definition, we expect that if the association is causal then a SNP for the exposure will be associated with the outcome, so if the researcher erroneously uses the SNP as an instrument for the outcome then they are likely to see an apparently robust causal association of outcome on exposure. Such a situation can arise in many scenarios. For example genome wide association studies (GWASs) that identify genetic associations for complex traits are by design hypothesis free and agnostic of genomic function, and it often takes years of follow up studies to understand the biological nature of a putative GWAS hit [@Claussnitzer2015]. Another situation is where the causal direction between 'omic measures need to be determined, for example if a DNA methylation probe is associated with expression of an adjacent gene, then is a cis-acting SNP an instrument for the DNA methylation level, or the gene expression level [@Waszak2015]? 
+
+Mediation based methods, for example CIT and other related approaches typically attempt to use the data to resolve this issue using the following logic: if the SNP-exposure association is stronger than the SNP-outcome association then the causal effect must be in the direction of exposure to outcome. The same logic can indeed be applied to MR, but often when applied the sensitivity of these approaches to measurement error is not considered.
+
+When being objective one must assume that measurement error is ubiquitous, and any measured variable is only an imperfect proxy of the biological quantity that the researcher intended to obtain. Here we show using theory and simulations how measurement error can lead to unreliable causal inference in the mediation-based CIT method, and we propose an extension to MR that, although does not eliminate the problem of measurement error, provides a framework in which to ascertain the causal direction when the biology of the instrument is not fully understood.
+
+
+## Methods
+
+### Simulations
+
+
+### CIT direction
+
+
+### MR causal test
+
+
+
+## Results
+
+### The influence of measurement error on CIT
+
+Here we consider a simple causal model where an exposure, $x$, has an effect on an outcome of interest, $y$, and that there is a known SNP, $g$, which has a direct effect on the exposure. Measurement error of an exposure can be modeled as some transformation of the true value that leads to the observed value, $x_O=f(x)$. For example, we can define $f(x) = \alpha_m + \beta_m x + \epsilon_m$, where $\alpha_m$ and $\beta_m$ influence the bias in the measurement of $x$, and $\epsilon_m$ represents the imprecision in the measurement of $x$. Here the true value of the exposure is partially explained by the genetic instrument, $g$, such that
+
+$$
+x = \alpha_g + \beta_g + \epsilon_g
+$$
+
+where $\beta_g$ is the effect of the SNP on the exposure, and $\epsilon_g$ is the residual value of $x$; and the outcome is partially explained by the exposure
+
+$$
+y = \alpha_x + \beta_x + \epsilon_x
+$$
+
+where $\beta_x$ is the true effect of the exposure on the outcome. In the causal inference test (CIT), an omnibus p-value is generated from four hypothesis tests: 1) $g$ is associated with $x$; 2) $g$ is associated with $y$; 3) $g$ is associated with $x|y$; and 4) $g$ is independent of $y|x$. The 4th condition is necessary for causal inference, and can be expressed as $cov(g, y - \hat{y}) = 0$, where $\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_O$. When measurement error is introduced we can show through simple algebra that
+
+$$
+\begin{aligned}
+cov(g, y - \hat{y}) &= cov(g, y) - cov(g, \hat{y})  \\
+                    &= \beta_g \beta_x var(g) - D\beta_g \beta_x var(g)
+\end{aligned}
+$$
+
+where
+
+$$
+D = \frac{\beta^2_m var(x)} {\beta^2_m var(x) + var(\epsilon_m)}
+$$
+
+Thus an observational study will find $cov(g, y - \hat{y}) = 0$ when the true model is causal only when $D = 1$. Therefore, if there is any measurement error that incurs imprecision (i.e. $var(\epsilon_m) \neq 0$) then there will remain an association between $g$ and $y|x$, which is in violation of the the 4th condition of the CIT. Note that measurement bias alone is insufficient to lead to a violation of the test statistic assumptions.
+
+An alternative method to infer causality that is in principle robust to measurement error in the exposure variable, is Mendelian randomization (MR). The origins and applications of MR have been explained in detail, but the principle in which this is achieved is straightforward. Whereas mediation makes causal inference by contrasting the association of the instrument on the outcome before and after adjusting for the exposure, MR uses the instrument as a proxy for the exposure that is assumed to be devoid of measurement error and independent of potential confounders. In this setting, the problem is reformulated: instead of the researcher being agnostic about whether the instrument, $g$, has a direct influence on $x$ or $y$, the researcher must select an instrument which is known to have a direct effect on $x$. Thus if $g$ serves as a proxy for $x$, one can reason that the influence of $g$ on $y$ is the proportion of the effect of $x$ on $y$ that is explained by the effect of $g$ on $x$. Hence the effect estimate $\beta_{MR}$ of $x$ on $y$ is estimated as
+
+$$
+\beta_{MR} = \frac{\beta_y}{\beta_g} = \frac{cov(y, g)}{cov(x_O,g)} = \frac{cov(\beta_x x + \epsilon_x, g)}{cov(x + \epsilon_x, g)}
+$$
+
+which reduces to
+
+$$
+\lim_{n \to \infty} \hat{\beta}_{MR} = \frac{\beta_x cov(x + \epsilon_x)}{cov(x + \epsilon_x)} = \beta_x
+$$
+
+thus we obtain an estimate of the effect of $x_O$ on $y$ that is unbiased by measurement error in $x$.
+
+
+
+## References
