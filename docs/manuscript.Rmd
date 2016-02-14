@@ -266,11 +266,38 @@ Under many circumstances a practical solution to this problem is to use Mendelia
 
 There are a number of limitations to the analysis that we performed. We focused on the simple case of a single instrument in a single sample setting, and assumed that pleiotropy (the influence of the instrument on the outcome through a mechanism other than the exposure) was not present. 
 
-The overarching result from our simulations is that, regardless of the method used, inferring causal direction using an instrument of unknown biology is highly liable to measurement error.
+The overarching result from our simulations is that, regardless of the method used, inferring causal direction using an instrument of unknown biology is very susceptible to measurement error. With the presence of measurement error near ubiquitous in most cross sectional studies, and our ability to measure it limited, we argue that it should be given serious consideration in designing statistical analyses that attempt to make causal inference, and that any putitive results should be accompanied with appropriate sensitivity analysis that assesses their robustness under varying levels of measurement error.
 
-Limitations
 
-Pleiotropy
+\newpage
+
+## Figures
+
+```{r cit_measurement_error_figure, fig.width=10, fig.height=10 }
+
+```	
+
+`r fig_nums("cit_measurement_error_figure")`
+
+\newpage
+
+
+```{r d_relationship_figure, fig.width=10, fig.height=6 }
+
+```
+
+`r fig_nums("d_relationship_figure")`
+
+\newpage
+
+
+```{r cit_mr_comparison_figure, fig.width=10, fig.height=10 }
+
+```
+
+`r fig_nums("cit_mr_comparison_figure")`
+
+\newpage
 
 
 ## Appendix 1
@@ -278,9 +305,11 @@ Pleiotropy
 Given the following model
 
 $$
-x = \alpha_g + \beta_g g + \epsilon_g \\
-x_O = \alpha_m + \beta_m x + \epsilon_m \\
-y = \alpha_x + \beta_x x + \epsilon_x
+\begin{aligned}
+x & = \alpha_g + \beta_g g + \epsilon_g \\
+x_O & = \alpha_m + \beta_m x + \epsilon_m \\
+y & = \alpha_x + \beta_x x + \epsilon_x
+\end{aligned}
 $$
 
 where $x$ is the exposure on the outcome $y$, $g$ is an instrument that has a direct effect on $x$, and $x_O$ is the measured quantity of $x$, where measurement error is incurred from bias in $\alpha_m$ and $\beta_m$ and imprecision from $\epsilon_m$, our objective is to estimate the expected magnitude of association between $g$ and $y$ after conditioning on $x$. Under the CIT, this is expected to be $cov(g, y - \hat{y}) = 0$ when $x$ causes $y$, where $\hat{y} = \hat{a}_{x_O} + \hat{b}_{x_O} x_O + \epsilon_{x_O}$ is the predicted value of $y$ using the measured value of $x_O$.
@@ -324,15 +353,11 @@ which can be substituted back to give
 $$
 \begin{aligned}
 cov(g, \hat{y}) & = \frac{\beta_x\beta_g var(g) \beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \\
-                & = D\beta_x\beta_g var(g)
+                & = \frac{\beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \times \beta_x\beta_g var(g)
 \end{aligned}
 $$
 
-where
-
-$$
-D = \frac{\beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)}
-$$
+\newpage
 
 ## Appendix 2
 
@@ -361,48 +386,6 @@ $$
 
 
 \newpage
-
-## Tables
-
-
-
-\newpage
-
-## Figures
-
-```{r cit_measurement_error_figure, fig.width=10, fig.height=10 }
-
-```	
-
-`r fig_nums("cit_measurement_error_figure")`
-
-\newpage
-
-
-```{r d_relationship_figure, fig.width=10, fig.height=6 }
-
-```
-
-`r fig_nums("d_relationship_figure")`
-
-\newpage
-
-
-```{r cit_mr_comparison_figure, fig.width=10, fig.height=10 }
-
-```
-
-`r fig_nums("cit_mr_comparison_figure")`
-
-\newpage
-
-## Supplementary tables
-
-
-
-\newpage
-
-## Supplementary figures
 
 
 
