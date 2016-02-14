@@ -19,6 +19,8 @@ get_cor_from_pval <- function(p, n)
 
 load("~/repo/cit_measurement_error/results/mr_directionality_20160211.RData")
 
+parameters <- subset(parameters, r_ab != 1)
+
 parameters$p_az <- -log10(parameters$p_az)
 parameters$p_bz <- -log10(parameters$p_bz)
 parameters$r_ab <- parameters$r_ab^2
@@ -30,26 +32,31 @@ parameters$rhs <- parameters$cor_ab * parameters$cor_bbp
 parameters$lhs <- parameters$cor_aap
 parameters$rhs_lhs_diff <- parameters$lhs - parameters$rhs
 
-parameters$correct_direction <- parameters$p_az > parameters$p_bz
-
-parameters$p_test <- parameters$p_bz
-parameters$p_test[!parameters$correct_direction] <- parameters$p_az[!parameters$correct_direction]
-
 # Calculate correlation test
 a <- r.test(n=parameters$n, r12=parameters$cor_zap, r13=parameters$cor_zbp, r23=parameters$cor_abp)
 parameters$cortest_t <- a$t
 parameters$cortest_p <- -log10(a$p)
 parameters$cortest_correct_direction <- sign(parameters$cortest_t) == 1
+parameters$cortest_correct_direction[is.na(parameters$cortest_correct_direction)] <- FALSE
 
 
+# Get the p-value for the MR analysis
+# Use the cortest_t to determine which direction MR association to use
+parameters$p_test <- parameters$p_bz
+parameters$p_test[!parameters$cortest_correct_direction] <- parameters$p_az[!parameters$cortest_correct_direction]
+
+
+# Get the CIT direction
 parameters$cit_correct_direction <- parameters$cit_AB < parameters$cit_BA
 parameters$cit_correct_direction[is.na(parameters$cit_correct_direction)] <- FALSE
 
+# Get the p-value for the CIT direction
 parameters$cit_p <- parameters$cit_AB
 parameters$cit_p[!parameters$cit_correct_direction] <- parameters$cit_BA[!parameters$cit_correct_direction]
 parameters$cit_p <- -log10(parameters$cit_p)
 parameters$cit_p[is.na(parameters$cit_AB) | is.na(parameters$cit_BA)] <- NA
 
+# Gather
 pl <- gather(parameters, test, direction_p_value, cit_p, cortest_p)
 pl$correct_direction <- pl$cortest_correct_direction
 pl$correct_direction[pl$test == "cit_p"] <- pl$cit_correct_direction[pl$test == "cit_p"]
@@ -59,10 +66,11 @@ pl <- subset(pl, select=-c(cortest_correct_direction, cit_correct_direction, p_t
 pl$test[pl$test == "cit_p"] <- "CIT"
 pl$test[pl$test == "cortest_p"] <- "MR"
 
+# Fix NAs
 pl$test_p_value[is.infinite(pl$test_p_value)] <- max(is.finite(pl$test_p_value))
 pl$direction_p_value[is.infinite(pl$direction_p_value)] <- max(is.finite(pl$direction_p_value))
 
-
+# Reduce
 psum1 <- pl %>%
 	group_by(n, p, r_ab, r_za, noisea, noiseb, test) %>%
 	summarise(
@@ -80,9 +88,9 @@ psum1 <- pl %>%
 		rhs=mean(rhs),
 		lhs=mean(cor_aap),
 		rhs_lhs_diff=lhs-rhs,
-		prop_sig_incorrect=sum(!correct_direction & direction_p_value > -log10(0.05), na.rm=T)/n(),
-		prop_sig_correct=sum(correct_direction & direction_p_value > -log10(0.05), na.rm=T)/n(),
-		prop_nonsig=sum(direction_p_value <= -log10(0.05), na.rm=T)/n()
+		prop_sig_incorrect=sum(!correct_direction & direction_p_value > -log10(0.05) & test_p_value > -log10(0.05), na.rm=T)/n(),
+		prop_sig_correct=sum(correct_direction & direction_p_value > -log10(0.05) & test_p_value > -log10(0.05), na.rm=T)/n(),
+		prop_nonsig=sum(direction_p_value <= -log10(0.05) | test_p_value <= -log10(0.05), na.rm=T)/n()
 	)
 psum1$rhs_lhs_diff_bin <- cut(psum1$rhs_lhs_diff, breaks=10)
 
@@ -122,7 +130,7 @@ labs(x=TeX("$cor(x, x_O)$"), y="d", colour=TeX("$cor(y, y_O)$"))
 
 psum2 <- gather(psum1, eval, value, prop_sig_correct, prop_sig_incorrect, prop_nonsig, factor_key=TRUE) %>%
 	group_by(n, rhs_lhs_diff_bin, r_za, eval, test) %>%
-	summarise(value=mean(value, na.rm=TRUE))	
+	summarise(value=mean(value, na.rm=TRUE))
 
 temp <- do.call(rbind, strsplit(as.character(psum2$rhs_lhs_diff_bin), split=","))
 psum2$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp[,1]))
@@ -131,7 +139,8 @@ psum2$rhs_lhs_diff_bin_lab <- factor(psum2$rhs_lhs_diff_bin_lab, levels=levels(p
 
 levels(psum2$eval) <- c("Evidence for causality\nwith correct direction", "Evidence for causality\nwith incorrect direction", "No evidence for causality")
 
-ggplot(subset(psum2, r_za==0.1), aes(x=test, y=value)) +
+dev.new()
+ggplot(subset(psum2, round(r_za,2)==0.1), aes(x=test, y=value)) +
 geom_bar(stat="identity", aes(fill=eval)) +
 facet_grid(n ~ rhs_lhs_diff_bin_lab) +
 scale_fill_brewer(type="qual") +
