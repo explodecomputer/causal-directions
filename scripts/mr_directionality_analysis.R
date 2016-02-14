@@ -5,6 +5,7 @@ suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(psych))
 suppressPackageStartupMessages(library(lattice))
+suppressPackageStartupMessages(library(latex2exp))
 
 get_cor_from_pval <- function(p, n)
 {
@@ -92,11 +93,29 @@ load("~/repo/cit_measurement_error/results/20141114.RData")
 dat <- gather(dat, eval, pval, GT, TG, factor_key=TRUE)
 levels(dat$eval) <- c("Correct inference", "Incorrect inference")
 
-ggplot(dat, aes(x=sqrt(rsq),y=-log10(pval))) +
+ggplot(subset(dat, n %in% c(100, 1000, 10000)), aes(x=sqrt(rsq),y=-log10(pval))) +
 geom_point(aes(colour=eval)) +
 labs(y=expression(-log[10]*p), x=expression(cor(x, x[O])), colour="") +
 facet_grid(n ~ ., scale="free_y")
 
+
+## ---- d_relationship_figure ----
+
+ineq <- expand.grid(
+	cora = seq(0, 1, by=0.02),
+	corb = seq(0, 1, by=0.1),
+	ab = c(0.1, 0.5, 0.9)
+)
+
+ineq$lhs <- ineq$cora
+ineq$rhs <- ineq$corb * ineq$ab
+ineq$d <- ineq$lhs - ineq$rhs
+ineq$ablab <- paste0("cor(x,y) = ", ineq$ab)
+
+ggplot(ineq, aes(x=cora, y=d)) +
+geom_line(aes(colour=corb, group=corb)) +
+facet_wrap(~ ablab) +
+labs(x=TeX("$cor(x, x_O)$"), y="d", colour=TeX("$cor(y, y_O)$"))
 
 
 ## ---- cit_mr_comparison_figure ----
@@ -110,13 +129,14 @@ psum2$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp[,1]))
 psum2$rhs_lhs_diff_bin_lab <- as.factor(paste0("d = ", psum2$rhs_lhs_diff_bin_numeric))
 psum2$rhs_lhs_diff_bin_lab <- factor(psum2$rhs_lhs_diff_bin_lab, levels=levels(psum2$rhs_lhs_diff_bin_lab)[order(as.numeric(as.character(levels(psum2$rhs_lhs_diff_bin_numeric))))])
 
-levels(psum2$eval) <- c("Evidence for causality with correct direction", "Evidence for causality with incorrect direction", "No evidence for causality")
+levels(psum2$eval) <- c("Evidence for causality\nwith correct direction", "Evidence for causality\nwith incorrect direction", "No evidence for causality")
 
 ggplot(subset(psum2, r_za==0.1), aes(x=test, y=value)) +
 geom_bar(stat="identity", aes(fill=eval)) +
 facet_grid(n ~ rhs_lhs_diff_bin_lab) +
 scale_fill_brewer(type="qual") +
-labs(x="Method", y="Proportion of simulations")
+labs(x="Method", y="Proportion of simulations", fill="") +
+theme(legend.key=element_rect(size=3), legend.key.size = unit(2, "lines"))
 
 
 
@@ -141,23 +161,6 @@ ineq$ab <- ineq$noisea / ineq$noiseb
 ineq$ab[ineq$ab > 1] <- NA
 
 wireframe(ab ~ noisea * noiseb, ineq, drape=TRUE, screen = list(x=-30), scales = list(arrows = FALSE))
-
-
-## ---- plot3 ----
-
-ineq <- expand.grid(
-	noisea = seq(0, 1, by=0.02),
-	noiseb = seq(0, 1, by=0.02),
-	ab = seq(0, 1, by=0.2)
-)
-
-ineq$lhs <- ineq$noisea
-ineq$rhs <- ineq$noiseb * ineq$ab
-ineq$d <- ineq$lhs - ineq$rhs
-
-ggplot(ineq, aes(x=noisea, y=noiseb)) +
-geom_tile(aes(fill=d)) +
-facet_wrap(~ ab)
 
 
 ## ---- plot4 ----

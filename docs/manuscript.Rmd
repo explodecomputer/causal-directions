@@ -55,8 +55,15 @@ fig_nums(
 )
 
 fig_nums(
+	"d_relationship_figure", 
+	caption="Plots depicting the function $d = cor(x, x_O) - cor(x,y)cor(y, y_O)$.",
+	display=FALSE
+)
+
+
+fig_nums(
 	"cit_mr_comparison_figure", 
-	caption="Outcomes were simulated to be causally influenced by exposures, with varying degrees of measurement error applied to both. CIT and MR were used to infer evidence for causality between the exposure and outcome, and to infer the direction of causality. The value of $d = \\rho_{x, x_O} & - \\rho_{x,y}\\rho_{y,y_O}$, such that when $d$ is negative we expect the Williams' test to be more likely to be wrong about the direction of causality. Rows of graphs represent the sample size used in the simulations.",
+	caption="Outcomes were simulated to be causally influenced by exposures, with varying degrees of measurement error applied to both. CIT and MR were used to infer evidence for causality between the exposure and outcome, and to infer the direction of causality. The value of $d = \\rho_{x, x_O} - \\rho_{x,y}\\rho_{y,y_O}$, such that when $d$ is negative we expect the Steiger test to be more likely to be wrong about the direction of causality. Rows of graphs represent the sample size used in the simulations.",
 	display=FALSE
 )
 
@@ -125,6 +132,29 @@ When being objective one must assume that measurement error is ubiquitous, and a
 
 ### MR causal test
 
+Supposing there are two correlated variables, $x$ and $y$, with a variant $g$ associated with both. Assuming no horizontal pleiotropy (i.e. $g$ only has an effect on one of the variables through the other variable) it is desirable to know which of the variables it has a direct influence on. This can be achieved by testing for difference in the correlations $\rho_{g, x}$ and $\rho_{g, y}$ using Steiger's Z-test for correlated correlations within a population. It is calculated as
+
+$$
+Z = (Z_{gx} - Z_{gy}) \frac{\sqrt{N-3}}{\sqrt{2(1-\rho_{xy})h}}
+$$
+
+where Fisher's z-transformation is used to obtain $Z_{g*} = \frac{1}{2} \ln  \left (  \frac{1+\rho_{g*}}{1-\rho_{g*}} \right )$,
+
+$$
+h = \frac{1 - (frm^2)} {1 - rm^2}
+$$
+
+where
+
+$$
+f = \frac{1 - \rho_{xy}}{2(1 - rm^2)}
+$$
+
+and 
+
+$$
+rm^2 = \frac{1}{2}(\rho_{gx}^2 + \rho_{gy}^2).
+$$
 
 
 ## Results
@@ -134,21 +164,21 @@ When being objective one must assume that measurement error is ubiquitous, and a
 Here we consider a simple causal model where an exposure, $x$, has an effect on an outcome of interest, $y$, and that there is a known SNP, $g$, which has a direct effect on the exposure. Measurement error of an exposure can be modeled as some transformation of the true value that leads to the observed value, $x_O=f(x)$. For example, we can define $f(x) = \alpha_m + \beta_m x + \epsilon_m$, where $\alpha_m$ and $\beta_m$ influence the bias in the measurement of $x$, and $\epsilon_m$ represents the imprecision in the measurement of $x$. Here the true value of the exposure is partially explained by the genetic instrument, $g$, such that
 
 $$
-x = \alpha_g + \beta_g + \epsilon_g
+x = \alpha_g + \beta_g g + \epsilon_g
 $$
 
 where $\beta_g$ is the effect of the SNP on the exposure, and $\epsilon_g$ is the residual value of $x$; and the outcome is partially explained by the exposure
 
 $$
-y = \alpha_x + \beta_x + \epsilon_x
+y = \alpha_x + \beta_x x + \epsilon_x
 $$
 
-where $\beta_x$ is the true effect of the exposure on the outcome. In the causal inference test (CIT), an omnibus p-value is generated from four hypothesis tests: 1) $g$ is associated with $x$; 2) $g$ is associated with $y$; 3) $g$ is associated with $x|y$; and 4) $g$ is independent of $y|x$. The 4th condition is necessary for causal inference, and can be expressed as $cov(g, y - \hat{y}) = 0$, where $\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_O$. When measurement error is introduced we can show through simple algebra that
+where $\beta_x$ is the true effect of the exposure on the outcome. In the causal inference test (CIT), an omnibus p-value is generated from four hypothesis tests: 1) $g$ is associated with $x$; 2) $g$ is associated with $y$; 3) $g$ is associated with $x|y$; and 4) $g$ is independent of $y|x$. The 4th condition is necessary for causal inference, and can be expressed as $cov(g, y - \hat{y}) = 0$, where $\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_O$. When measurement error is introduced we can show using basic covariance properties (Appendix 1) that
 
 $$
 \begin{aligned}
-cov(g, y - \hat{y}) &= cov(g, y) - cov(g, \hat{y})  \\
-                    &= \beta_g \beta_x var(g) - D\beta_g \beta_x var(g)
+cov(g, y - \hat{y}) & = cov(g, y) - cov(g, \hat{y})  \\
+                    & = \beta_g \beta_x var(g) - D\beta_g \beta_x var(g)
 \end{aligned}
 $$
 
@@ -178,20 +208,91 @@ $$
 
 thus we obtain an estimate of the effect of $x_O$ on $y$ that is unbiased by measurement error in $x$.
 
-However, if we do not know whether the SNP $g$ has a direct influence on $x$ or $y$ then further efforts are required. A simple approach, similar in principle to that used in the CIT, is to assume that $g$ has a direct influence on the variable $x$ if its association with $x$ is larger than its association with $y$ (or vice versa). This can be formally tested using the Williams' test for a difference between $\rho_{g, x_O}$ and $\rho_{g, y_O}$. If $x$ causes $y$ and $g$ is a valid instrument for $x$ then we expect that the Williams' test will obtain the correct result if the value $d = \rho_{g, x_O} - \rho_{g, y_O}$ is greater than 0. 
+However, if we do not know whether the SNP $g$ has a direct influence on $x$ or $y$ then further efforts are required. If $x$ causes $y$ and $g$ is a valid instrument for $x$ then we expect that the Steiger test will obtain the correct result if the value $d = \rho_{g, x_O} - \rho_{g, y_O}$ is greater than 0. It can be shown that in the presence of measurement error, $d = \rho_{x, x_O} - \rho_{x,y}\rho_{y,y_O}$ (Appendix 2). Therefore, using the MR approach there are two potential advantages over the CIT. First, we can conduct a formal test for the direction of causality. Second the correct direction of causality can be inferred when measurement error in the exposure variable is present, as long as it is lower than the product of the measurement error in the outcome and the causal correlation between the exposure and the outcome. `r cfig("d_relationship_figure")` shows that in most cases, especially when the causal effect between $x$ and $y$ is not very high, the condition of $d > 0$ is satisfied.
 
-It can be easily shown that in the presence of measurement error, $d = \rho_{x, x_O} - \rho_{x,y}\rho_{y,y_O}$ (Appendix 1). Therefore, using the MR approach there are two potential advantages over the CIT. First, we can conduct a formal test for the direction of causality. Second the correct direction of causality can be inferred when measurement error in the exposure variable is present, as long as it is lower than the product of the measurement error in the outcome and the causal correlation between the exposure and the outcome. 
-
-We performed simulations to explore the performance of this approach in comparison to CIT. `r cfig("cit_mr_comparison_figure")` shows that, as predicted, when $d < 0$ is violated the MR analysis is liable to infer the wrong direction of causality, and that this erroneous result is more likely with increasing sample size. However, in all cases the MR analysis infers the wrong direction of causality at the same or a lower rate than the CIT. When $d > 0$ is satisfied we observe that in most cases the MR method has greater power to obtain evidence for causality than CIT, and always obtains the correct direction of causality.
+We performed simulations to explore the performance of this approach in comparison to CIT. `r cfig("cit_mr_comparison_figure")` shows that, as predicted, when $d < 0$ the MR analysis is liable to infer the wrong direction of causality, and that this erroneous result is more likely to occur with increasing sample size. However, in all cases the MR analysis infers the wrong direction of causality at the same or a lower rate than the CIT. When $d > 0$ is satisfied we observe that in most cases the MR method has greater power to obtain evidence for causality than CIT, and always obtains the correct direction of causality.
 
 
 
 ## Discussion
 
 
-
-
 ## Appendix 1
+
+Given the following model
+
+$$
+x = \alpha_g + \beta_g g + \epsilon_g \\
+x_O = \alpha_m + \beta_m x + \epsilon_m \\
+y = \alpha_x + \beta_x x + \epsilon_x
+$$
+
+where $x$ is the exposure on the outcome $y$, $g$ is an instrument that has a direct effect on $x$, and $x_O$ is the measured quantity of $x$, where measurement error is incurred from bias in $\alpha_m$ and $\beta_m$ and imprecision from $\epsilon_m$, our objective is to estimate the expected magnitude of association between $g$ and $y$ after conditioning on $x$. Under the CIT, this is expected to be $cov(g, y - \hat{y}) = 0$ when $x$ causes $y$, where $\hat{y} = \hat{a}_{x_O} + \hat{b}_{x_O} x_O + \epsilon_{x_O}$ is the predicted value of $y$ using the measured value of $x_O$.
+
+We can split $cov(g, y - \hat{y})$ into two parts, $cov(g, y)$ and $cov(g, \hat{y})$.
+
+**Part 1**
+
+$$
+\begin{aligned}
+cov(g, y) & = cov(g, \beta_x x) \\
+          & = cov(g, \beta_x \beta_g g) \\
+          & = \beta_x\beta_g var(g)
+\end{aligned}
+$$
+
+**Part 2**
+
+$$
+\begin{aligned}
+cov(g, \hat{y}) & = cov(g, \hat{\beta}_{x_O} x_O) \\
+                & = cov(g, \hat{\beta}_{x_O} \beta_m x) \\
+                & = cov(g, \hat{\beta}_{x_O} \beta_m \beta_g g) \\
+                & = \hat{\beta}_{x_O} \beta_m \beta_g var(g)
+\end{aligned}
+$$
+
+Simpifying further
+
+$$
+\begin{aligned}
+\hat{\beta}_{x_O} & = \frac{cov(y, x_O)} {var(x_O)} \\
+                  & = \frac{\beta_m cov(y, x)} {var(x_O)} \\
+                  & = \frac{\beta_m \beta_x var(x)} {var(x_O)} \\
+                  & = \frac{\beta_m \beta_x var(x)} {\beta_m^2 var(x) + var(\epsilon_m)}
+\end{aligned}
+$$
+
+which can be substituted back to give
+
+$$
+\begin{aligned}
+cov(g, \hat{y}) & = \frac{\beta_x\beta_g var(g) \beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \\
+                & = D\beta_x\beta_g var(g)
+\end{aligned}
+$$
+
+where
+
+$$
+D = \frac{\beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)}
+$$
+
+## Appendix 2
+
+Steiger test is used to infer if the variant $g$ has a direct influence on $x$ or $y$ when it is known that it associates with both, but the direction of causality between $x$ and $y$ is unknown. Assuming the causal direction is $x \to y$, two stage MR is formulated using the following regression models:
+
+$$
+x = \alpha_1 + \beta_1 g + e_1
+$$
+
+for the first stage and
+
+$$
+y = \alpha_2 + \beta_2 \hat{x} + e_2
+$$
+
+where $\hat{x} = \hat{alpha}_1 + \hat{\beta}_1 g$. Writing in scale free terms, $\rho_{g, x}$ denotes the correlation between $g$ and the exposure variable $x$, and it is expected that $\rho_{g, x} > \rho_{g, y}$ because $\rho_{g, y} = \rho_{g, x}\rho_{x, y}$, where $\rho_{x, y}$ is the causal association between $x$ and $y$ (which is likely to be less than 1). In the presence of measurement error in $x$ and $y$, however, Steiger test will instead be assessing the inequality $\rho_{g, x_O} > \rho_{g, y_O}$, which can be simplified:
 
 $$
 \begin{aligned}
@@ -201,7 +302,6 @@ $$
 \rho_{x, x_O} & > \rho_{x,y}\rho_{y,y_O}
 \end{aligned}
 $$
-
 
 
 \newpage
@@ -214,11 +314,29 @@ $$
 
 ## Figures
 
-```{r cit_measurement_error_figure }
+```{r cit_measurement_error_figure, fig.width=10, fig.height=10 }
 
 ```	
 
 `r fig_nums("cit_measurement_error_figure")`
+
+\newpage
+
+
+```{r d_relationship_figure, fig.width=10, fig.height=6 }
+
+```
+
+`r fig_nums("d_relationship_figure")`
+
+\newpage
+
+
+```{r cit_mr_comparison_figure, fig.width=10, fig.height=10 }
+
+```
+
+`r fig_nums("cit_mr_comparison_figure")`
 
 \newpage
 

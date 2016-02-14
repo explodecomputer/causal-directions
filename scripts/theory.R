@@ -1,112 +1,48 @@
-n <- 10000
-gx <- rbinom(n, 2, 0.3)
-gz <- rbinom(n, 2, 0.3)
-u1 <- rnorm(n)
-u2 <- rnorm(n)
-u3 <- rnorm(n)
-ex <- rnorm(n)
-ez <- rnorm(n)
-ey <- rnorm(n)
-x <- 0.3 * gx + u1 + u2 + ex
-z <- 0.5 * gz + x + u1 + u3 + ez
-y <- x + z + u2 + u3 + ey
+nsim <- 100
 
+c_gy <- array(0, nsim)
+c_gyhat <- array(0, nsim)
+c_gy_exp <- array(0, nsim)
+c_gyhat_exp <- array(0, nsim)
 
+n <- 100000
 
-
-standardise <- function(x) 
+for(i in 1:nsim)
 {
-	a <- mean(x)
-	return((x - mean(x)) / sd(x) + a)
+	g <- rbinom(n, 2, 0.5)
+
+	a_g <- runif(1)
+	b_g <- runif(1)
+	e_g <- runif(1)
+
+	a_m <- runif(1)
+	b_m <- runif(1)
+	e_m <- runif(1)
+
+	a_x <- runif(1)
+	b_x <- runif(1)
+	e_x <- runif(1)
+
+	x <- a_g + b_g * g + rnorm(n, sd=sqrt(e_g))
+	x0 <- a_m + b_m * x + rnorm(n, sd=sqrt(e_m))
+	y <- a_x + b_x * x + rnorm(n, sd=sqrt(e_x))
+	yhat <- fitted.values(lm(y ~ x0))
+
+	c_gy[i] <- cov(g, y)
+	c_gy_exp[i] <- b_x * b_g * var(g)
+
+	c_gyhat[i] <- cov(g, yhat)
+	c_gyhat_exp[i] <- b_x * b_g * var(g) * b_m^2 * var(x) / (b_m^2 * var(x) + e_m)
 }
 
 
-n <- 100000
-g <- rbinom(n, 2, 0.3)
-e1 <- rnorm(n)
-e2 <- rnorm(n)
-e3 <- rnorm(n)
-x1 <- standardise(0.4 * g + e1)
-x2 <- standardise(1 * x1 + e2)
-y <- 0.7 * x1 + e3
+dat <- rbind(
+	data.frame(obs=c_gy, exp=c_gy_exp, what="cov_gy"),
+	data.frame(obs=c_gyhat, exp=c_gyhat_exp, what="cov_gyhat")
+)
 
-cov(g, y)
+library(ggplot2)
 
-0.4 * 0.7 * var(g)
-
-
-cov(g, x1)
-0.4 * var(g)
-
-
-cov(g, x2)
-
-0.4 * 0.3 * var(g)
-
-
-
-yhat1 <- residuals(lm(y ~ x1))
-yhat2 <- residuals(lm(y ~ x2))
-
-cov(yhat1, yhat2)
-
-
-cov(g, yhat1)
-cov(g, yhat2)
-
-
-cov(g, x1)
-
-var(g) * 0.4
-
-cov(g, x2)
-var(g) * 0.4
-
-cov(g, 0.4 * g + e1 + e2)
-cov(g, 0.4 * g + e1)
-
-cor(x2, I(0.4 * g + e1 + e2))
-
-
-
-lm(y ~ x1)
-lm(y ~ x2)
-
-cov(g, x1) / var(g)
-
-cov(g, x2)
-
-cov(g, y)
-
-cov(x1, y)
-cov(x2, y)
-
-
-
-cov(x1, x2)
-cor(x1, x2)
-
-
-0.3*var(g) + 0.3*var(e1)
-
-
-library(fGarch)
-x <- rsnorm(n, xi=5)
-x <- x - min(x) + 1
-hist(x)
-
-x1 <- log(x)
-
-cor(x1, x)
-
-library(GenABEL)
-
-
-a <- rbeta(n, 0.4, 3)
-hist(a)
-
-b <- rntransform(a)
-
-plot(a ~ b)
-cor(a, b)
-
+ggplot(dat, aes(x=exp, y=obs)) +
+geom_point() +
+facet_grid(. ~ what)
