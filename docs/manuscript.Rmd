@@ -2,7 +2,8 @@
 title: "Determining the direction of causality in the face of measurement error"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  word_document
+  pdf_document:
+    keep_tex: true
 bibliography: manuscript.bib
 csl: nature.csl
 ---
