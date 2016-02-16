@@ -139,7 +139,6 @@ psum2$rhs_lhs_diff_bin_lab <- factor(psum2$rhs_lhs_diff_bin_lab, levels=levels(p
 
 levels(psum2$eval) <- c("Evidence for causality\nwith correct direction", "Evidence for causality\nwith incorrect direction", "No evidence for causality")
 
-dev.new()
 ggplot(subset(psum2, round(r_za,2)==0.1), aes(x=test, y=value)) +
 geom_bar(stat="identity", aes(fill=eval)) +
 facet_grid(n ~ rhs_lhs_diff_bin_lab) +
