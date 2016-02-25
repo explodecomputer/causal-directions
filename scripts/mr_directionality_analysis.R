@@ -47,12 +47,35 @@ parameters$p_test[!parameters$cortest_correct_direction] <- parameters$p_az[!par
 
 
 # Get the CIT direction
-parameters$cit_correct_direction <- parameters$cit_AB < parameters$cit_BA
-parameters$cit_correct_direction[is.na(parameters$cit_correct_direction)] <- FALSE
+
+get_cit_direction <- function(p1, p2, thresh)
+{
+	res <- array(0, length(p1))
+	res[p1 <= thresh & p2 > thresh] <- 1
+	res[p1 > thresh & p2 <= thresh] <- 2
+	res[p1 <= thresh & p2 <= thresh] <- 3
+	res[p1 > thresh & p2 > thresh] <- 4
+	return(res)
+}
+
+parameters$cit_res <- get_cit_direction(parameters$cit_AB, parameters$cit_BA, 0.05)
+parameters$cit_correct_direction <- parameters$cit_res == 1
 
 # Get the p-value for the CIT direction
+# ab < 0.05 & ba > 0.05 = correct
+# ab > 0.05 & ba < 0.05 = incorrect
+# ab < 0.05 & ba < 0.05 = no call
+# ab > 0.05 & ba > 0.05 = incorrect
+
+
 parameters$cit_p <- parameters$cit_AB
-parameters$cit_p[!parameters$cit_correct_direction] <- parameters$cit_BA[!parameters$cit_correct_direction]
+parameters$cit_p[parameters$cit_res == 2] <- parameters$cit_BA[parameters$cit_res == 2]
+parameters$cit_p[parameters$cit_res == 3] <- 0.5
+parameters$cit_p[parameters$cit_res == 4] <- 0.01
+
+# Do we classify 4 as being significant wrong causal direction, or no causal inference?
+
+
 parameters$cit_p <- -log10(parameters$cit_p)
 parameters$cit_p[is.na(parameters$cit_AB) | is.na(parameters$cit_BA)] <- NA
 
@@ -99,7 +122,7 @@ psum1$rhs_lhs_diff_bin <- cut(psum1$rhs_lhs_diff, breaks=10)
 
 load("~/repo/cit_measurement_error/results/20141114.RData")
 dat <- gather(dat, eval, pval, GT, TG, factor_key=TRUE)
-levels(dat$eval) <- c("Correct inference", "Incorrect inference")
+levels(dat$eval) <- c("Correct causal model", "Incorrect causal model")
 
 ggplot(subset(dat, n %in% c(100, 1000, 10000)), aes(x=sqrt(rsq),y=-log10(pval))) +
 geom_point(aes(colour=eval)) +
@@ -132,12 +155,12 @@ psum2 <- gather(psum1, eval, value, prop_sig_correct, prop_sig_incorrect, prop_n
 	group_by(n, rhs_lhs_diff_bin, r_za, eval, test) %>%
 	summarise(value=mean(value, na.rm=TRUE))
 
-temp <- do.call(rbind, strsplit(as.character(psum2$rhs_lhs_diff_bin), split=","))
-psum2$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp[,1]))
+temp2 <- do.call(rbind, strsplit(as.character(psum2$rhs_lhs_diff_bin), split=","))
+psum2$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp2[,1]))
 psum2$rhs_lhs_diff_bin_lab <- as.factor(paste0("d = ", psum2$rhs_lhs_diff_bin_numeric))
 psum2$rhs_lhs_diff_bin_lab <- factor(psum2$rhs_lhs_diff_bin_lab, levels=levels(psum2$rhs_lhs_diff_bin_lab)[order(as.numeric(as.character(levels(psum2$rhs_lhs_diff_bin_numeric))))])
 
-levels(psum2$eval) <- c("Evidence for causality\nwith correct direction", "Evidence for causality\nwith incorrect direction", "No evidence for causality")
+levels(psum2$eval) <- c("Evidence for causality\nwith correct model", "Evidence for causality\nwith incorrect model", "No evidence for causality")
 
 ggplot(subset(psum2, round(r_za,2)==0.1), aes(x=test, y=value)) +
 geom_bar(stat="identity", aes(fill=eval)) +
