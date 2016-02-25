@@ -43,7 +43,7 @@
 \hypersetup{breaklinks=true,
             bookmarks=true,
             pdfauthor={},
-            pdftitle={Determining the direction of causality in the face of measurement error},
+            pdftitle={Determining the existance and direction of causality in the face of measurement error},
             colorlinks=true,
             citecolor=blue,
             urlcolor=blue,
@@ -70,7 +70,8 @@
 }
 
 \setlength{\droptitle}{-2em}
-  \title{Determining the direction of causality in the face of measurement error}
+  \title{Determining the existance and direction of causality in the face of
+measurement error}
   \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
   \author{}
@@ -198,11 +199,17 @@ arise in many scenarios. For example genome wide association studies
 (GWASs) that identify genetic associations for complex traits are, by
 design, hypothesis free and agnostic of genomic function, and it often
 takes years of follow up studies to understand the biological nature of
-a putative GWAS hit\textsuperscript{24}. Another situation is where the
-causal direction between 'omic measures need to be determined, for
-example if a DNA methylation probe is associated with expression of an
-adjacent gene, then is a cis-acting SNP an instrument for the DNA
-methylation level, or the gene expression level\textsuperscript{8}?
+a putative GWAS hit\textsuperscript{24}. To illustrate a trivial example
+- the same FTO variant that is famously associated with BMI is also
+associated with C-reactive protein (CRP). It is known that this is
+because BMI causes CRP\textsuperscript{25}, but supposing we only had
+\emph{a priori} knowledge that FTO associated with CRP, and we used it
+to instrument CRP in an MR analysis of CRP against BMI, we would infer
+that CRP causes BMI. Another situation is where the causal direction
+between 'omic measures need to be determined, for example if a DNA
+methylation probe is associated with expression of an adjacent gene,
+then is a cis-acting SNP an instrument for the DNA methylation level, or
+the gene expression level\textsuperscript{8}?
 
 Mediation based methods, for example CIT and other related approaches
 typically attempt to use the data to resolve this issue using the
@@ -232,13 +239,13 @@ inferring the correct direction of causality. Included in the MR
 analysis is a simple extension that is used to make inference of the
 causal direction when it is unknown which of the correlated variables
 the instrument is directly acting upon. All analysis was performed using
-the R programming language\textsuperscript{25} and code is made
+the R programming language\textsuperscript{26} and code is made
 available at \href{}{github url to go here}.
 
 \subsubsection{CIT test}\label{cit-test}
 
 The CIT method\textsuperscript{1} is implemented in the R package
-\emph{R/cit}\textsuperscript{26}. The \emph{cit.cp} function was used to
+\emph{R/cit}\textsuperscript{27}. The \emph{cit.cp} function was used to
 obtain an omnibus p-value of causality between an exposure \(x\) and an
 outcome \(y\) using a mediator \(g\) by making inferences based on a
 number of conditions that we examine in the results. To infer the
@@ -276,7 +283,7 @@ variant \(g\) associated with both. Assuming no horizontal pleiotropy
 variable) it is desirable to know which of the variables it has a direct
 influence on. This can be achieved by testing for a difference in the
 correlations \(\rho_{g, x}\) and \(\rho_{g, y}\) using Steiger's Z-test
-for correlated correlations within a population\textsuperscript{27}. It
+for correlated correlations within a population\textsuperscript{28}. It
 is calculated as
 
 \[
@@ -325,7 +332,7 @@ a p-value \(< 0.05\) and the two sample MR analysis has a p-value
 inference.
 
 Note that the same correlation test approach can be applied to a
-two-sample MR\textsuperscript{28} setting, where the Steiger test of two
+two-sample MR\textsuperscript{29} setting, where the Steiger test of two
 independent correlations is applied instead of the case detailed here
 where correlations share one variable in common. An advantage of using
 the Steiger test in the two sample context is that it can compare
@@ -524,14 +531,31 @@ measurement error, but because it has different properties to the CIT it
 offers two main advantages. First, it uses a formal statistical
 framework to test for the robostness of the assumed direction of
 causality. Second, after testing in a comprehensive range of scenarios
-the MR based approach is much less likely to infer the wrong direction
-of causality compared to CIT.
+the MR based approach is less likely to infer the wrong direction of
+causality compared to CIT, while substantially improving power over CIT
+in the cases where \(d > 0\).
+
+Mediation based network approaches are very well
+established\textsuperscript{14} and have a number of extensions that
+make them valuable tools, including for example network construction.
+But because they are predicated on the basic underlying principles of
+mediation they are liable to suffer from the same issues of measurement
+error. Recent advances in MR methodology, for example network
+MR\textsuperscript{30} and mediation through MR\textsuperscript{31} may
+offer more robust solutions alternatives for these more complicated
+problems.
 
 There are a number of limitations to the analysis that we performed. We
 focused on the simple case of a single instrument in a single sample
 setting, and assumed that pleiotropy (the influence of the instrument on
 the outcome through a mechanism other than the exposure) was not
-present.
+present. To give an example in which this might arise consider the case
+that C-reactive protein (CRP) is being tested for causal association
+with some outcome, and the FTO variant is used as an instrument. Though
+FTO is robustly associated with CRP, it is through the upstream
+influence of BMI\textsuperscript{25}. Thus, if BMI has a direct
+influence on the outcome, the conditions of MR will be violated and the
+Steiger test proposed here will be unreliable.
 
 The overarching result from our simulations is that, regardless of the
 method used, inferring causal direction using an instrument of unknown
@@ -792,20 +816,35 @@ Review} \textbf{84,} 1157--1173 (1994).
 Adipocyte Browning in Humans. \emph{The New England journal of medicine}
 \textbf{373,} 895--907 (2015).
 
-25.R Core Team. \emph{R: A Language and Environment for Statistical
+25.Timpson, N. J. \emph{et al.} C-reactive protein levels and body mass
+index: elucidating direction of causation through reciprocal Mendelian
+randomization. \emph{International journal of obesity (2005)}
+\textbf{35,} 300--8 (2011).
+
+26.R Core Team. \emph{R: A Language and Environment for Statistical
 Computing}. (R Foundation for Statistical Computing, 2015). at
 \textless{}\url{https://www.r-project.org/}\textgreater{}
 
-26.Millstein, J. \emph{cit: Causal Inference Test. R package version
+27.Millstein, J. \emph{cit: Causal Inference Test. R package version
 1.9}. (2016). at
 \textless{}\url{http://cran.r-project.org/package=cit}\textgreater{}
 
-27.Steiger, J. H. Tests for comparing elements of a correlation matrix.
+28.Steiger, J. H. Tests for comparing elements of a correlation matrix.
 \emph{Psychological Bulletin} \textbf{87,} 245--251 (1980).
 
-28.Pierce, B. L. \& Burgess, S. Efficient design for Mendelian
+29.Pierce, B. L. \& Burgess, S. Efficient design for Mendelian
 randomization studies: subsample and 2-sample instrumental variable
 estimators. \emph{American journal of epidemiology} \textbf{178,}
 1177--84 (2013).
+
+30.Burgess, S., Daniel, R. M., Butterworth, A. S. \& Thompson, S. G.
+Network Mendelian randomization: using genetic variants as instrumental
+variables to investigate mediation in causal pathways.
+\emph{International journal of epidemiology} \textbf{44,} 484--95
+(2015).
+
+31.Varbo, A. \emph{et al.} Remnant cholesterol, low-density lipoprotein
+cholesterol, and blood pressure as mediators from obesity to ischemic
+heart disease. \emph{Circulation research} \textbf{116,} 665--73 (2015).
 
 \end{document}
