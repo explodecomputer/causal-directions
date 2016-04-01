@@ -1,0 +1,27 @@
+try plos genetics
+
+ICC 
+2007 aje sterne - simulations to estimate measurement error. rory collins - biobank repeat
+
+widely used
+
+example of measurement error estimate and its potential influence on these outcomes
+
+example of bmi might not be best example of measurement error
+- bmi vs dexa amy taylor
+
+
+figure 2 needs some explanation
+
+
+
+add to discussion
+
+assumes independent measurement error in x and y
+
+mention bidirectional mr
+burgess - multivariate mr
+
+
+
+
