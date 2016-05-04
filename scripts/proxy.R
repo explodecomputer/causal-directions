@@ -196,4 +196,4 @@ runSim <- function(N, NoiseT=seq(0.25, 1, by=0.25), BiasT=seq(0.25, 1, by=0.25),
 
 
 dat <- runSim(c(100, 500, 1000, 5000, 10000))
-save(dat, file="~/repo/MethylationIV/cit/results/20160504.RData")
+save(dat, file="~/repo/cit_measurement_error/results/20160504.RData")
