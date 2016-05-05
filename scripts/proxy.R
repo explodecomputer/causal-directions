@@ -164,7 +164,7 @@ testProxy <- function(x, Noise=seq(0.1, 1, by=0.1), Bias=seq(0.1, 1, by=0.1))
 	return(dat)	
 }
 
-runSim <- function(N, NoiseT=seq(0.25, 1, by=0.25), BiasT=seq(0.25, 1, by=0.25), NoiseG=seq(0.25, 1, by=0.25), BiasG=seq(0.25, 1, by=0.25))
+runSim <- function(N, NoiseT=seq(0.1, 1, by=0.1), BiasT=seq(0.1, 1, by=0.1), NoiseG=seq(0.1, 1, by=0.1), BiasG=seq(0.1, 1, by=0.1))
 {
 	require(plyr)
 	d <- list()
@@ -175,7 +175,8 @@ runSim <- function(N, NoiseT=seq(0.25, 1, by=0.25), BiasT=seq(0.25, 1, by=0.25),
 		L2 <- rbinom(n, 2, 0.5)
 		G <- L1 + rnorm(n)
 		T <- G + rnorm(n) + L2
-		dat <- expand.grid(noiseT=NoiseT, biasT=BiasT, noiseG=NoiseG, biasG=BiasG, GT = NA, TG = NA, rsqG = NA, rsqT = NA, bdmr = NA)
+		dat <- expand.grid(noiseT=NoiseT, biasT=BiasT, noiseG=NoiseG, biasG=BiasG, GT = NA, TG = NA, rsqG = NA, rsqT = NA, bdmr = NA, bdmr_p = NA)
+		message(nrow(dat))
 		for(i in 1:nrow(dat))
 		{
 			message(i)
@@ -183,7 +184,8 @@ runSim <- function(N, NoiseT=seq(0.25, 1, by=0.25), BiasT=seq(0.25, 1, by=0.25),
 			T1 <- makeProxy(T, dat$noiseT[i], dat$biasT[i])
 			dat$GT[i] <- cit.cp(L1, G1, T1)[1]
 			dat$TG[i] <- cit.cp(L1, T1, G1)[1]
-			dat$bdmr[i] <- inferCausality(twoStageLS(G1, T1, L1, L2, FALSE))
+			dat$bdmr[i] <- inferCausality(twoStageLS(G, T, L1, L2, FALSE))
+			dat$bdmr_p[i] <- inferCausality(twoStageLS(G1, T1, L1, L2, FALSE))
 			dat$rsqG[i] <- cor(G1, G)^2
 			dat$rsqT[i] <- cor(T1, T)^2
 		}
@@ -194,6 +196,8 @@ runSim <- function(N, NoiseT=seq(0.25, 1, by=0.25), BiasT=seq(0.25, 1, by=0.25),
 	return(dat)
 }
 
-
-dat <- runSim(c(100, 500, 1000, 5000, 10000))
-save(dat, file="~/repo/cit_measurement_error/results/20160504.RData")
+arguments <- commandArgs(T)
+n <- as.numeric(arguments[1])
+dat <- runSim(n)
+filename <- paste0("~/repo/cit_measurement_error/results/20160504_", n, ".RData")
+save(dat, file=filename)
