@@ -78,3 +78,26 @@ ggplot(dat0, aes(x=exp, y=obs)) +
 geom_point() +
 facet_grid(. ~ what)
 
+
+
+##
+
+n <- 10000
+x <- rnorm(n)
+y <- 3 + 2 * x + rnorm(n)
+y0 <- 10 + 0.1 * y + rnorm(n)/10
+
+py <- fitted.values(lm(y ~ x))
+py0 <- fitted.values(lm(y0 ~ x))
+
+plot(py ~ py0)
+
+lm(py0 ~ py)
+
+lm(y ~ x)
+lm(y0 ~ x)
+
+pred <- 10 + 0.1 * (3 + 2 * x)
+
+plot(pred ~ py0)
+

@@ -2,7 +2,6 @@
 title: "Determining the existance and direction of causality in the face of measurement error"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
-  <!-- word_document -->
   pdf_document:
     keep_tex: true
 bibliography: manuscript.bib
@@ -317,23 +316,25 @@ Given the following model
 
 $$
 \begin{aligned}
-x & = \alpha_g + \beta_g g + \epsilon_g \\
+x   & = \alpha_g + \beta_g g + \epsilon_g \\
 x_O & = \alpha_m + \beta_m x + \epsilon_m \\
-y & = \alpha_x + \beta_x x + \epsilon_x
+y   & = \alpha_x + \beta_x x + \epsilon_x \\
+y_O & = \alpha_n + \beta_n y + \epsilon_n
 \end{aligned}
 $$
 
-where $x$ is the exposure on the outcome $y$, $g$ is an instrument that has a direct effect on $x$, and $x_O$ is the measured quantity of $x$, where measurement error is incurred from bias in $\alpha_m$ and $\beta_m$ and imprecision from $\epsilon_m$, our objective is to estimate the expected magnitude of association between $g$ and $y$ after conditioning on $x$. Under the CIT, this is expected to be $cov(g, y - \hat{y}) = 0$ when $x$ causes $y$, where $\hat{y} = \hat{a}_{x_O} + \hat{b}_{x_O} x_O + \epsilon_{x_O}$ is the predicted value of $y$ using the measured value of $x_O$.
+where $x$ is the exposure on the outcome $y$, $g$ is an instrument that has a direct effect on $x$, $x_O$ is the measured quantity of $x$, where measurement error is incurred from bias in $\alpha_m$ and $\beta_m$ and imprecision from $\epsilon_m$, and $y_O$ is the measured quantity of $y$, where measurement error is incurred from bias in $\alpha_n$ and $\beta_n$ and imprecision from $\epsilon_n$, our objective is to estimate the expected magnitude of association between $g$ and $y$ after conditioning on $x$. Under the CIT, this is expected to be $cov(g, y_O - \hat{y_O}) = 0$ when $x$ causes $y$, where $\hat{y}_O = a_n + \beta_n(\hat{a}_{x_O} + \hat{\beta}_{x_O} x_O)$ is the predicted value of $y_O$ using the measured value of $x_O$.
 
-We can split $cov(g, y - \hat{y})$ into two parts, $cov(g, y)$ and $cov(g, \hat{y})$.
+We can split $cov(g, y_O - \hat{y}_O)$ into two parts, $cov(g, y_O)$ and $cov(g, \hat{y}_O)$.
 
 **Part 1**
 
 $$
 \begin{aligned}
-cov(g, y) & = cov(g, \beta_x x) \\
-          & = cov(g, \beta_x \beta_g g) \\
-          & = \beta_x\beta_g var(g)
+cov(g, y_O) & = cov(g, \beta_n y) \\
+            & = cov(g, \beta_n \beta_x x) \\
+            & = cov(g, \beta_n \beta_x \beta_g g) \\
+            & = \beta_n \beta_x \beta_g var(g)
 \end{aligned}
 $$
 
@@ -341,10 +342,10 @@ $$
 
 $$
 \begin{aligned}
-cov(g, \hat{y}) & = cov(g, \hat{\beta}_{x_O} x_O) \\
-                & = cov(g, \hat{\beta}_{x_O} \beta_m x) \\
-                & = cov(g, \hat{\beta}_{x_O} \beta_m \beta_g g) \\
-                & = \hat{\beta}_{x_O} \beta_m \beta_g var(g)
+cov(g, \hat{y}_O) & = cov(g, \alpha_n + \beta_n \alpha_x + \beta_n \hat{\beta}_{x_O} x_O) \\
+                  & = cov(g, \beta_n \hat{\beta}_{x_O} \beta_m x) \\
+                  & = cov(g, \beta_n \hat{\beta}_{x_O} \beta_m \beta_g g) \\
+                  & = \hat{\beta}_{x_O} \beta_n \beta_m \beta_g var(g)
 \end{aligned}
 $$
 
@@ -352,10 +353,10 @@ Simpifying further
 
 $$
 \begin{aligned}
-\hat{\beta}_{x_O} & = \frac{cov(y, x_O)} {var(x_O)} \\
-                  & = \frac{\beta_m cov(y, x)} {var(x_O)} \\
-                  & = \frac{\beta_m \beta_x var(x)} {var(x_O)} \\
-                  & = \frac{\beta_m \beta_x var(x)} {\beta_m^2 var(x) + var(\epsilon_m)}
+\hat{\beta}_{x_O} & = \frac{cov(y_O, x_O)} {var(x_O)} \\
+                  & = \frac{cov(\beta_n y, \beta_m x)} {\beta_m^2 var(x) + var(\epsilon_m)} \\
+                  & = \frac{\beta_m \beta_n cov(y, x)} {\beta_m^2 var(x) + var(\epsilon_m)} \\
+                  & = \frac{\beta_m \beta_n \beta_x var(x)} {\beta_m^2 var(x) + var(\epsilon_m)}
 \end{aligned}
 $$
 
@@ -363,8 +364,8 @@ which can be substituted back to give
 
 $$
 \begin{aligned}
-cov(g, \hat{y}) & = \frac{\beta_x\beta_g var(g) \beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \\
-                & = \frac{\beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \times \beta_x\beta_g var(g)
+cov(g, \hat{y}_O) & = \frac{\beta_n \beta_x \beta_g var(g) \beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \\
+                  & = \frac{\beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \times \beta_x\beta_g var(g)
 \end{aligned}
 $$
 
