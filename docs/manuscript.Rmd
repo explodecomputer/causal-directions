@@ -8,7 +8,7 @@ bibliography: manuscript.bib
 csl: nature.csl
 ---
 
-Gibran Hemani* and George Davey Smith
+Gibran Hemani*, Kate Tilling and George Davey Smith
 
 MRC Integrative Epidemiology Unit (IEU) at the University of Bristol, School of Social and Community Medicine, Bristol, UK
 
@@ -102,12 +102,23 @@ sfig_nums("",
 
 ### Abstract
 
-With our ability to characterize the human phenome ever improving it is becoming increasingly common to use statistical tests to infer the causal relationships between correlated variables. A simple method for inferring if an exposure is on the causal pathway to an outcome is through mediation analysis, where the effect of an instrument on the outcome is tested before and after adjusting for the exposure. We show that in the face of measurement error this can lead to erroneous results, and that increasing sample size, rather than reducing bias, can often have the alarming effect of increasing certainty in the wrong answer. Commonly used tools that are predicated on this methodology such as the causal inference test (CIT) are shown to be susceptible. We demonstrate that Mendelian randomization (MR) is a method for causal inference that is robust to measurement error, and that a simple extension to MR can provide a method to estimate the direction of causality between correlated variables even when the biology of the instrument is unknown. We argue that because measurement error is ubiquitous in phenotypic data, mediation-based causal inference should be treated with caution.
+With our ability to characterize the human phenome ever improving it is becoming increasingly common to use statistical tests to infer the causal relationships between correlated variables. A simple and commonly used method for inferring if an exposure is on the causal pathway to an outcome is through using genetic instruments in mediation analysis, where the effect of an instrument on the outcome is tested before and after adjusting for the exposure. We show that in the face of measurement error this can lead to erroneous results, and that increasing sample size, rather than reducing bias, can often have the effect of increasing certainty in the wrong answer. Commonly used tools that are predicated on this methodology such as the causal inference test (CIT) are shown to be susceptible. We demonstrate that Mendelian randomization (MR) is a method for causal inference that is robust to measurement error, and that a simple extension to MR can provide a method to estimate the direction of causality between correlated variables even when the biology of the instrument is unknown. We argue that because measurement error is ubiquitous in phenotypic data, mediation-based causal inference should be treated with caution.
 
 
 ## Introduction
 
-With the explosion in data that assess the human phenome, we are presented with the challenge of understanding the causal nature of the emerging putitive correlations between measures of interest. Mediation is a commonly used statistical method for making causal inference in observational data [@Millstein2009; @Schadt2005; @Gayan2010a; @Tavtigian2009], and it exists in many forms, from simple regression based systems to structural equation modeling (SEM) [@Aten2008]. The principle behind mediation analysis can be explained as follows. Supposing an exposure has a causal effect on an outcome, then an ‘instrument’ that causes the exposure (a single nucleotide polymorophism (SNP), for example) should also influence the outcome. Therefore the influence of the instrument on the outcome conditional on the exposure should be zero. This forms the basis of a number of methods, such as the regression-based causal inference test (CIT) [@Millstein2009], an SEM implementation in the NEO software [@Aten2008], and various Bayesian methods, which have been employed by a number of recent publications that make causal inferences, often in large scale ‘omics datasets [@Koestler2014; @Liu2013; @Waszak2015]. 
+With rapid acceleration in technological advances that enable us to measure the human phenome, we are presented with the statistical challenge of correctly defining the causal architectures that underlie these high dimensional data. For example, constructing gene networks, identifying metabolic perturbations that lead to disease, or understanding the influence of epigenomic influences on gene all depend on understanding the causal nature of any putative observational associations. Despite the ubiquity of the question, cross-sectional study designs are notoriously susceptible to pitfalls making causal inference, with simple regression based techniques unable to distinguish a true causal association from reverse causation or confounding.
+
+An established tool that can resolve this problem is randomisation. Given the hypothesis that an exposure is causally related to an outcome, randomisation can be employed to assess the association by randomly splitting the sample into two groups, applying the exposure to one group and leaving the other as a control. The association between the exposure and the outcome in this setting is then guaranteed to be a robust estimate of the causal relationship. In practical terms randomisation is often impossible to implement in such a controlled manner, but the principles can be employed using existing cross sectional data through the use of genetic instruments. 
+
+
+Mediation is a commonly used statistical method for making causal inference in observational data [@Millstein2009; @Schadt2005; @Gayan2010a; @Tavtigian2009], and it exists in many forms, from simple regression based systems to structural equation modeling (SEM) [@Aten2008]. A Mediation analysis seeks to explain the mechanism that underlies an observed relationship between an independent and a dependent variable by introducing a third, 'mediator' variable. If the association between the independent and dependent variables disappears when conditioning on the mediator variable then this provides evidence that the independent variable influences the independent variable through the mediator. 
+
+This simplistic scenario, however, is seldom borne out in reality. Alternative models of reverse causation or confounding are often indistinguishable from the hypothesised model of the independent variable causing the dependent variable via the mediator. An important tool that has shown promise in resolving this problem is randomisation, 
+
+ The principle behind mediation analysis can be explained as follows. Supposing 
+
+ Supposing an exposure has a causal effect on an outcome, then an ‘instrument’ that causes the exposure (a single nucleotide polymorophism (SNP), for example) should also influence the outcome. Therefore the influence of the instrument on the outcome conditional on the exposure should be zero. This forms the basis of a number of methods, such as the regression-based causal inference test (CIT) [@Millstein2009], an SEM implementation in the NEO software [@Aten2008], and various Bayesian methods, which have been employed by a number of recent publications that make causal inferences, often in large scale ‘omics datasets [@Koestler2014; @Liu2013; @Waszak2015]. 
 
 While mediation based approaches are simple and convenient to implement, it is important to note where they may lead to unreliable results. One such mechanism is measurement error [@LeCessie2012; @Nagarajan2013; @Shpitser2010; @Blakely2013], which has been noted to be an explicit issue with CIT style approaches [@Wang2015; @Lagani2015]. Measurement (or observational) error is the difference between a measured value of a quantity and its true value. Such variability can arise through a whole plethora of mechanisms, which are often unique to the study design and difficult to avoid [@Houle2011; @Hernan2009]. Array technology is now commonly used to obtain high throughput phenotyping at low cost, but they come with the problem of having imperfect sensitivity, so for example methylation levels as measured by the Illumina450k chip are prone to have some amount of noise around the true value [@Harper2013; @Chen2013a]. Sensitivity is also an issue, for example if the unit of measurement of biological interest is the methylation level in a T cell, then measurement error of this value can be introduced by using methylation levels from whole blood samples because the measured value will be an assay of many cell types [@Houseman2012].
 
@@ -312,7 +323,7 @@ The overarching result from our simulations is that, regardless of the method us
 
 ## Appendix 1
 
-Given the following model
+We assume the following model
 
 $$
 \begin{aligned}
@@ -323,7 +334,7 @@ y_O & = \alpha_n + \beta_n y + \epsilon_n
 \end{aligned}
 $$
 
-where $x$ is the exposure on the outcome $y$, $g$ is an instrument that has a direct effect on $x$, $x_O$ is the measured quantity of $x$, where measurement error is incurred from bias in $\alpha_m$ and $\beta_m$ and imprecision from $\epsilon_m$, and $y_O$ is the measured quantity of $y$, where measurement error is incurred from bias in $\alpha_n$ and $\beta_n$ and imprecision from $\epsilon_n$, our objective is to estimate the expected magnitude of association between $g$ and $y$ after conditioning on $x$. Under the CIT, this is expected to be $cov(g, y_O - \hat{y_O}) = 0$ when $x$ causes $y$, where $\hat{y}_O = a_n + \beta_n(\hat{a}_{x_O} + \hat{\beta}_{x_O} x_O)$ is the predicted value of $y_O$ using the measured value of $x_O$.
+where $x$ is the exposure on the outcome $y$, $g$ is an instrument that has a direct effect on $x$, $x_O$ is the measured quantity of $x$, where measurement error is incurred from bias in $\alpha_m$ and $\beta_m$ and imprecision from $\epsilon_m$, and $y_O$ is the measured quantity of $y$, where measurement error is incurred from bias in $\alpha_n$ and $\beta_n$ and imprecision from $\epsilon_n. Our objective is to estimate the expected magnitude of association between $g$ and $y$ after conditioning on $x$. Under the CIT, this is expected to be $cov(g, y_O - \hat{y}_O) = 0$ when $x$ causes $y$, where $\hat{y}_O = \hat{a}_{x_O} + \hat{\beta}_{x_O} x_O$ is the predicted value of $y_O$ using the measured value of $x_O$.
 
 We can split $cov(g, y_O - \hat{y}_O)$ into two parts, $cov(g, y_O)$ and $cov(g, \hat{y}_O)$.
 
@@ -342,10 +353,10 @@ $$
 
 $$
 \begin{aligned}
-cov(g, \hat{y}_O) & = cov(g, \alpha_n + \beta_n \alpha_x + \beta_n \hat{\beta}_{x_O} x_O) \\
-                  & = cov(g, \beta_n \hat{\beta}_{x_O} \beta_m x) \\
-                  & = cov(g, \beta_n \hat{\beta}_{x_O} \beta_m \beta_g g) \\
-                  & = \hat{\beta}_{x_O} \beta_n \beta_m \beta_g var(g)
+cov(g, \hat{y}_O) & = cov(g, \hat{\beta}_{x_O} x_O) \\
+                  & = cov(g, \hat{\beta}_{x_O} \beta_m x) \\
+                  & = cov(g, \hat{\beta}_{x_O} \beta_m \beta_g g) \\
+                  & = \hat{\beta}_{x_O} \beta_m \beta_g var(g)
 \end{aligned}
 $$
 
@@ -365,15 +376,25 @@ which can be substituted back to give
 $$
 \begin{aligned}
 cov(g, \hat{y}_O) & = \frac{\beta_n \beta_x \beta_g var(g) \beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \\
-                  & = \frac{\beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \times \beta_x\beta_g var(g)
+                  & = \frac{\beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \times \beta_n \beta_x \beta_g var(g)
 \end{aligned}
 $$
+
+Finally
+
+$$
+\begin{aligned}
+cov(g, y_O - \hat{y}_O) & = \beta_n \beta_x \beta_g var(g) - \frac{\beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \times \beta_n \beta_x \beta_g var(g)
+\end{aligned}
+$$
+
+thus $cov(g, y_O - \hat{y}_O) = 0$ if the measurement imprecision in $x_O$ is $var(\epsilon_m) = 0$. However if there is any imprecision then the condition $cov(g, y_O - \hat{y}_O) = 0$ will not hold.
 
 \newpage
 
 ## Appendix 2
 
-Steiger test is used to infer if the variant $g$ has a direct influence on $x$ or $y$ when it is known that it associates with both, but the direction of causality between $x$ and $y$ is unknown. Assuming the causal direction is $x \to y$, two stage MR is formulated using the following regression models:
+The Steiger test is used to infer if the variant $g$ has a direct influence on $x$ or $y$ when it is known that it associates with both, but the direction of causality between $x$ and $y$ is unknown. Assuming the causal direction is $x \to y$, two stage MR is formulated using the following regression models:
 
 $$
 x = \alpha_1 + \beta_1 g + e_1

@@ -24,7 +24,7 @@ for(i in 1:nsim)
 
 	a_m <- runif(1)
 	b_m <- runif(1)
-	e_m <- runif(1)
+	e_m <- runif(1)*10
 
 	a_x <- runif(1)
 	b_x <- runif(1)
@@ -78,26 +78,70 @@ ggplot(dat0, aes(x=exp, y=obs)) +
 geom_point() +
 facet_grid(. ~ what)
 
+lm(obs ~ exp, dat)
+lm(obs ~ exp, dat0)
 
 
 ##
 
 n <- 10000
 x <- rnorm(n)
-y <- 3 + 2 * x + rnorm(n)
-y0 <- 10 + 0.1 * y + rnorm(n)/10
+
+bm <- 0.5
+am <- 5
+em <- rnorm(n) / 5
+em <- rep(0, n)
+
+bx <- 2
+ax <- 3
+ex <- rnorm(n)
+
+bn <- 50
+an <- 10
+en <- rnorm(n)/10
+
+x0 <- am + bm * x + em
+y <- ax + bx * x + ex
+y0 <- an + bn * y + en
 
 py <- fitted.values(lm(y ~ x))
 py0 <- fitted.values(lm(y0 ~ x))
+py00 <- fitted.values(lm(y0 ~ x0))
 
 plot(py ~ py0)
+plot(py00 ~ py0)
 
-lm(py0 ~ py)
+summary(lm(py0 ~ py00))
+summary(lm(py0 ~ py))
+
+cov(py0, py00)
+bx^2 * bn^2 * bm * var(x)
 
 lm(y ~ x)
 lm(y0 ~ x)
 
+var(py0)
+var(py00)
+
 pred <- 10 + 0.1 * (3 + 2 * x)
 
 plot(pred ~ py0)
+
+x <- rnorm(n)
+e <- rnorm(n)/2
+b <- 10
+x0 <- 3 + b * x + e
+
+cov(x, x0)
+b * var(x)
+
+
+
+n <- 1000
+u <- rnorm(n)
+a <- u + rnorm(n)
+b <- u + rnorm(n)
+summary(lm(a ~ b + u))
+
+
 

@@ -93,7 +93,7 @@ MRC Integrative Epidemiology Unit (IEU) at the University of Bristol,
 School of Social and Community Medicine, Bristol, UK
 
 * Correspondence to:
-\href{mailto:g.hemani@bristol.ac.uk}{g.hemani@bristol.ac.uk}
+\href{mailto:g.hemani@bristol.ac.uk}{\nolinkurl{g.hemani@bristol.ac.uk}}
 
 \subsubsection{Abstract}\label{abstract}
 
@@ -122,64 +122,64 @@ With the explosion in data that assess the human phenome, we are
 presented with the challenge of understanding the causal nature of the
 emerging putitive correlations between measures of interest. Mediation
 is a commonly used statistical method for making causal inference in
-observational data \textsuperscript{1--4}, and it exists in many forms,
+observational data\textsuperscript{1--4}, and it exists in many forms,
 from simple regression based systems to structural equation modeling
-(SEM) \textsuperscript{5}. The principle behind mediation analysis can
-be explained as follows. Supposing an exposure has a causal effect on an
+(SEM)\textsuperscript{5}. The principle behind mediation analysis can be
+explained as follows. Supposing an exposure has a causal effect on an
 outcome, then an `instrument' that causes the exposure (a single
 nucleotide polymorophism (SNP), for example) should also influence the
 outcome. Therefore the influence of the instrument on the outcome
 conditional on the exposure should be zero. This forms the basis of a
 number of methods, such as the regression-based causal inference test
-(CIT) \textsuperscript{1}, an SEM implementation in the NEO software
-\textsuperscript{5}, and various Bayesian methods, which have been
-employed by a number of recent publications that make causal inferences,
-often in large scale `omics datasets \textsuperscript{6--8}.
+(CIT)\textsuperscript{1}, an SEM implementation in the NEO
+software\textsuperscript{5}, and various Bayesian methods, which have
+been employed by a number of recent publications that make causal
+inferences, often in large scale `omics datasets\textsuperscript{6--8}.
 
 While mediation based approaches are simple and convenient to implement,
 it is important to note where they may lead to unreliable results. One
-such mechanism is measurement error \textsuperscript{9--12}, which has
-been noted to be an explicit issue with CIT style approaches
-\textsuperscript{13,14}. Measurement (or observational) error is the
-difference between a measured value of a quantity and its true value.
-Such variability can arise through a whole plethora of mechanisms, which
-are often unique to the study design and difficult to avoid
-\textsuperscript{15,16}. Array technology is now commonly used to obtain
-high throughput phenotyping at low cost, but they come with the problem
-of having imperfect sensitivity, so for example methylation levels as
-measured by the Illumina450k chip are prone to have some amount of noise
-around the true value \textsuperscript{17,18}. Sensitivity is also an
-issue, for example if the unit of measurement of biological interest is
-the methylation level in a T cell, then measurement error of this value
-can be introduced by using methylation levels from whole blood samples
-because the measured value will be an assay of many cell types
-\textsuperscript{19}.
+such mechanism is measurement error\textsuperscript{9--12}, which has
+been noted to be an explicit issue with CIT style
+approaches\textsuperscript{13,14}. Measurement (or observational) error
+is the difference between a measured value of a quantity and its true
+value. Such variability can arise through a whole plethora of
+mechanisms, which are often unique to the study design and difficult to
+avoid\textsuperscript{15,16}. Array technology is now commonly used to
+obtain high throughput phenotyping at low cost, but they come with the
+problem of having imperfect sensitivity, so for example methylation
+levels as measured by the Illumina450k chip are prone to have some
+amount of noise around the true value\textsuperscript{17,18}.
+Sensitivity is also an issue, for example if the unit of measurement of
+biological interest is the methylation level in a T cell, then
+measurement error of this value can be introduced by using methylation
+levels from whole blood samples because the measured value will be an
+assay of many cell types\textsuperscript{19}.
 
 Measurement error will of course arise in more low-tech data too, for
 example when measuring body mass index (BMI) one is typically interested
 in using this as a proxy for obesity, but it is clear that the
-correlation between BMI and underlying adiposity is not perfect
-\textsuperscript{20}. A similar problem of biological misspecification
-is unavoidable in disease diagnosis. Measurement error can also be
-introduced after the data has been collected, for example the
-transformation of non-normal data for the purpose of statistical
+correlation between BMI and underlying adiposity is not
+perfect\textsuperscript{20}. A similar problem of biological
+misspecification is unavoidable in disease diagnosis. Measurement error
+can also be introduced after the data has been collected, for example
+the transformation of non-normal data for the purpose of statistical
 analysis will lead to a new variable that will typically have both bias
 and imprecision compared to the original variable. The sources of
-measurement error are not limited to this list \textsuperscript{16}, and
+measurement error are not limited to this list\textsuperscript{16}, and
 its impact has been explored in the context of mediation analysis in the
-epidemiological literature extensively \textsuperscript{9,12}.
+epidemiological literature extensively\textsuperscript{9,12}.
 
 An alternative statistical method that gained prominence as a solution
-to the problem of measurement error is Mendelian randomisation (MR)
-\textsuperscript{21,22}. Here an instrumental variable (typically a SNP)
-that has a robost, causal association with the exposure is used to stand
-for the exposure in an association test with the outcome. If there is no
-measurement error in the SNP then the causal association between the
-exposure and the outcome can be estimated by scaling the association
+to the problem of measurement error is Mendelian randomisation
+(MR)\textsuperscript{21,22}. Here an instrumental variable (typically a
+SNP) that has a robost, causal association with the exposure is used to
+stand for the exposure in an association test with the outcome. If there
+is no measurement error in the SNP then the causal association between
+the exposure and the outcome can be estimated by scaling the association
 between the SNP and the outcome by the association between the SNP and
 the exposure. Indeed this approach was in part pioneered (in the form of
 instrumental variable (IV) analysis) as a correction for measurement
-error \textsuperscript{23}, but it also has the useful property that it
+error\textsuperscript{23}, but it also has the useful property that it
 guards against unmeasured confounders driving the association between
 exposure and outcome; and if the biological effect of the SNP is
 understood then it can also aid against reverse causality driving the
@@ -199,17 +199,17 @@ arise in many scenarios. For example genome wide association studies
 (GWASs) that identify genetic associations for complex traits are, by
 design, hypothesis free and agnostic of genomic function, and it often
 takes years of follow up studies to understand the biological nature of
-a putative GWAS hit \textsuperscript{24}. To illustrate a trivial
-example - the same FTO variant that is famously associated with BMI is
-also associated with C-reactive protein (CRP). It is known that this is
-because BMI causes CRP \textsuperscript{25}, but supposing we only had
+a putative GWAS hit\textsuperscript{24}. To illustrate a trivial example
+- the same FTO variant that is famously associated with BMI is also
+associated with C-reactive protein (CRP). It is known that this is
+because BMI causes CRP\textsuperscript{25}, but supposing we only had
 \emph{a priori} knowledge that FTO associated with CRP, and we used it
 to instrument CRP in an MR analysis of CRP against BMI, we would infer
 that CRP causes BMI. Another situation is where the causal direction
 between 'omic measures need to be determined, for example if a DNA
 methylation probe is associated with expression of an adjacent gene,
 then is a cis-acting SNP an instrument for the DNA methylation level, or
-the gene expression level \textsuperscript{8}?
+the gene expression level\textsuperscript{8}?
 
 Mediation based methods, for example CIT and other related approaches
 typically attempt to use the data to resolve this issue using the
@@ -239,59 +239,59 @@ inferring the correct direction of causality. Included in the MR
 analysis is a simple extension that is used to make inference of the
 causal direction when it is unknown which of the correlated variables
 the instrument is directly acting upon. All analysis was performed using
-the R programming language \textsuperscript{26} and code is made
+the R programming language\textsuperscript{26} and code is made
 available at \href{}{github url to go here}.
 
 \subsubsection{CIT test}\label{cit-test}
 
-The CIT method \textsuperscript{1} is implemented in the R package
-\emph{R/cit} \textsuperscript{27}. The \emph{cit.cp} function was used
-to obtain an omnibus p-value of causality between an exposure $x$ and an
-outcome $y$ using a mediator $g$ by making inferences based on a number
-of conditions that we examine in the results. To infer the direction of
-causality using the CIT method, an omnibus p-value generated by CIT,
-$p_{CIT}$, was estimated for the correct model of $x$ causing $y$, and
-for incorrect model of $y$ causing $x$. For some significance threshold
-$\alpha$, causal direction was inferred based on the following
-scenarios:
+The CIT method\textsuperscript{1} is implemented in the R package
+\emph{R/cit}\textsuperscript{27}. The \emph{cit.cp} function was used to
+obtain an omnibus p-value of causality between an exposure \(x\) and an
+outcome \(y\) using a mediator \(g\) by making inferences based on a
+number of conditions that we examine in the results. To infer the
+direction of causality using the CIT method, an omnibus p-value
+generated by CIT, \(p_{CIT}\), was estimated for the correct model of
+\(x\) causing \(y\), and for incorrect model of \(y\) causing \(x\). For
+some significance threshold \(\alpha\), causal direction was inferred
+based on the following scenarios:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
 \itemsep1pt\parskip0pt\parsep0pt
 \item
-  If $p_{CIT,correct} < \alpha$ and $p_{CIT,incorrect} > \alpha$ then
-  the correct model is accepted
+  If \(p_{CIT,correct} < \alpha\) and \(p_{CIT,incorrect} > \alpha\)
+  then the correct model is accepted
 \item
-  If $p_{CIT,correct} > \alpha$ and $p_{CIT,incorrect} < \alpha$ then
-  the incorrect model is accepted
+  If \(p_{CIT,correct} > \alpha\) and \(p_{CIT,incorrect} < \alpha\)
+  then the incorrect model is accepted
 \item
-  If $p_{CIT,correct} > \alpha$ and $p_{CIT,incorrect} > \alpha$ then
-  the an alternative causal model is accepted
+  If \(p_{CIT,correct} > \alpha\) and \(p_{CIT,incorrect} > \alpha\)
+  then the an alternative causal model is accepted
 \item
-  If $p_{CIT,correct} < \alpha$ and $p_{CIT,incorrect} < \alpha$ then no
-  inference is made
+  If \(p_{CIT,correct} < \alpha\) and \(p_{CIT,incorrect} < \alpha\)
+  then no inference is made
 \end{enumerate}
 
 For the purposes of compiling simulation results we use an arbitrary
-$\alpha = 0.05$ value.
+\(\alpha = 0.05\) value.
 
 \subsubsection{MR causal test}\label{mr-causal-test}
 
-Supposing there are two correlated variables, $x$ and $y$, with a
-variant $g$ associated with both. Assuming no horizontal pleiotropy
-(i.e. $g$ only has an effect on one of the variables through the other
+Supposing there are two correlated variables, \(x\) and \(y\), with a
+variant \(g\) associated with both. Assuming no horizontal pleiotropy
+(i.e. \(g\) only has an effect on one of the variables through the other
 variable) it is desirable to know which of the variables it has a direct
 influence on. This can be achieved by testing for a difference in the
-correlations $\rho_{g, x}$ and $\rho_{g, y}$ using Steiger's Z-test for
-correlated correlations within a population \textsuperscript{28}. It is
-calculated as
+correlations \(\rho_{g, x}\) and \(\rho_{g, y}\) using Steiger's Z-test
+for correlated correlations within a population\textsuperscript{28}. It
+is calculated as
 
 \[
 Z = (Z_{gx} - Z_{gy}) \frac{\sqrt{N-3}}{\sqrt{2(1-\rho_{xy})h}}
 \]
 
 where Fisher's z-transformation is used to obtain
-$Z_{g*} = \frac{1}{2} \ln \left ( \frac{1+\rho_{g*}}{1-\rho_{g*}} \right )$,
+\(Z_{g*} = \frac{1}{2} \ln \left ( \frac{1+\rho_{g*}}{1-\rho_{g*}} \right )\),
 
 \[
 h = \frac{1 - (frm^2)} {1 - rm^2}
@@ -309,7 +309,7 @@ and
 rm^2 = \frac{1}{2}(\rho_{gx}^2 + \rho_{gy}^2).
 \]
 
-The $Z$ value is interpreted such that
+The \(Z\) value is interpreted such that
 
 \[
 Z \left\{
@@ -320,30 +320,31 @@ Z \left\{
 \end{array} \right.
 \]
 
-and a p-value is generated from the $Z$ value to indicate confidence of
-difference in correlations $\rho_{gx}$ and $\rho_{gy}$. The test for a
-causal association is then obtained by performing two sample MR in the
-direction that is predicted to be the correct model based on the Z score
-test. For the purposes of compiling simulation results, the test is
-deemed to have obtained a robust association if the Z score test has a
-p-value $< 0.05$ and the two sample MR analysis has a p-value $< 0.05$,
-though in practice we do not advocate using an arbitrary $p$ value
-threshold for denoting significance in making causal inference.
+and a p-value is generated from the \(Z\) value to indicate confidence
+of difference in correlations \(\rho_{gx}\) and \(\rho_{gy}\). The test
+for a causal association is then obtained by performing two sample MR in
+the direction that is predicted to be the correct model based on the Z
+score test. For the purposes of compiling simulation results, the test
+is deemed to have obtained a robust association if the Z score test has
+a p-value \(< 0.05\) and the two sample MR analysis has a p-value
+\(< 0.05\), though in practice we do not advocate using an arbitrary
+\(p\) value threshold for denoting significance in making causal
+inference.
 
 Note that the same correlation test approach can be applied to a
-two-sample MR \textsuperscript{29} setting, where the Steiger test of
-two independent correlations is applied instead of the case detailed
-here where correlations share one variable in common. An advantage of
-using the Steiger test in the two sample context is that it can compare
+two-sample MR\textsuperscript{29} setting, where the Steiger test of two
+independent correlations is applied instead of the case detailed here
+where correlations share one variable in common. An advantage of using
+the Steiger test in the two sample context is that it can compare
 correlations in independent samples where sample sizes are different.
 
 \subsubsection{Simulations}\label{simulations}
 
-Simulations were conducting by creating variables of sample size $n$ for
-the exposure $x$, the measured values of the exposure $x_O$, the outcome
-$y$, the measured values of the outcome $y_O$ and the instrument $g$. In
-all models $x$ causes $y$ and $g$ is an instrument for $x$. Each
-variable was simulated such that:
+Simulations were conducting by creating variables of sample size \(n\)
+for the exposure \(x\), the measured values of the exposure \(x_O\), the
+outcome \(y\), the measured values of the outcome \(y_O\) and the
+instrument \(g\). In all models \(x\) causes \(y\) and \(g\) is an
+instrument for \(x\). Each variable was simulated such that:
 
 \[
 \begin{aligned}
@@ -355,8 +356,8 @@ y_O & = \beta_{my} y + \epsilon_{my} \\
 \end{aligned}
 \]
 
-All $\beta$ values were set to 1. Values of $\epsilon_*$ were generated
-such that
+All \(\beta\) values were set to 1. Values of \(\epsilon_*\) were
+generated such that
 
 \[
 \begin{aligned}
@@ -372,7 +373,7 @@ giving a total of 432 combinations of parameters. Each of these sets of
 variables was performed 100 times, and the CIT and MR methods were
 applied to each in order to evaluate the causal association of the
 simualted variables. Similar patterns of results were obtained for
-different values of $cor(g, x)$.
+different values of \(cor(g, x)\).
 
 \subsection{Results}\label{results}
 
@@ -380,32 +381,32 @@ different values of $cor(g, x)$.
 CIT}\label{the-influence-of-measurement-error-on-cit}
 
 Measurement error of an exposure can be modeled as some transformation
-of the true value that leads to the observed value, $x_O=f(x)$. For
-example, we can define $f(x) = \alpha_m + \beta_m x + \epsilon_m$, where
-$\alpha_m$ and $\beta_m$ influence the bias in the measurement of $x$,
-and $\epsilon_m$ represents the imprecision in the measurement of $x$.
-Here the true value of the exposure is partially explained by the
-genetic instrument, $g$, such that
+of the true value that leads to the observed value, \(x_O=f(x)\). For
+example, we can define \(f(x) = \alpha_m + \beta_m x + \epsilon_m\),
+where \(\alpha_m\) and \(\beta_m\) influence the bias in the measurement
+of \(x\), and \(\epsilon_m\) represents the imprecision in the
+measurement of \(x\). Here the true value of the exposure is partially
+explained by the genetic instrument, \(g\), such that
 
 \[
 x = \alpha_g + \beta_g g + \epsilon_g
 \]
 
-where $\beta_g$ is the effect of the SNP on the exposure, and
-$\epsilon_g$ is the residual value of $x$; and the outcome is partially
-explained by the exposure
+where \(\beta_g\) is the effect of the SNP on the exposure, and
+\(\epsilon_g\) is the residual value of \(x\); and the outcome is
+partially explained by the exposure
 
 \[
 y = \alpha_x + \beta_x x + \epsilon_x
 \]
 
-where $\beta_x$ is the true effect of the exposure on the outcome. In
+where \(\beta_x\) is the true effect of the exposure on the outcome. In
 the causal inference test (CIT), an omnibus p-value is generated from
-four hypothesis tests: 1) $g$ is associated with $x$; 2) $g$ is
-associated with $y$; 3) $g$ is associated with $x|y$; and 4) $g$ is
-independent of $y|x$. The 4th condition is necessary for causal
-inference, and can be expressed as $cov(g, y - \hat{y}) = 0$, where
-$\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_O$. When measurement error
+four hypothesis tests: 1) \(g\) is associated with \(x\); 2) \(g\) is
+associated with \(y\); 3) \(g\) is associated with \(x|y\); and 4) \(g\)
+is independent of \(y|x\). The 4th condition is necessary for causal
+inference, and can be expressed as \(cov(g, y - \hat{y}) = 0\), where
+\(\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_O\). When measurement error
 is introduced we can show using basic covariance properties (Appendix 1)
 that
 
@@ -422,17 +423,17 @@ where
 D = \frac{\beta^2_m var(x)} {\beta^2_m var(x) + var(\epsilon_m)}
 \]
 
-Thus an observational study will find $cov(g, y - \hat{y}) = 0$ when the
-true model is causal only when $D = 1$. Therefore, if there is any
+Thus an observational study will find \(cov(g, y - \hat{y}) = 0\) when
+the true model is causal only when \(D = 1\). Therefore, if there is any
 measurement error that incurs imprecision (i.e.
-$var(\epsilon_m) \neq 0$) then there will remain an association between
-$g$ and $y|x$, which is in violation of the the 4th condition of the
-CIT. Note that measurement bias alone is insufficient to lead to a
-violation of the test statistic assumptions.
+\(var(\epsilon_m) \neq 0\)) then there will remain an association
+between \(g\) and \(y|x\), which is in violation of the the 4th
+condition of the CIT. Note that measurement bias alone is insufficient
+to lead to a violation of the test statistic assumptions.
 
 We performed simulations to verify that this problem does arise using
 the CIT method. Figure 1 shows that when there is no measurement error
-in the exposure or outcome variables ($\rho_{x, x_O}=1$) the CIT is
+in the exposure or outcome variables (\(\rho_{x, x_O}=1\)) the CIT is
 reliable in identifying the correct causal direction. However, as
 measurement error increases in the exposure variable, eventually the CIT
 is more likely to infer a robust causal association in the wrong
@@ -443,11 +444,11 @@ incorrect inference.
 \subsubsection{Inferring direction of causality using
 MR}\label{inferring-direction-of-causality-using-mr}
 
-When selecting an instrument $g$ that has a direct influence on $x$ and
-$x$ is causally related to $y$, one can reason that the influence of $g$
-on $y$ is the proportion of the effect of $x$ on $y$ that is explained
-by the effect of $g$ on $x$. Hence the effect estimate $\beta_{MR}$ of
-$x$ on $y$ is estimated as
+When selecting an instrument \(g\) that has a direct influence on \(x\)
+and \(x\) is causally related to \(y\), one can reason that the
+influence of \(g\) on \(y\) is the proportion of the effect of \(x\) on
+\(y\) that is explained by the effect of \(g\) on \(x\). Hence the
+effect estimate \(\beta_{MR}\) of \(x\) on \(y\) is estimated as
 
 \[
 \beta_{MR} = \frac{\beta_y}{\beta_g} = \frac{cov(y, g)}{cov(x_O, g)} = \frac{cov(\beta_x x + \epsilon_x, g)}{cov(x + \epsilon_x, g)}
@@ -459,20 +460,20 @@ which reduces to
 \lim_{n \to \infty} \hat{\beta}_{MR} = \frac{\beta_x cov(x + \epsilon_x)}{cov(x + \epsilon_x)} = \beta_x
 \]
 
-thus we obtain an estimate of the effect of $x_O$ on $y$ that is
-unbiased by measurement error in $x$.
+thus we obtain an estimate of the effect of \(x_O\) on \(y\) that is
+unbiased by measurement error in \(x\).
 
-However, if we do not know whether the SNP $g$ has a direct influence on
-$x$ or $y$ then further efforts are required. If $x$ causes $y$ and $g$
-is a valid instrument for $x$ then we expect that the Steiger test will
-obtain the correct result because the value
-$d = \rho_{g, x_O} - \rho_{g, y_O}$ is greater than 0 when the causal
-association between $x$ and $y$ is $\rho_{x, y} < 1$. But it can be
-shown that in the presence of measurement error,
-$d = \rho_{x, x_O} - \rho_{x,y}\rho_{y,y_O}$ (Appendix 2), thus it is
+However, if we do not know whether the SNP \(g\) has a direct influence
+on \(x\) or \(y\) then further efforts are required. If \(x\) causes
+\(y\) and \(g\) is a valid instrument for \(x\) then we expect that the
+Steiger test will obtain the correct result because the value
+\(d = \rho_{g, x_O} - \rho_{g, y_O}\) is greater than 0 when the causal
+association between \(x\) and \(y\) is \(\rho_{x, y} < 1\). But it can
+be shown that in the presence of measurement error,
+\(d = \rho_{x, x_O} - \rho_{x,y}\rho_{y,y_O}\) (Appendix 2), thus it is
 important to note that under certain conditions when measurement error
 is present the Steiger test could make erroneous inference about causal
-direction because the value of $d$ is not restricted to being greater
+direction because the value of \(d\) is not restricted to being greater
 than 0. However, using the MR approach there are two potential
 advantages over the CIT. First, we can conduct a formal test for the
 direction of causality. Second the correct direction of causality can be
@@ -480,16 +481,16 @@ inferred when measurement error in the exposure variable is present, as
 long as it is lower than the product of the measurement error in the
 outcome and the causal correlation between the exposure and the outcome.
 Figure 2 shows that in most cases, especially when the causal effect
-between $x$ and $y$ is not very large, the condition of $d > 0$ is
+between \(x\) and \(y\) is not very large, the condition of \(d > 0\) is
 satisfied.
 
 We performed simulations to explore the performance of this approach in
-comparison to CIT. Figure 3 shows that, as predicted, when $d < 0$ the
+comparison to CIT. Figure 3 shows that, as predicted, when \(d < 0\) the
 MR analysis is liable to infer the wrong direction of causality, and
 that this erroneous result is more likely to occur with increasing
 sample size. However, in a large number of cases the MR analysis infers
 the wrong direction of causality at a much lower rate than the CIT. When
-$d > 0$ is satisfied we observe that in most cases the MR method has
+\(d > 0\) is satisfied we observe that in most cases the MR method has
 greater power to obtain evidence for causality than CIT, and always
 obtains the correct direction of causality.
 
@@ -532,16 +533,17 @@ framework to test for the robostness of the assumed direction of
 causality. Second, after testing in a comprehensive range of scenarios
 the MR based approach is less likely to infer the wrong direction of
 causality compared to CIT, while substantially improving power over CIT
-in the cases where $d > 0$.
+in the cases where \(d > 0\).
 
-Mediation based network approaches are very well established
-\textsuperscript{14} and have a number of extensions that make them
-valuable tools, including for example network construction. But because
-they are predicated on the basic underlying principles of mediation they
-are liable to suffer from the same issues of measurement error. Recent
-advances in MR methodology, for example network MR \textsuperscript{30}
-and mediation through MR \textsuperscript{31} may offer more robust
-solutions alternatives for these more complicated problems.
+Mediation based network approaches are very well
+established\textsuperscript{14} and have a number of extensions that
+make them valuable tools, including for example network construction.
+But because they are predicated on the basic underlying principles of
+mediation they are liable to suffer from the same issues of measurement
+error. Recent advances in MR methodology, for example network
+MR\textsuperscript{30} and mediation through MR\textsuperscript{31} may
+offer more robust solutions alternatives for these more complicated
+problems.
 
 There are a number of limitations to the analysis that we performed. We
 focused on the simple case of a single instrument in a single sample
@@ -551,7 +553,7 @@ present. To give an example in which this might arise consider the case
 that C-reactive protein (CRP) is being tested for causal association
 with some outcome, and the FTO variant is used as an instrument. Though
 FTO is robustly associated with CRP, it is through the upstream
-influence of BMI \textsuperscript{25}. Thus, if BMI has a direct
+influence of BMI\textsuperscript{25}. Thus, if BMI has a direct
 influence on the outcome, the conditions of MR will be violated and the
 Steiger test proposed here will be unreliable.
 
@@ -582,10 +584,9 @@ gets stronger and the test statistic for the correct model gets weaker.
 
 \newpage
 
-\includegraphics{manuscript_files/figure-latex/d_relationship_figure-1.pdf}
-
+\includegraphics{manuscript_files/figure-latex/d_relationship_figure-1.pdf}\\
 Figure 2: Plots depicting the function
-$d = cor(x, x_O) - cor(x,y)cor(y, y_O)$.
+\(d = cor(x, x_O) - cor(x,y)cor(y, y_O)\).
 
 \newpage
 
@@ -595,13 +596,13 @@ Figure 3: Outcomes were simulated to be causally influenced by
 exposures, with varying degrees of measurement error applied to both.
 CIT and MR were used to infer evidence for causality between the
 exposure and outcome, and to infer the direction of causality. The value
-of $d = \rho_{x, x_O} - \rho_{x,y}\rho_{y,y_O}$, such that when $d$ is
-negative we expect the Steiger test to be more likely to be wrong about
-the direction of causality. Rows of graphs represent the sample size
-used in the simulations. For the CIT method, outcome 1 denoted evidence
-for causality with correct model, outcomes 2 or 3 denoted evidence for
-causality with incorrect model, and outcome 4 denoted no evidence for
-causality.
+of \(d = \rho_{x, x_O} - \rho_{x,y}\rho_{y,y_O}\), such that when \(d\)
+is negative we expect the Steiger test to be more likely to be wrong
+about the direction of causality. Rows of graphs represent the sample
+size used in the simulations. For the CIT method, outcome 1 denoted
+evidence for causality with correct model, outcomes 2 or 3 denoted
+evidence for causality with incorrect model, and outcome 4 denoted no
+evidence for causality.
 
 \newpage
 
@@ -618,20 +619,21 @@ y_O & = \alpha_n + \beta_n y + \epsilon_n
 \end{aligned}
 \]
 
-where $x$ is the exposure on the outcome $y$, $g$ is an instrument that
-has a direct effect on $x$, $x_O$ is the measured quantity of $x$, where
-measurement error is incurred from bias in $\alpha_m$ and $\beta_m$ and
-imprecision from $\epsilon_m$, and $y_O$ is the measured quantity of
-$y$, where measurement error is incurred from bias in $\alpha_n$ and
-$\beta_n$ and imprecision from $\epsilon_n$, our objective is to
-estimate the expected magnitude of association between $g$ and $y$ after
-conditioning on $x$. Under the CIT, this is expected to be
-$cov(g, y_O - \hat{y_O}) = 0$ when $x$ causes $y$, where
-$\hat{y}_O = a_n + \beta_n(\hat{a}_{x_O} + \hat{\beta}_{x_O} x_O)$ is
-the predicted value of $y_O$ using the measured value of $x_O$.
+where \(x\) is the exposure on the outcome \(y\), \(g\) is an instrument
+that has a direct effect on \(x\), \(x_O\) is the measured quantity of
+\(x\), where measurement error is incurred from bias in \(\alpha_m\) and
+\(\beta_m\) and imprecision from \(\epsilon_m\), and \(y_O\) is the
+measured quantity of \(y\), where measurement error is incurred from
+bias in \(\alpha_n\) and \(\beta_n\) and imprecision from
+\(\epsilon_n\), our objective is to estimate the expected magnitude of
+association between \(g\) and \(y\) after conditioning on \(x\). Under
+the CIT, this is expected to be \(cov(g, y_O - \hat{y}_O) = 0\) when
+\(x\) causes \(y\), where
+\(\hat{y}_O = \hat{a}_{x_O} + \hat{\beta}_{x_O} x_O\) is the predicted
+value of \(y_O\) using the measured value of \(x_O\).
 
-We can split $cov(g, y_O - \hat{y}_O)$ into two parts, $cov(g, y_O)$ and
-$cov(g, \hat{y}_O)$.
+We can split \(cov(g, y_O - \hat{y}_O)\) into two parts, \(cov(g, y_O)\)
+and \(cov(g, \hat{y}_O)\).
 
 \textbf{Part 1}
 
@@ -648,10 +650,10 @@ cov(g, y_O) & = cov(g, \beta_n y) \\
 
 \[
 \begin{aligned}
-cov(g, \hat{y}_O) & = cov(g, \alpha_n + \beta_n \alpha_x + \beta_n \hat{\beta}_{x_O} x_O) \\
-                  & = cov(g, \beta_n \hat{\beta}_{x_O} \beta_m x) \\
-                  & = cov(g, \beta_n \hat{\beta}_{x_O} \beta_m \beta_g g) \\
-                  & = \hat{\beta}_{x_O} \beta_n \beta_m \beta_g var(g)
+cov(g, \hat{y}_O) & = cov(g, \hat{\beta}_{x_O} x_O) \\
+                  & = cov(g, \hat{\beta}_{x_O} \beta_m x) \\
+                  & = cov(g, \hat{\beta}_{x_O} \beta_m \beta_g g) \\
+                  & = \hat{\beta}_{x_O} \beta_m \beta_g var(g)
 \end{aligned}
 \]
 
@@ -662,7 +664,6 @@ Simpifying further
 \hat{\beta}_{x_O} & = \frac{cov(y_O, x_O)} {var(x_O)} \\
                   & = \frac{cov(\beta_n y, \beta_m x)} {\beta_m^2 var(x) + var(\epsilon_m)} \\
                   & = \frac{\beta_m \beta_n cov(y, x)} {\beta_m^2 var(x) + var(\epsilon_m)} \\
-                  & = \frac{\beta_m \beta_n \beta_x var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \\
                   & = \frac{\beta_m \beta_n \beta_x var(x)} {\beta_m^2 var(x) + var(\epsilon_m)}
 \end{aligned}
 \]
@@ -672,19 +673,31 @@ which can be substituted back to give
 \[
 \begin{aligned}
 cov(g, \hat{y}_O) & = \frac{\beta_n \beta_x \beta_g var(g) \beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \\
-                & = \frac{\beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \times \beta_x\beta_g var(g)
+                  & = \frac{\beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \times \beta_n \beta_x \beta_g var(g)
 \end{aligned}
 \]
+
+Finally
+
+\[
+\begin{aligned}
+cov(g, y_O - \hat{y}_O) & = \beta_n \beta_x \beta_g var(g) - \frac{\beta_m^2 var(x)} {\beta_m^2 var(x) + var(\epsilon_m)} \times \beta_n \beta_x \beta_g var(g)
+\end{aligned}
+\]
+
+thus \(cov(g, y_O - \hat{y}_O) = 0\) if the measurement imprecision in
+\(x_O\) is \(var(\epsilon_m) = 0\). However if there is any imprecision
+then the condition \(cov(g, y_O - \hat{y}_O) = 0\) will not hold.
 
 \newpage
 
 \subsection{Appendix 2}\label{appendix-2}
 
-Steiger test is used to infer if the variant $g$ has a direct influence
-on $x$ or $y$ when it is known that it associates with both, but the
-direction of causality between $x$ and $y$ is unknown. Assuming the
-causal direction is $x \to y$, two stage MR is formulated using the
-following regression models:
+Steiger test is used to infer if the variant \(g\) has a direct
+influence on \(x\) or \(y\) when it is known that it associates with
+both, but the direction of causality between \(x\) and \(y\) is unknown.
+Assuming the causal direction is \(x \to y\), two stage MR is formulated
+using the following regression models:
 
 \[
 x = \alpha_1 + \beta_1 g + e_1
@@ -696,15 +709,15 @@ for the first stage and
 y = \alpha_2 + \beta_2 \hat{x} + e_2
 \]
 
-where $\hat{x} = \hat{alpha}_1 + \hat{\beta}_1 g$. Writing in scale free
-terms, $\rho_{g, x}$ denotes the correlation between $g$ and the
-exposure variable $x$, and it is expected that
-$\rho_{g, x} > \rho_{g, y}$ because
-$\rho_{g, y} = \rho_{g, x}\rho_{x, y}$, where $\rho_{x, y}$ is the
-causal association between $x$ and $y$ (which is likely to be less than
-1). In the presence of measurement error in $x$ and $y$, however,
-Steiger test will instead be assessing the inequality
-$\rho_{g, x_O} > \rho_{g, y_O}$, which can be simplified:
+where \(\hat{x} = \hat{alpha}_1 + \hat{\beta}_1 g\). Writing in scale
+free terms, \(\rho_{g, x}\) denotes the correlation between \(g\) and
+the exposure variable \(x\), and it is expected that
+\(\rho_{g, x} > \rho_{g, y}\) because
+\(\rho_{g, y} = \rho_{g, x}\rho_{x, y}\), where \(\rho_{x, y}\) is the
+causal association between \(x\) and \(y\) (which is likely to be less
+than 1). In the presence of measurement error in \(x\) and \(y\),
+however, Steiger test will instead be assessing the inequality
+\(\rho_{g, x_O} > \rho_{g, y_O}\), which can be simplified:
 
 \[
 \begin{aligned}
@@ -720,26 +733,25 @@ $\rho_{g, x_O} > \rho_{g, y_O}$, which can be simplified:
 \subsection*{References}\label{references}
 \addcontentsline{toc}{subsection}{References}
 
-1.Millstein, J., Zhang, B., Zhu, J. \& Schadt, E. E.\emph{et al.}
-Disentangling molecular relationships with a causal inference test.
-\emph{BMC genetics} \textbf{10,} 23 (2009).
+1.Millstein, J., Zhang, B., Zhu, J. \& Schadt, E. E. Disentangling
+molecular relationships with a causal inference test. \emph{BMC
+genetics} \textbf{10,} 23 (2009).
 
 2.Schadt, E. E. \emph{et al.} An integrative genomics approach to infer
 causal associations between gene expression and disease. \emph{Nature
 Genetics} \textbf{37,} 710--717 (2005).
 
-3.Gayan, J., Gonzalez-Perez, A. \& Ruiz, A.\emph{et al.} `Does
-replication groups scoring reduce false positive rate in SNP interaction
-discovery? Response'. \emph{BMC Genomics} \textbf{11,} 403 (2010).
+3.Gayan, J., Gonzalez-Perez, A. \& Ruiz, A. `Does replication groups
+scoring reduce false positive rate in SNP interaction discovery?
+Response'. \emph{BMC Genomics} \textbf{11,} 403 (2010).
 
 4.Tavtigian, S. V. \emph{et al.} Rare, Evolutionarily Unlikely Missense
 Substitutions in ATM Confer Increased Risk of Breast Cancer. \emph{The
 American Journal of Human Genetics} \textbf{85,} 427--446 (2009).
 
-5.Aten, J. E., Fuller, T. F., Lusis, A. J. \& Horvath, S.\emph{et al.}
-Using genetic markers to orient the edges in quantitative trait
-networks: the NEO software. \emph{BMC systems biology} \textbf{2,} 34
-(2008).
+5.Aten, J. E., Fuller, T. F., Lusis, A. J. \& Horvath, S. Using genetic
+markers to orient the edges in quantitative trait networks: the NEO
+software. \emph{BMC systems biology} \textbf{2,} 34 (2008).
 
 6.Koestler, D. C. \emph{et al.} Integrative genomic analysis identifies
 epigenetic marks that mediate genetic risk for epithelial ovarian
@@ -753,46 +765,44 @@ methylation as an intermediary of genetic risk in rheumatoid arthritis.
 architecture in humans. \emph{Cell} \textbf{162,} 1039--1050 (2015).
 
 9.Cessie, S. le, Debeij, J., Rosendaal, F. R., Cannegieter, S. C. \&
-Vandenbroucke, J. P.\emph{et al.} Quantification of bias in direct
-effects estimates due to different types of measurement error in the
-mediator. \emph{Epidemiology (Cambridge, Mass.)} \textbf{23,} 551--60
-(2012).
+Vandenbroucke, J. P. Quantification of bias in direct effects estimates
+due to different types of measurement error in the mediator.
+\emph{Epidemiology (Cambridge, Mass.)} \textbf{23,} 551--60 (2012).
 
-10.Nagarajan, R. \& Scutari, M. \emph{et al.} Impact of noise on
-molecular network inference. \emph{PloS one} \textbf{8,} e80735 (2013).
+10.Nagarajan, R. \& Scutari, M. Impact of noise on molecular network
+inference. \emph{PloS one} \textbf{8,} e80735 (2013).
 
-11.Shpitser, I., VanderWeele, T. \& Robins, J.\emph{et al.} On the
-validity of covariate adjustment for estimating causal effects.
-\emph{Proceedings of the Twenty Sixth Conference on Uncertainty in
-Artificial Intelligence (UAI-10)} 527--536 (2010).
+11.Shpitser, I., VanderWeele, T. \& Robins, J. On the validity of
+covariate adjustment for estimating causal effects. \emph{Proceedings of
+the Twenty Sixth Conference on Uncertainty in Artificial Intelligence
+(UAI-10)} 527--536 (2010).
 
-12.Blakely, T., McKenzie, S. \& Carter, K.\emph{et al.}
-Misclassification of the mediator matters when estimating indirect
-effects. \emph{Journal of epidemiology and community health}
-\textbf{67,} 458--66 (2013).
+12.Blakely, T., McKenzie, S. \& Carter, K. Misclassification of the
+mediator matters when estimating indirect effects. \emph{Journal of
+epidemiology and community health} \textbf{67,} 458--66 (2013).
 
-13.Wang, L. \& Michoel, T. \emph{et al.} Detection of regulator genes
-and eQTLs in gene networks. \emph{arXiv} \textbf{arXiv:1512,} (2015).
+13.Wang, L. \& Michoel, T. Detection of regulator genes and eQTLs in
+gene networks. \emph{arXiv} \textbf{arXiv:1512,} (2015).
 
 14.Lagani, V., Triantafillou, S., Ball, G., Tegner, J. \& Tsamardinos,
-I.\emph{et al.} in \emph{Uncertainty in biology: A computational
-modeling approach} 47 (Springer, 2015). at
+I. in \emph{Uncertainty in biology: A computational modeling approach}
+47 (Springer, 2015). at
 \textless{}\url{https://books.google.com/books?id=8SLUCgAAQBAJ\{/\&\}pgis=1}\textgreater{}
 
-15.Houle, D., P{é}labon, C., Wagner, G. \& Hansen, T.\emph{et al.}
-Measurement and meaning in biology. \emph{The Quarterly Review of
-Biology} \textbf{86,} 3--34 (2011).
+15.Houle, D., P{é}labon, C., Wagner, G. \& Hansen, T. Measurement and
+meaning in biology. \emph{The Quarterly Review of Biology} \textbf{86,}
+3--34 (2011).
 
-16.Hern{á}n, M. a \& Cole, S. R. \emph{et al.} Invited Commentary:
-Causal diagrams and measurement bias. \emph{American journal of
-epidemiology} \textbf{170,} 959--62; discussion 963--4 (2009).
+16.Hern{á}n, M. a \& Cole, S. R. Invited Commentary: Causal diagrams and
+measurement bias. \emph{American journal of epidemiology} \textbf{170,}
+959--62; discussion 963--4 (2009).
 
-17.Harper, K. N., Peters, B. a \& Gamble, M. V.\emph{et al.} Batch
-effects and pathway analysis: two potential perils in cancer studies
-involving DNA methylation array analysis. \emph{Cancer epidemiology,
-biomarkers \& prevention : a publication of the American Association for
-Cancer Research, cosponsored by the American Society of Preventive
-Oncology} \textbf{22,} 1052--60 (2013).
+17.Harper, K. N., Peters, B. a \& Gamble, M. V. Batch effects and
+pathway analysis: two potential perils in cancer studies involving DNA
+methylation array analysis. \emph{Cancer epidemiology, biomarkers \&
+prevention : a publication of the American Association for Cancer
+Research, cosponsored by the American Society of Preventive Oncology}
+\textbf{22,} 1052--60 (2013).
 
 18.Chen, Y.-a. \emph{et al.} Discovery of cross-reactive probes and
 polymorphic CpGs in the Illumina Infinium HumanMethylation450
@@ -803,22 +813,21 @@ Society} \textbf{8,} 203--9 (2013).
 measures of cell mixture distribution. \emph{BMC bioinformatics}
 \textbf{13,} 86 (2012).
 
-20.Ahima, R. S. \& Lazar, M. A. \emph{et al.} Physiology. The health
-risk of obesity--better metrics imperative. \emph{Science (New York,
-N.Y.)} \textbf{341,} 856--8 (2013).
+20.Ahima, R. S. \& Lazar, M. A. Physiology. The health risk of
+obesity--better metrics imperative. \emph{Science (New York, N.Y.)}
+\textbf{341,} 856--8 (2013).
 
-21.{Davey Smith}, G. \& Ebrahim, S. \emph{et al.} Mendelian
-randomization: prospects, potentials, and limitations.
-\emph{International journal of epidemiology} \textbf{33,} 30--42 (2004).
+21.{Davey Smith}, G. \& Ebrahim, S. Mendelian randomization: prospects,
+potentials, and limitations. \emph{International journal of
+epidemiology} \textbf{33,} 30--42 (2004).
 
-22.{Davey Smith}, G. \& Hemani, G. \emph{et al.} Mendelian
-randomization: genetic anchors for causal inference in epidemiological
-studies. \emph{Human molecular genetics} \textbf{23,} R89-----R98
-(2014).
+22.{Davey Smith}, G. \& Hemani, G. Mendelian randomization: genetic
+anchors for causal inference in epidemiological studies. \emph{Human
+molecular genetics} \textbf{23,} R89-----R98 (2014).
 
-23.Ashenfelter, O. \& Krueger, A. B. \emph{et al.} Estimates of the
-Economic Return to Schooling from a New Sample of Twins. \emph{The
-American Economic Review} \textbf{84,} 1157--1173 (1994).
+23.Ashenfelter, O. \& Krueger, A. B. Estimates of the Economic Return to
+Schooling from a New Sample of Twins. \emph{The American Economic
+Review} \textbf{84,} 1157--1173 (1994).
 
 24.Claussnitzer, M. \emph{et al.} FTO Obesity Variant Circuitry and
 Adipocyte Browning in Humans. \emph{The New England journal of medicine}
@@ -829,26 +838,25 @@ index: elucidating direction of causation through reciprocal Mendelian
 randomization. \emph{International journal of obesity (2005)}
 \textbf{35,} 300--8 (2011).
 
-26.R Core Team \emph{et al.} \emph{R: A Language and Environment for
-Statistical Computing}. (R Foundation for Statistical Computing, 2015).
-at \textless{}\url{https://www.r-project.org/}\textgreater{}
+26.R Core Team. \emph{R: A Language and Environment for Statistical
+Computing}. (R Foundation for Statistical Computing, 2015). at
+\textless{}\url{https://www.r-project.org/}\textgreater{}
 
-27.Millstein, J. \emph{et al.} \emph{cit: Causal Inference Test. R
-package version 1.9}. (2016). at
+27.Millstein, J. \emph{cit: Causal Inference Test. R package version
+1.9}. (2016). at
 \textless{}\url{http://cran.r-project.org/package=cit}\textgreater{}
 
-28.Steiger, J. H. \emph{et al.} Tests for comparing elements of a
-correlation matrix. \emph{Psychological Bulletin} \textbf{87,} 245--251
-(1980).
+28.Steiger, J. H. Tests for comparing elements of a correlation matrix.
+\emph{Psychological Bulletin} \textbf{87,} 245--251 (1980).
 
-29.Pierce, B. L. \& Burgess, S. \emph{et al.} Efficient design for
-Mendelian randomization studies: subsample and 2-sample instrumental
-variable estimators. \emph{American journal of epidemiology}
-\textbf{178,} 1177--84 (2013).
+29.Pierce, B. L. \& Burgess, S. Efficient design for Mendelian
+randomization studies: subsample and 2-sample instrumental variable
+estimators. \emph{American journal of epidemiology} \textbf{178,}
+1177--84 (2013).
 
-30.Burgess, S., Daniel, R. M., Butterworth, A. S. \& Thompson, S.
-G.\emph{et al.} Network Mendelian randomization: using genetic variants
-as instrumental variables to investigate mediation in causal pathways.
+30.Burgess, S., Daniel, R. M., Butterworth, A. S. \& Thompson, S. G.
+Network Mendelian randomization: using genetic variants as instrumental
+variables to investigate mediation in causal pathways.
 \emph{International journal of epidemiology} \textbf{44,} 484--95
 (2015).
 
