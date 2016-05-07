@@ -376,3 +376,51 @@ facet_grid(noisea ~ noiseb)
 
 
 
+
+
+
+
+## ---- causality_exists ----
+
+
+temp <- 
+
+
+
+
+# Gather
+pl <- gather(parameters, test, direction_p_value, cit_p, cortest_p)
+pl$correct_direction <- pl$cortest_correct_direction
+pl$correct_direction[pl$test == "cit_p"] <- pl$cit_correct_direction[pl$test == "cit_p"]
+pl$test_p_value <- pl$p_test
+pl$test_p_value[pl$test == "cit_p"] <- pl$direction_p_value[pl$test == "cit_p"]
+pl <- subset(pl, select=-c(cortest_correct_direction, cit_correct_direction, p_test))
+pl$test[pl$test == "cit_p"] <- "CIT"
+pl$test[pl$test == "cortest_p"] <- "MR"
+
+# Fix NAs
+pl$test_p_value[is.infinite(pl$test_p_value)] <- max(is.finite(pl$test_p_value))
+pl$direction_p_value[is.infinite(pl$direction_p_value)] <- max(is.finite(pl$direction_p_value))
+
+psum2 <- pl %>%
+	group_by(n, p, r_ab, r_za, noisea, noiseb, test) %>%
+	summarise(
+		prop_correct_direction=sum(correct_direction, na.rm=TRUE)/n(),
+		prop_correct_direction_sig=sum(correct_direction & direction_p_value > -log10(0.05) & test_p_value > -log10(0.05), na.rm=TRUE)/n(),
+		cor_aap=mean(cor_aap, na.rm=TRUE),
+		cor_bbp=mean(cor_bbp, na.rm=TRUE),
+		cor_abp=mean(cor_abp, na.rm=TRUE),
+		cor_ab=mean(cor_ab, na.rm=TRUE),
+		cor_zap=mean(cor_zap, na.rm=TRUE),
+		cor_zbp=mean(cor_zbp, na.rm=TRUE),
+		nsim=n(),
+		test_sig = sum(test_p_value > -log10(0.05), na.rm=TRUE)/n(),
+		direction_sig = sum(direction_p_value > -log10(0.05), na.rm=TRUE)/n(),
+		rhs=mean(rhs),
+		lhs=mean(cor_aap),
+		rhs_lhs_diff=lhs-rhs,
+		prop_sig_incorrect=sum(!correct_direction & direction_p_value > -log10(0.05) & test_p_value > -log10(0.05), na.rm=T)/n(),
+		prop_sig_correct=sum(correct_direction & direction_p_value > -log10(0.05) & test_p_value > -log10(0.05), na.rm=T)/n(),
+		prop_nonsig=sum(direction_p_value <= -log10(0.05) | test_p_value <= -log10(0.05), na.rm=T)/n()
+	)
+psum1$rhs_lhs_diff_bin <- cut(psum1$rhs_lhs_diff, breaks=10)
