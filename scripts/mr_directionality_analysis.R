@@ -28,8 +28,8 @@ parameters$r_ab <- round(parameters$r_ab, 1)
 parameters$r_za <- parameters$r_za^2
 parameters$noisea <- parameters$noisea^2
 parameters$noiseb <- parameters$noiseb^2
-parameters$rhs <- parameters$cor_ab * parameters$cor_bbp
-parameters$lhs <- parameters$cor_aap
+parameters$rhs <- abs(parameters$cor_ab * parameters$cor_bbp)
+parameters$lhs <- abs(parameters$cor_aap)
 parameters$rhs_lhs_diff <- parameters$lhs - parameters$rhs
 
 # Calculate correlation test
@@ -134,7 +134,7 @@ facet_grid(n ~ ., scale="free_y")
 
 ineq <- expand.grid(
 	cora = seq(0, 1, by=0.02),
-	corb = seq(0, 1, by=0.1),
+	corb = seq(0, 1, by=0.2),
 	ab = c(0.1, 0.5, 0.9)
 )
 
@@ -143,10 +143,30 @@ ineq$rhs <- ineq$corb * ineq$ab
 ineq$d <- ineq$lhs - ineq$rhs
 ineq$ablab <- paste0("cor(x,y) = ", ineq$ab)
 
+
+area <- group_by(ineq, ablab) %>%
+	do({
+
+		temp1 <- subset(., corb == max(corb) & d <= 0)
+
+		y1 <- min(temp1$d)
+		x1 <- min(temp1$cora)
+
+		y2 <- min(abs(temp1$d), 0)
+		x2 <- max(temp1$cora)
+
+		temp2 <- subset(., corb == min(corb))
+		y3 <- min(abs(temp2$d), 0)
+		x3 <- min(temp2$cora)
+
+		data.frame(cora=c(x1, x2, x3), d=c(y1, y2, y3), f=1)
+	})
+
 ggplot(ineq, aes(x=cora, y=d)) +
+geom_polygon(data=area, fill="grey", aes(x=cora, y=d)) +
 geom_line(aes(colour=corb, group=corb)) +
-facet_wrap(~ ablab) +
 geom_hline(yintercept=0, linetype=2) +
+facet_wrap(~ ablab) +
 labs(x=TeX("$cor(x, x_O)$"), y="d", colour=TeX("$cor(y, y_O)$"))
 
 
@@ -161,11 +181,11 @@ psum2$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp2[,1]))
 psum2$rhs_lhs_diff_bin_lab <- as.factor(paste0("d = ", psum2$rhs_lhs_diff_bin_numeric))
 psum2$rhs_lhs_diff_bin_lab <- factor(psum2$rhs_lhs_diff_bin_lab, levels=levels(psum2$rhs_lhs_diff_bin_lab)[order(as.numeric(as.character(levels(psum2$rhs_lhs_diff_bin_numeric))))])
 
-levels(psum2$eval) <- c("Evidence for causality\nwith correct model", "Evidence for causality\nwith incorrect model", "No evidence for causality")
+levels(psum2$eval) <- c("Evidence for causality\nunder correct model", "Evidence for causality\nunder incorrect model", "No evidence for causality")
 
-ggplot(subset(psum2, round(r_za,2)==0.1), aes(x=test, y=value)) +
+ggplot(subset(psum2, round(r_za,2)==0.01), aes(x=test, y=value)) +
 geom_bar(stat="identity", aes(fill=eval)) +
-facet_grid(n ~ rhs_lhs_diff_bin_lab) +
+facet_grid(n ~ rhs_lhs_diff_bin) +
 scale_fill_brewer(type="qual") +
 labs(x="Method", y="Proportion of simulations", fill="") +
 theme(legend.key=element_rect(size=3), legend.key.size = unit(2, "lines"))
@@ -393,7 +413,7 @@ temp$r_za <- paste0("cor(x,g) = ", temp$r_za)
 temp$n <- paste0("n = ", temp$n)
 temp$noiseb <- paste0("cor(Y,Yo) = ", temp$noiseb)
 
-ggplot(subset(temp, r_ab == 0.4 & r_za == "cor(x,g) = 0.01"), aes(x=noisea, y = prop_causality_exists)) +
+ggplot(subset(temp, r_ab == 0.6 & r_za == "cor(x,g) = 0.01" & noiseb %in% c("cor(Y,Yo) = 0", "cor(Y,Yo) = 0.6")), aes(x=noisea, y = prop_causality_exists)) +
 geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
 facet_grid(noiseb ~ n) +
 labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
@@ -426,24 +446,61 @@ facet_grid(n ~ r_za)
 pl$causality_exists_correct <- TRUE
 pl$causality_exists_correct[pl$test == "MR"] <- pl$p_bz[pl$test == "MR"] > -log10(0.05) & pl$correct_direction[pl$test == "MR"] & pl$direction_p_value[pl$test == "MR"] > -log10(0.05)
 pl$causality_exists_correct[pl$test == "CIT"] <- pl$cit_res[pl$test == "CIT"] == 1
-pl$rhs_lhs_diff_bin <- cut(pl$rhs_lhs_diff, breaks=10)
-temp2 <- do.call(rbind, strsplit(as.character(pl$rhs_lhs_diff_bin), split=","))
-pl$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp2[,1]))
-pl$rhs_lhs_diff_bin_lab <- as.factor(paste0("d = ", pl$rhs_lhs_diff_bin_numeric))
-pl$rhs_lhs_diff_bin_lab <- factor(pl$rhs_lhs_diff_bin_lab, levels=levels(pl$rhs_lhs_diff_bin_lab)[order(as.numeric(as.character(levels(pl$rhs_lhs_diff_bin_numeric))))])
 
-temp <- dplyr::group_by(pl, test, r_ab, r_za, n, noisea, noiseb) %>%
-	dplyr::summarise(prop_causality_exists_correct = sum(correct_direction) / n())
-temp$r_za <- paste0("cor(x,g) = ", temp$r_za)
-temp$n <- paste0("n = ", temp$n)
 
-ggplot(subset(temp, r_ab == 0.4 & round(noiseb,2) == 0.6), aes(x=noisea, y = prop_causality_exists_correct)) +
+pl$cd <- TRUE
+pl$cd[pl$test == "MR"] <- sign(pl$cortest_t[pl$test == "MR"]) == 1
+pl$cd[pl$test == "CIT"] <- pl$cit_AB[pl$test == "CIT"] < pl$cit_BA[pl$test == "CIT"]
+
+pl <- pl[order(pl$test, pl$r_ab, pl$r_za, pl$n, pl$noisea, pl$noiseb), ]
+plmr <- subset(pl, test=="MR")
+plcit <- subset(pl, test=="CIT")
+
+all(plmr$r_ab == plcit$r_ab)
+all(plmr$r_za == plcit$r_za)
+all(plmr$n == plcit$n)
+all(plmr$noisea == plcit$noisea)
+all(plmr$noiseb == plcit$noiseb)
+
+plmr$method_direction_comparison <- ""
+plmr$method_direction_comparison[plmr$cd & plcit$cd] <- "Both"
+plmr$method_direction_comparison[!plmr$cd & plcit$cd] <- "CIT"
+plmr$method_direction_comparison[plmr$cd & !plcit$cd] <- "MR"
+plmr$method_direction_comparison[!plmr$cd & !plcit$cd] <- "Neither"
+plmr$method_direction_comparison_num <- plmr$cd - plcit$cd
+
+table(plmr$method_direction_comparison)
+with(plmr, tapply(rhs_lhs_diff, method_direction_comparison, range))
+table(plmr$method_direction_comparison_num)
+
+temp <- dplyr::group_by(plmr, r_ab, r_za, n, noisea, noiseb) %>%
+	dplyr::summarise(prop_causality_exists_correct = mean(method_direction_comparison_num))
+# temp$r_za <- paste0("cor(x,g) = ", temp$r_za)
+# temp$n <- paste0("n = ", temp$n)
+
+
+ggplot(subset(temp, round(r_za,2) == 0.01), aes(x = noisea, y = prop_causality_exists_correct)) +
+geom_point(aes(colour = as.factor(noiseb))) +
+facet_grid(n ~ r_ab) +
+scale_colour_brewer(type="seq")
+
+
+
+ggplot(subset(temp, r_ab == 0.4 & round(noiseb,2) == 0), aes(x=noisea, y = prop_causality_exists_correct)) +
 geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
 facet_grid(n ~ r_za) +
 labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
 
-ggplot(subset(temp, r_ab == 0.4 & n == "n = 1000"), aes(x=r_za, y = prop_causality_exists_correct)) +
+ggplot(subset(temp, r_ab == 0.4 & round(noisea,2) == 0), aes(x=noiseb, y = prop_causality_exists_correct)) +
+geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
+facet_grid(n ~ r_za) +
+labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
+
+
+ggplot(subset(temp, r_ab == 0.6 & n == "n = 1000"), aes(x=r_za, y = prop_causality_exists_correct)) +
 geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
 facet_grid(noisea ~ noiseb) +
 labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
+
+
 
