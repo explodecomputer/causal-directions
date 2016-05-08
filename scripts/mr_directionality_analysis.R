@@ -115,7 +115,7 @@ psum1 <- pl %>%
 		prop_sig_correct=sum(correct_direction & direction_p_value > -log10(0.05) & test_p_value > -log10(0.05), na.rm=T)/n(),
 		prop_nonsig=sum(direction_p_value <= -log10(0.05) | test_p_value <= -log10(0.05), na.rm=T)/n()
 	)
-psum1$rhs_lhs_diff_bin <- cut(psum1$rhs_lhs_diff, breaks=10)
+psum1$rhs_lhs_diff_bin <- cut(psum1$rhs_lhs_diff, breaks=seq(-0.2, 1.1, by=0.1))
 
 
 ## ---- cit_measurement_error_figure ----
@@ -146,6 +146,7 @@ ineq$ablab <- paste0("cor(x,y) = ", ineq$ab)
 ggplot(ineq, aes(x=cora, y=d)) +
 geom_line(aes(colour=corb, group=corb)) +
 facet_wrap(~ ablab) +
+geom_hline(yintercept=0, linetype=2) +
 labs(x=TeX("$cor(x, x_O)$"), y="d", colour=TeX("$cor(y, y_O)$"))
 
 
@@ -153,7 +154,7 @@ labs(x=TeX("$cor(x, x_O)$"), y="d", colour=TeX("$cor(y, y_O)$"))
 
 psum2 <- gather(psum1, eval, value, prop_sig_correct, prop_sig_incorrect, prop_nonsig, factor_key=TRUE) %>%
 	group_by(n, rhs_lhs_diff_bin, r_za, eval, test) %>%
-	summarise(value=mean(value, na.rm=TRUE))
+	summarise(value=mean(value, na.rm=TRUE), nsim=n())
 
 temp2 <- do.call(rbind, strsplit(as.character(psum2$rhs_lhs_diff_bin), split=","))
 psum2$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp2[,1]))
@@ -375,52 +376,74 @@ facet_grid(noisea ~ noiseb)
 
 
 
+## ---- causality_exists_tpr ----
+
+pl$causality_exists <- TRUE
+pl$causality_exists[pl$test == "MR"] <- pl$p_bz[pl$test == "MR"] > -log10(0.05)
+pl$causality_exists[pl$test == "CIT"] <- pl$cit_res[pl$test == "CIT"] <= 3
+pl$rhs_lhs_diff_bin <- cut(pl$rhs_lhs_diff, breaks=10)
+temp2 <- do.call(rbind, strsplit(as.character(pl$rhs_lhs_diff_bin), split=","))
+pl$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp2[,1]))
+pl$rhs_lhs_diff_bin_lab <- as.factor(paste0("d = ", pl$rhs_lhs_diff_bin_numeric))
+pl$rhs_lhs_diff_bin_lab <- factor(pl$rhs_lhs_diff_bin_lab, levels=levels(pl$rhs_lhs_diff_bin_lab)[order(as.numeric(as.character(levels(pl$rhs_lhs_diff_bin_numeric))))])
+
+temp <- dplyr::group_by(pl, test, r_ab, r_za, n, noisea, noiseb) %>%
+	dplyr::summarise(prop_causality_exists = sum(causality_exists) / n())
+temp$r_za <- paste0("cor(x,g) = ", temp$r_za)
+temp$n <- paste0("n = ", temp$n)
+temp$noiseb <- paste0("cor(Y,Yo) = ", temp$noiseb)
+
+ggplot(subset(temp, r_ab == 0.4 & r_za == "cor(x,g) = 0.01"), aes(x=noisea, y = prop_causality_exists)) +
+geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
+facet_grid(noiseb ~ n) +
+labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
+
+
+## ----causality_exists_other ----
+
+ggplot(subset(temp, r_ab == 0 & noiseb==0), aes(x=noisea, y = prop_causality_exists)) +
+geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
+facet_grid(n ~ r_za)
+
+ggplot(subset(temp, r_ab == 0 & noisea==0), aes(x=noiseb, y = prop_causality_exists)) +
+geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
+facet_grid(n ~ r_za)
+
+ggplot(subset(temp, r_ab == 0.2 & noisea==0), aes(x=noiseb, y = prop_causality_exists)) +
+geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
+facet_grid(n ~ r_za)
+
+ggplot(subset(temp, r_ab == 0.2 & noisea > 0.2), aes(x=noiseb, y = prop_causality_exists)) +
+geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
+facet_grid(n ~ r_za)
+
+ggplot(subset(temp, r_ab == 0.8), aes(x=rhs_lhs_diff_bin_numeric, y = prop_causality_exists)) +
+geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
+facet_grid(n ~ r_za)
 
 
 
+pl$causality_exists_correct <- TRUE
+pl$causality_exists_correct[pl$test == "MR"] <- pl$p_bz[pl$test == "MR"] > -log10(0.05) & pl$correct_direction[pl$test == "MR"] & pl$direction_p_value[pl$test == "MR"] > -log10(0.05)
+pl$causality_exists_correct[pl$test == "CIT"] <- pl$cit_res[pl$test == "CIT"] == 1
+pl$rhs_lhs_diff_bin <- cut(pl$rhs_lhs_diff, breaks=10)
+temp2 <- do.call(rbind, strsplit(as.character(pl$rhs_lhs_diff_bin), split=","))
+pl$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp2[,1]))
+pl$rhs_lhs_diff_bin_lab <- as.factor(paste0("d = ", pl$rhs_lhs_diff_bin_numeric))
+pl$rhs_lhs_diff_bin_lab <- factor(pl$rhs_lhs_diff_bin_lab, levels=levels(pl$rhs_lhs_diff_bin_lab)[order(as.numeric(as.character(levels(pl$rhs_lhs_diff_bin_numeric))))])
 
+temp <- dplyr::group_by(pl, test, r_ab, r_za, n, noisea, noiseb) %>%
+	dplyr::summarise(prop_causality_exists_correct = sum(correct_direction) / n())
+temp$r_za <- paste0("cor(x,g) = ", temp$r_za)
+temp$n <- paste0("n = ", temp$n)
 
-## ---- causality_exists ----
+ggplot(subset(temp, r_ab == 0.4 & round(noiseb,2) == 0.6), aes(x=noisea, y = prop_causality_exists_correct)) +
+geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
+facet_grid(n ~ r_za) +
+labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
 
+ggplot(subset(temp, r_ab == 0.4 & n == "n = 1000"), aes(x=r_za, y = prop_causality_exists_correct)) +
+geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
+facet_grid(noisea ~ noiseb) +
+labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
 
-temp <- 
-
-
-
-
-# Gather
-pl <- gather(parameters, test, direction_p_value, cit_p, cortest_p)
-pl$correct_direction <- pl$cortest_correct_direction
-pl$correct_direction[pl$test == "cit_p"] <- pl$cit_correct_direction[pl$test == "cit_p"]
-pl$test_p_value <- pl$p_test
-pl$test_p_value[pl$test == "cit_p"] <- pl$direction_p_value[pl$test == "cit_p"]
-pl <- subset(pl, select=-c(cortest_correct_direction, cit_correct_direction, p_test))
-pl$test[pl$test == "cit_p"] <- "CIT"
-pl$test[pl$test == "cortest_p"] <- "MR"
-
-# Fix NAs
-pl$test_p_value[is.infinite(pl$test_p_value)] <- max(is.finite(pl$test_p_value))
-pl$direction_p_value[is.infinite(pl$direction_p_value)] <- max(is.finite(pl$direction_p_value))
-
-psum2 <- pl %>%
-	group_by(n, p, r_ab, r_za, noisea, noiseb, test) %>%
-	summarise(
-		prop_correct_direction=sum(correct_direction, na.rm=TRUE)/n(),
-		prop_correct_direction_sig=sum(correct_direction & direction_p_value > -log10(0.05) & test_p_value > -log10(0.05), na.rm=TRUE)/n(),
-		cor_aap=mean(cor_aap, na.rm=TRUE),
-		cor_bbp=mean(cor_bbp, na.rm=TRUE),
-		cor_abp=mean(cor_abp, na.rm=TRUE),
-		cor_ab=mean(cor_ab, na.rm=TRUE),
-		cor_zap=mean(cor_zap, na.rm=TRUE),
-		cor_zbp=mean(cor_zbp, na.rm=TRUE),
-		nsim=n(),
-		test_sig = sum(test_p_value > -log10(0.05), na.rm=TRUE)/n(),
-		direction_sig = sum(direction_p_value > -log10(0.05), na.rm=TRUE)/n(),
-		rhs=mean(rhs),
-		lhs=mean(cor_aap),
-		rhs_lhs_diff=lhs-rhs,
-		prop_sig_incorrect=sum(!correct_direction & direction_p_value > -log10(0.05) & test_p_value > -log10(0.05), na.rm=T)/n(),
-		prop_sig_correct=sum(correct_direction & direction_p_value > -log10(0.05) & test_p_value > -log10(0.05), na.rm=T)/n(),
-		prop_nonsig=sum(direction_p_value <= -log10(0.05) | test_p_value <= -log10(0.05), na.rm=T)/n()
-	)
-psum1$rhs_lhs_diff_bin <- cut(psum1$rhs_lhs_diff, breaks=10)
