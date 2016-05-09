@@ -6,6 +6,7 @@ suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(psych))
 suppressPackageStartupMessages(library(lattice))
 suppressPackageStartupMessages(library(latex2exp))
+suppressPackageStartupMessages(library(knitr))
 
 get_cor_from_pval <- function(p, n)
 {
@@ -96,7 +97,7 @@ pl$direction_p_value[is.infinite(pl$direction_p_value)] <- max(is.finite(pl$dire
 # Reduce
 psum1 <- pl %>%
 	group_by(n, p, r_ab, r_za, noisea, noiseb, test) %>%
-	summarise(
+	dplyr::summarise(
 		prop_correct_direction=sum(correct_direction, na.rm=TRUE)/n(),
 		prop_correct_direction_sig=sum(correct_direction & direction_p_value > -log10(0.05) & test_p_value > -log10(0.05), na.rm=TRUE)/n(),
 		cor_aap=mean(cor_aap, na.rm=TRUE),
@@ -173,8 +174,8 @@ labs(x=TeX("$cor(x, x_O)$"), y="d", colour=TeX("$cor(y, y_O)$"))
 ## ---- cit_mr_comparison_figure ----
 
 psum2 <- gather(psum1, eval, value, prop_sig_correct, prop_sig_incorrect, prop_nonsig, factor_key=TRUE) %>%
-	group_by(n, rhs_lhs_diff_bin, r_za, eval, test) %>%
-	summarise(value=mean(value, na.rm=TRUE), nsim=n())
+	dplyr::group_by(n, rhs_lhs_diff_bin, r_za, eval, test) %>%
+	dplyr::summarise(value=mean(value, na.rm=TRUE), nsim=n())
 
 temp2 <- do.call(rbind, strsplit(as.character(psum2$rhs_lhs_diff_bin), split=","))
 psum2$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp2[,1]))
@@ -502,5 +503,141 @@ geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
 facet_grid(noisea ~ noiseb) +
 labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
 
+
+
+
+
+## ---- shakhbazov ----
+
+mr_steiger <- function(p_exp, p_out, n_exp, n_out) 
+{
+	require(psych)
+	index <- any(is.na(p_exp)) | any(is.na(p_out)) | any(is.na(n_exp)) | any(is.na(n_out))
+	p_exp <- p_exp[!index]
+	p_out <- p_out[!index]
+	n_exp <- n_exp[!index]
+	n_out <- n_out[!index]
+	r_exp <- get_r_from_pn(p_exp, n_exp)
+	r_out <- get_r_from_pn(p_out, n_out)
+	rtest <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp, r34 = r_out)
+	l <- list(r2_exp = r_exp^2, r2_out = r_out^2, correct_causal_direction = r_exp > r_out, steiger_test = rtest$p)
+	return(l)
+}
+
+mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters) 
+{
+	if (length(b_exp) > 1) {
+		return(list(b = NA, se = NA, pval = NA, nsnp = NA))
+	}
+	b <- b_out/b_exp
+	se <- se_out/abs(b_exp)
+	pval <- pnorm(abs(b)/se, lower.tail = F) * 2
+	return(list(b = b, se = se, pval = pval, nsnp = 1))
+}
+
+qtl <- read.csv("../data/12864_2016_2498_MOESM16_ESM.csv")
+qtl <- qtl[order(qtl$PVALUE_expr), ]
+qtl <- subset(qtl, !duplicated(paste0(meth_ind, exp_ind)))
+cors <- read.csv("../data/12864_2016_2498_MOESM8_ESM.csv")
+
+qtl$r_exp <- NA
+qtl$r_meth <- NA
+qtl$dir <- NA
+qtl$dir_p <- NA
+qtl$mr_eff <- NA
+qtl$mr_se <- NA
+qtl$mr_p <- NA
+for(i in 1:nrow(qtl))
+{
+	l <- mr_steiger(qtl$PVALUE_meth[i], qtl$PVALUE_expr[i], 610, 862)
+	qtl$r_exp[i] <- l$r2_out
+	qtl$r_meth[i] <- l$r2_exp
+	qtl$dir[i] <- l$correct_causal_direction
+	qtl$dir_p[i] <- l$steiger_test
+
+	if(qtl$AL1_meth[i] != qtl$AL1_expr[i])
+	{
+		qtl$EFFECT_meth[i] <- qtl$EFFECT_meth[i] * -1
+	}
+
+	if(qtl$dir[i])
+	{
+		a <- mr_wald_ratio(qtl$EFFECT_meth[i], qtl$EFFECT_expr[i], qtl$SE_meth[i], qtl$SE_expr[i])
+		qtl$mr_eff[i] <- a$b
+		qtl$mr_se[i] <- a$se
+		qtl$mr_p[i] <- a$pval
+	} else {
+		a <- mr_wald_ratio(qtl$EFFECT_expr[i], qtl$EFFECT_meth[i], qtl$SE_expr[i], qtl$SE_meth[i])
+		qtl$mr_eff[i] <- a$b
+		qtl$mr_se[i] <- a$se
+		qtl$mr_p[i] <- a$pval
+	}
+}
+
+
+# Does expression or methylation most likely have the causal effect?
+
+shakhbazov <- merge(qtl, subset(cors, select=c(meth_ind, exp_ind, pearson)), by=c("meth_ind", "exp_ind"), all.x=TRUE)
+shakhbazov$mr_r <- sign(shakhbazov$mr_eff) * sqrt(abs(qnorm(shakhbazov$mr_p, low=FALSE))^2 / (abs(qnorm(shakhbazov$mr_p, low=FALSE))^2 + 400))
+
+shakhbazov$dir <- as.character(shakhbazov$dir)
+shakhbazov$dir[shakhbazov$dir=="TRUE"] <- "Methylation causes Expression"
+shakhbazov$dir[shakhbazov$dir=="FALSE"] <- "Expression causes Methylation"
+
+shakhtest1 <- fisher.test(table(sign(shakhbazov$mr_eff), shakhbazov$dir))
+shakhtest2 <- fisher.test(table(sign(shakhbazov$mr_eff[shakhbazov$dir_p < 0.05]), shakhbazov$dir[shakhbazov$dir_p < 0.05]))
+
+shakhtab <- dplyr::group_by(shakhbazov, dir) %>%
+	dplyr::summarise(
+		n = n(),
+		nsig = sum(dir_p < 0.05),
+		pos = sum(mr_eff > 0) / n(),
+		corr = cor(pearson^2, mr_r^2)
+	) %>% as.data.frame()
+names(shakhtab) <- c("Causal direction", "Count", "Count ($p_{Steiger} < 0.05$)", "P(+ve effect)", "$cor(\\rho_{MR}, \\rho_{P})$")
+
+
+shakhtest3 <- binom.test(sum(shakhbazov$dir == "Methylation causes Expression" & shakhbazov$dir_p < 0.05), sum(shakhbazov$dir_p < 0.05), 0.5)
+shakhtest4 <- binom.test(sum(shakhbazov$dir == "Methylation causes Expression"), nrow(shakhbazov), 0.5)
+
+
+## ---- shakhtab ----
+
+
+kable(shakhtab)
+
+
+
+## ---- shakhbazov_other ----
+
+psych::r.test(n=212, n2=246, r12=0.5629, r34=0.4384)
+table(shakhbazov$dir)
+table(shakhbazov$dir_p < 0.05)
+table(shakhbazov$dir[shakhbazov$dir_p < 0.05])
+table(sign(shakhbazov$mr_eff), shakhbazov$dir)
+
+summary(glm(as.factor(dir) ~ mr_eff, shakhbazov[shakhbazov$dir_p < 0.05,], family="binomial"))
+
+
+library(ggplot2)
+ggplot(temp, aes(x=dir, y=pos)) +
+geom_bar(stat="identity")
+
+
+cor(shakhbazov$mr_r, shakhbazov$pearson)
+summary(lm(abs(mr_r) ~ abs(pearson), shakhbazov))
+plot(abs(mr_r) ~ abs(pearson), shakhbazov)
+abline(lm(abs(mr_r) ~ abs(pearson), shakhbazov))
+
+ggplot(shakhbazov, aes(x=(pearson), y=(mr_r))) +
+# geom_errorbar(aes(ymin = abs(mr_r) - mr_se * 1.96, ymax = abs(mr_r) + mr_se * 1.96), colour="grey") +
+geom_point() +
+stat_smooth(method="lm") +
+facet_grid(. ~ dir) +
+labs(x=TeX("$|\\rho_{P}|$"), y=TeX("$|\\rho_{MR}|$"))
+
+# Is the MR estimate similar to the pearson correlation?
+plot(shakhbazov$pearson, shakhbazov$mr_r)
+subset(shakhbazov, sign(mr_eff) != sign(pearson))
 
 
