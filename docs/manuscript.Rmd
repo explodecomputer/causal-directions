@@ -513,6 +513,51 @@ $$
 \newpage
 
 
+## Appendix 3
 
+Sensitivity analysis for the Steiger test involves evaluating the probability that the inferred causal direction is incorrect due to differences in measurement error between the hypothesised exposure, $x$, and hypothesised outcome, $y$, variables. The objective is to calculate what the true $\rho_{g, x}$ and $\rho_{g, y}$ values would be given empirical estimates of $\rho_{g, x_O}$ and $\rho_{g, y_O}$ across all possible values of measurement error.
+
+$$
+\rho_{g,x} = \frac{\rho_{x,x_O}}{\rho_{g,x_O}}
+$$
+
+and
+
+$$
+\rho_{g,y} = \frac{\rho_{y,y_O}}{\rho_{g,y_O}}
+$$
+
+If $\rho_{g,x} > \rho_{g,y}$ then we infer that the causal direction is from exposure to outcome. Assume that all measurement error values for $x$ and $y$ are equally probable, the surface of possible values of this inequality is $z = \frac{\rho_{y,y_O}}{\rho_{g,y_O}} - \frac{\rho_{x,x_O}}{\rho_{g,x_O}}$, and the objective is to calculate $P(z > 0)$, which corresponds to the proportion of measurement error values that would lead to the Steiger test being incorrect.
+
+The surface area of $z$ across the domain $\rho_{g,y_O} \leq \rho_{y,y_O} \leq 1; \rho_{g,x_O} \leq \rho_{x,x_O} \leq 1$ is obtained from 
+
+$$
+\begin{aligned}
+S_z & = \int^1_{\rho_{g,x_o}} \int^1_{\rho_{g,y_o}} \sqrt{  \frac{\partial}{\partial \rho_{x,x_o}} \left (\frac{\rho_{g,x_O}}{\rho_{x,x_O}} \right )^2 +  \left (\frac{\rho_{g,y_O}}{\rho_{y,y_O}} \right )^2   +1 }\, dydx \\
+& = \int^1_{\rho_{g,x_o}} \int^1_{\rho_{g,y_o}} \sqrt{ \frac{\rho_{g,x_O}^2}{\rho_{x,x_O}^4} + \frac{\rho_{g,y_O}^2}{\rho_{y,y_O}^4} + 1}\, dydx
+\end{aligned}
+$$
+
+and the proportion of the surface for which $z > 0$ is obtained from
+
+$$
+\begin{aligned}
+S_{z>0} = \int^1_{\rho_{g,x_o}} \int^{R}_{\rho_{g,y_o}} \sqrt{ \frac{\rho_{g,x_O}^2}{\rho_{x,x_O}^4} + \frac{\rho_{g,y_O}^2}{\rho_{y,y_O}^4} + 1}\, dydx
+\end{aligned}
+$$
+
+where $R$ is the function for which $0 = \frac{\rho_{y,y_O}}{\rho_{g,y_O}} - \frac{\rho_{x,x_O}}{\rho_{g,x_O}}$, i.e.
+
+$$
+R = \frac{\rho_{g,y_o}\rho_{g,x}}{\rho_{g,x_o}}
+$$
+
+Finally, the probability that the inference of $x \rightarrow y$ obtained from the Steiger test is incorrect due to measurement error is obtained from
+
+$$
+P(M) = \frac{S_{z>0}}{S_z}
+$$
+
+$P(M)$ can range from 0 to 1, where a small value indicates that the Steiger test is relatively insensitive to measurement error. This value is estimated through simulation.
 
 ## References

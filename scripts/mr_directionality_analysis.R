@@ -8,13 +8,6 @@ suppressPackageStartupMessages(library(lattice))
 suppressPackageStartupMessages(library(latex2exp))
 suppressPackageStartupMessages(library(knitr))
 
-get_cor_from_pval <- function(p, n)
-{
-	Fval <- qf(p, 1, n-1, low=FALSE)
-	R2 <- Fval / (n - 2 + Fval)
-	return(R2)
-}
-
 
 ## ---- read_data ----
 
@@ -509,6 +502,31 @@ labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
 
 ## ---- shakhbazov ----
 
+
+get_r_from_pn <- function(p, n)
+{
+	Fval <- qf(p, 1, n-1, low=FALSE)
+	# print(Fval)
+	if(!is.finite(Fval))
+	{
+		get_p_from_rn <- function(r, n)
+		{
+			fval <- r * (n-2) / (1 - r)
+			pval <- pf(fval, 1, n-1, low=FALSE)
+			return(pval)
+		}
+		optim.get_p_from_rn <- function(x, sample_size, pvalue)
+		{
+			abs(-log10(get_p_from_rn(x, sample_size)) - -log10(pvalue))
+		}
+		R2 <- optim(0.1, optim.get_p_from_rn, sample_size=n, pvalue=p)$par
+		# print(R2)
+		return(R2)
+	}
+	R2 <- Fval / (n - 2 + Fval)
+	return(R2)
+}
+
 mr_steiger <- function(p_exp, p_out, n_exp, n_out) 
 {
 	require(psych)
@@ -594,7 +612,7 @@ shakhtab <- dplyr::group_by(shakhbazov, dir) %>%
 		pos = sum(mr_eff > 0) / n(),
 		corr = cor(pearson^2, mr_r^2)
 	) %>% as.data.frame()
-names(shakhtab) <- c("Causal direction", "Count", "Count ($p_{Steiger} < 0.05$)", "P(+ve effect)", "$cor(\\rho_{MR}, \\rho_{P})$")
+names(shakhtab) <- c("Causal direction", "Count", "$p_{Steiger} < 0.05$", "P(+ve effect)", "$cor(\\rho_{MR}, \\rho_{P})$")
 
 
 shakhtest3 <- binom.test(sum(shakhbazov$dir == "Methylation causes Expression" & shakhbazov$dir_p < 0.05), sum(shakhbazov$dir_p < 0.05), 0.5)

@@ -9,12 +9,10 @@
 \else % if luatex or xelatex
   \ifxetex
     \usepackage{mathspec}
-    \usepackage{xltxtra,xunicode}
   \else
     \usepackage{fontspec}
   \fi
-  \defaultfontfeatures{Mapping=tex-text,Scale=MatchLowercase}
-  \newcommand{\euro}{€}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
 \fi
 % use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
@@ -24,8 +22,14 @@
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
 \usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Determining the existance and direction of causality in the face of measurement error},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
 \usepackage{longtable,booktabs}
-\usepackage{graphicx}
+\usepackage{graphicx,grffile}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
 \def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
@@ -34,27 +38,25 @@
 % margins by default, and it is still possible to overwrite the defaults
 % using explicit options in \includegraphics[width, height, ...]{}
 \setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-\ifxetex
-  \usepackage[setpagesize=false, % page size defined by xetex
-              unicode=false, % unicode breaks when used with xetex
-              xetex]{hyperref}
-\else
-  \usepackage[unicode=true]{hyperref}
-\fi
-\hypersetup{breaklinks=true,
-            bookmarks=true,
-            pdfauthor={},
-            pdftitle={Determining the existance and direction of causality in the face of measurement error},
-            colorlinks=true,
-            citecolor=blue,
-            urlcolor=blue,
-            linkcolor=magenta,
-            pdfborder={0 0 0}}
-\urlstyle{same}  % don't use monospace font for urls
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
 \setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
 
 %%% Use protect on footnotes to avoid problems with footnotes in titles
 \let\rmarkdownfootnote\footnote%
@@ -79,14 +81,10 @@ measurement error}
   \preauthor{}\postauthor{}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{09 May 2016}
-
-
+  \date{13 December 2016}
 
 \begin{document}
-
 \maketitle
-
 
 Gibran Hemani*, Kate Tilling and George Davey Smith
 
@@ -327,7 +325,7 @@ The following tests are then performed:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
-\itemsep1pt\parskip0pt\parsep0pt
+\tightlist
 \item
   \(H_0: cov(g, x) = 0; H_1: cov(g, x) \neq 0\); \emph{the SNP
   associates with the exposure}
@@ -362,7 +360,7 @@ existence of causality and its direction was inferred based on the
 following scenarios:
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
+\tightlist
 \item
   If \(p_{CIT,correct} < \alpha\) and \(p_{CIT,incorrect} > \alpha\)
   then the correct model is accepted
@@ -448,7 +446,7 @@ correlations are identical. The existence of causality and its direction
 is inferred based on the following scenarios:
 
 \begin{itemize}
-\itemsep1pt\parskip0pt\parsep0pt
+\tightlist
 \item
   If \(p_{Steiger} < \alpha\) and \(p_{MR} < \alpha\) and \(Z > 0\) then
   a causal association for the correct model is accepted
@@ -697,8 +695,8 @@ the Steiger test of two independent correlations to identify which
 direction of causality was most likely for each association. We found
 that the causal direction commonly goes in both directions (Table 1) but
 methylation levels were more likely to influence expression levels than
-vice versa (probability of expression causing methylation = 0.0024038
-(95\% CI 0.3446222 - 0.4667222) amongst 262 associations with
+vice versa (probability of expression causing methylation = 0.0019317
+(95\% CI 0.3455756 - 0.4653544) amongst 272 associations with
 \(p_{Steiger} < 0.05\)).
 
 We performed two sample MR\textsuperscript{19} for each association in
@@ -711,10 +709,10 @@ the observational Pearson correlation (Table 1).
 
 We also observed that for associations where methylation caused gene
 expression the causal effect was more likely to be negative than for the
-associations where gene expression caused methylation (OR = 0.505822
-(95\% CI 0.2813174 - 0.89394)), suggesting that reducing gene expression
-levels at a controlling CpG typically leads to increased gene expression
-levels, consistent with expectation\textsuperscript{2}.
+associations where gene expression caused methylation (OR = 0.4615363
+(95\% CI 0.259998 - 0.8052745)), suggesting that reducing gene
+expression levels at a controlling CpG typically leads to increased gene
+expression levels, consistent with expectation\textsuperscript{2}.
 
 \subsection{Discussion}\label{discussion}
 
@@ -817,15 +815,15 @@ varying levels of measurement error.
 
 \subsection{Tables}\label{tables}
 
-\begin{longtable}[c]{@{}lrrrr@{}}
+\begin{longtable}[]{@{}lrrrr@{}}
 \toprule
-Causal direction & Count & Count (\$p\_\{Steiger\} \textless{} 0.05) &
-P(+ve effect) & \(cor(\rho_{MR}, \rho_{P})\)\tabularnewline
+Causal direction & Count & \(p_{Steiger} < 0.05\) & P(+ve effect) &
+\(cor(\rho_{MR}, \rho_{P})\)\tabularnewline
 \midrule
 \endhead
-Expression causes Methylation & 246 & 156 & 0.3902439 &
+Expression causes Methylation & 246 & 162 & 0.3902439 &
 0.5629453\tabularnewline
-Methylation causes Expression & 212 & 106 & 0.2877358 &
+Methylation causes Expression & 212 & 110 & 0.2877358 &
 0.4384660\tabularnewline
 \bottomrule
 \end{longtable}
@@ -1022,182 +1020,293 @@ however, Steiger test will instead be assessing the inequality
 
 \newpage
 
+\subsection{Appendix 3}\label{appendix-3}
+
+Sensitivity analysis for the Steiger test involves evaluating the
+probability that the inferred causal direction is incorrect due to
+differences in measurement error between the hypothesised exposure,
+\(x\), and hypothesised outcome, \(y\), variables. The objective is to
+calculate what the true \(\rho_{g, x}\) and \(\rho_{g, y}\) values would
+be given empirical estimates of \(\rho_{g, x_O}\) and \(\rho_{g, y_O}\)
+across all possible values of measurement error.
+
+\[
+\rho_{g,x} = \frac{\rho_{x,x_O}}{\rho_{g,x_O}}
+\]
+
+and
+
+\[
+\rho_{g,y} = \frac{\rho_{y,y_O}}{\rho_{g,y_O}}
+\]
+
+If \(\rho_{g,x} > \rho_{g,y}\) then we infer that the causal direction
+is from exposure to outcome. Assume that all measurement error values
+for \(x\) and \(y\) are equally probable, the surface of possible values
+of this inequality is
+\(z = \frac{\rho_{y,y_O}}{\rho_{g,y_O}} - \frac{\rho_{x,x_O}}{\rho_{g,x_O}}\),
+and the objective is to calculate \(P(z > 0)\), which corresponds to the
+proportion of measurement error values that would lead to the Steiger
+test being incorrect.
+
+The surface area of \(z\) across the domain
+\(\rho_{g,y_O} \leq \rho_{y,y_O} \leq 1; \rho_{g,x_O} \leq \rho_{x,x_O} \leq 1\)
+is obtained from
+
+\[
+\begin{aligned}
+S_z & = \int^1_{\rho_{g,x_o}} \int^1_{\rho_{g,y_o}} \sqrt{  \frac{\partial}{\partial \rho_{x,x_o}} \left (\frac{\rho_{g,x_O}}{\rho_{x,x_O}} \right )^2 +  \left (\frac{\rho_{g,y_O}}{\rho_{y,y_O}} \right )^2   +1 }\, dydx \\
+& = \int^1_{\rho_{g,x_o}} \int^1_{\rho_{g,y_o}} \sqrt{ \frac{\rho_{g,x_O}^2}{\rho_{x,x_O}^4} + \frac{\rho_{g,y_O}^2}{\rho_{y,y_O}^4} + 1}\, dydx
+\end{aligned}
+\]
+
+and the proportion of the surface for which \(z > 0\) is obtained from
+
+\[
+\begin{aligned}
+S_{z>0} = \int^1_{\rho_{g,x_o}} \int^{R}_{\rho_{g,y_o}} \sqrt{ \frac{\rho_{g,x_O}^2}{\rho_{x,x_O}^4} + \frac{\rho_{g,y_O}^2}{\rho_{y,y_O}^4} + 1}\, dydx
+\end{aligned}
+\]
+
+where \(R\) is the function for which
+\(0 = \frac{\rho_{y,y_O}}{\rho_{g,y_O}} - \frac{\rho_{x,x_O}}{\rho_{g,x_O}}\),
+i.e.
+
+\[
+R = \frac{\rho_{g,y_o}\rho_{g,x}}{\rho_{g,x_o}}
+\]
+
+Finally, the probability that the inference of \(x \rightarrow y\)
+obtained from the Steiger test is incorrect due to measurement error is
+obtained from
+
+\[
+P(M) = \frac{S_{z>0}}{S_z}
+\]
+
+\(P(M)\) can range from 0 to 1, where a small value indicates that the
+Steiger test is relatively insensitive to measurement error. This value
+is estimated through simulation.
+
 \subsection*{References}\label{references}
 \addcontentsline{toc}{subsection}{References}
 
-1.Kettunen, J. \emph{et al.} Genome-wide association study identifies
+\hypertarget{refs}{}
+\hypertarget{ref-Kettunen2012}{}
+1. Kettunen, J. \emph{et al.} Genome-wide association study identifies
 multiple loci influencing human serum metabolite levels. \emph{Nature
 genetics} \textbf{44,} 269--76 (2012).
 
-2.Bird, A. DNA methylation patterns and epigenetic memory. \emph{Genes
+\hypertarget{ref-Bird2002}{}
+2. Bird, A. DNA methylation patterns and epigenetic memory. \emph{Genes
 \& development} \textbf{16,} 6--21 (2002).
 
-3.{Davey Smith}, G. \& Ebrahim, S. Mendelian randomization: prospects,
+\hypertarget{ref-DaveySmith2004}{}
+3. Davey Smith, G. \& Ebrahim, S. Mendelian randomization: prospects,
 potentials, and limitations. \emph{International journal of
 epidemiology} \textbf{33,} 30--42 (2004).
 
-4.Baron, R. M. \& Kenny, D. A. The moderator-mediator variable
+\hypertarget{ref-Baron1986}{}
+4. Baron, R. M. \& Kenny, D. A. The moderator-mediator variable
 distinction in social psychological research: conceptual, strategic, and
 statistical considerations. \emph{Journal of personality and social
 psychology} \textbf{51,} 1173--82 (1986).
 
-5.Aten, J. E., Fuller, T. F., Lusis, A. J. \& Horvath, S. Using genetic
+\hypertarget{ref-Aten2008}{}
+5. Aten, J. E., Fuller, T. F., Lusis, A. J. \& Horvath, S. Using genetic
 markers to orient the edges in quantitative trait networks: the NEO
 software. \emph{BMC systems biology} \textbf{2,} 34 (2008).
 
-6.Fewell, Z., {Davey Smith}, G. \& Sterne, J. A. C. The impact of
+\hypertarget{ref-Fewell2007}{}
+6. Fewell, Z., Davey Smith, G. \& Sterne, J. A. C. The impact of
 residual and unmeasured confounding in epidemiologic studies: a
 simulation study. \emph{American journal of epidemiology} \textbf{166,}
 646--55 (2007).
 
-7.Schadt, E. E. \emph{et al.} An integrative genomics approach to infer
+\hypertarget{ref-Schadt2005}{}
+7. Schadt, E. E. \emph{et al.} An integrative genomics approach to infer
 causal associations between gene expression and disease. \emph{Nature
 Genetics} \textbf{37,} 710--717 (2005).
 
-8.Millstein, J., Zhang, B., Zhu, J. \& Schadt, E. E. Disentangling
+\hypertarget{ref-Millstein2009}{}
+8. Millstein, J., Zhang, B., Zhu, J. \& Schadt, E. E. Disentangling
 molecular relationships with a causal inference test. \emph{BMC
 genetics} \textbf{10,} 23 (2009).
 
-9.Millstein, J. \emph{cit: Causal Inference Test. R package version
+\hypertarget{ref-Millstein2016}{}
+9. Millstein, J. \emph{cit: Causal Inference Test. R package version
 1.9}. (2016). at
 \textless{}\url{http://cran.r-project.org/package=cit}\textgreater{}
 
-10.Waszak, S. M. \emph{et al.} Variation and genetic control of
+\hypertarget{ref-Waszak2015}{}
+10. Waszak, S. M. \emph{et al.} Variation and genetic control of
 chromatin architecture in humans. \emph{Cell} \textbf{162,} 1039--1050
 (2015).
 
-11.Koestler, D. C. \emph{et al.} Integrative genomic analysis identifies
-epigenetic marks that mediate genetic risk for epithelial ovarian
-cancer. \emph{BMC medical genomics} \textbf{7,} 8 (2014).
+\hypertarget{ref-Koestler2014}{}
+11. Koestler, D. C. \emph{et al.} Integrative genomic analysis
+identifies epigenetic marks that mediate genetic risk for epithelial
+ovarian cancer. \emph{BMC medical genomics} \textbf{7,} 8 (2014).
 
-12.Liu, Y. \emph{et al.} Epigenome-wide association data implicate DNA
+\hypertarget{ref-Liu2013}{}
+12. Liu, Y. \emph{et al.} Epigenome-wide association data implicate DNA
 methylation as an intermediary of genetic risk in rheumatoid arthritis.
 \emph{Nature biotechnology} \textbf{31,} 142--7 (2013).
 
-13.Yuan, W. \emph{et al.} An integrated epigenomic analysis for type 2
+\hypertarget{ref-Yuan2014}{}
+13. Yuan, W. \emph{et al.} An integrated epigenomic analysis for type 2
 diabetes susceptibility loci in monozygotic twins. \emph{Nature
 communications} \textbf{5,} 5719 (2014).
 
-14.Tang, Y. \emph{et al.} Genotype-based treatment of type 2 diabetes
+\hypertarget{ref-Tang2014}{}
+14. Tang, Y. \emph{et al.} Genotype-based treatment of type 2 diabetes
 with an \(\alpha\)2A-adrenergic receptor antagonist. \emph{Science
 translational medicine} \textbf{6,} 257ra139 (2014).
 
-15.Hong, X. \emph{et al.} Genome-wide association study identifies
+\hypertarget{ref-Hong2015}{}
+15. Hong, X. \emph{et al.} Genome-wide association study identifies
 peanut allergy-specific loci and evidence of epigenetic mediation in US
 children. \emph{Nature communications} \textbf{6,} 6304 (2015).
 
-16.Claussnitzer, M. \emph{et al.} FTO Obesity Variant Circuitry and
+\hypertarget{ref-Claussnitzer2015}{}
+16. Claussnitzer, M. \emph{et al.} FTO Obesity Variant Circuitry and
 Adipocyte Browning in Humans. \emph{The New England journal of medicine}
 \textbf{373,} 895--907 (2015).
 
-17.Timpson, N. J. \emph{et al.} C-reactive protein levels and body mass
+\hypertarget{ref-Timpson2011}{}
+17. Timpson, N. J. \emph{et al.} C-reactive protein levels and body mass
 index: elucidating direction of causation through reciprocal Mendelian
 randomization. \emph{International journal of obesity (2005)}
 \textbf{35,} 300--8 (2011).
 
-18.Shakhbazov, K. \emph{et al.} Shared genetic control of expression and
-methylation in peripheral blood. \emph{BMC genomics} \textbf{17,} 278
-(2016).
+\hypertarget{ref-Shakhbazov2016}{}
+18. Shakhbazov, K. \emph{et al.} Shared genetic control of expression
+and methylation in peripheral blood. \emph{BMC genomics} \textbf{17,}
+278 (2016).
 
-19.Pierce, B. L. \& Burgess, S. Efficient design for Mendelian
+\hypertarget{ref-Pierce2013}{}
+19. Pierce, B. L. \& Burgess, S. Efficient design for Mendelian
 randomization studies: subsample and 2-sample instrumental variable
 estimators. \emph{American journal of epidemiology} \textbf{178,}
 1177--84 (2013).
 
-20.Ashenfelter, O. \& Krueger, A. B. Estimates of the Economic Return to
-Schooling from a New Sample of Twins. \emph{The American Economic
+\hypertarget{ref-Ashenfelter1994}{}
+20. Ashenfelter, O. \& Krueger, A. B. Estimates of the Economic Return
+to Schooling from a New Sample of Twins. \emph{The American Economic
 Review} \textbf{84,} 1157--1173 (1994).
 
-21.Cessie, S. le, Debeij, J., Rosendaal, F. R., Cannegieter, S. C. \&
+\hypertarget{ref-LeCessie2012}{}
+21. Cessie, S. le, Debeij, J., Rosendaal, F. R., Cannegieter, S. C. \&
 Vandenbroucke, J. P. Quantification of bias in direct effects estimates
 due to different types of measurement error in the mediator.
 \emph{Epidemiology (Cambridge, Mass.)} \textbf{23,} 551--60 (2012).
 
-22.Nagarajan, R. \& Scutari, M. Impact of noise on molecular network
+\hypertarget{ref-Nagarajan2013}{}
+22. Nagarajan, R. \& Scutari, M. Impact of noise on molecular network
 inference. \emph{PloS one} \textbf{8,} e80735 (2013).
 
-23.Shpitser, I., VanderWeele, T. \& Robins, J. On the validity of
+\hypertarget{ref-Shpitser2010}{}
+23. Shpitser, I., VanderWeele, T. \& Robins, J. On the validity of
 covariate adjustment for estimating causal effects. \emph{Proceedings of
 the Twenty Sixth Conference on Uncertainty in Artificial Intelligence
 (UAI-10)} 527--536 (2010).
 
-24.Blakely, T., McKenzie, S. \& Carter, K. Misclassification of the
+\hypertarget{ref-Blakely2013}{}
+24. Blakely, T., McKenzie, S. \& Carter, K. Misclassification of the
 mediator matters when estimating indirect effects. \emph{Journal of
 epidemiology and community health} \textbf{67,} 458--66 (2013).
 
-25.Wang, L. \& Michoel, T. Detection of regulator genes and eQTLs in
+\hypertarget{ref-Wang2015}{}
+25. Wang, L. \& Michoel, T. Detection of regulator genes and eQTLs in
 gene networks. \emph{arXiv} \textbf{arXiv:1512,} (2015).
 
-26.Lagani, V., Triantafillou, S., Ball, G., Tegner, J. \& Tsamardinos,
+\hypertarget{ref-Lagani2015}{}
+26. Lagani, V., Triantafillou, S., Ball, G., Tegner, J. \& Tsamardinos,
 I. in \emph{Uncertainty in biology: A computational modeling approach}
 47 (Springer, 2015). at
-\textless{}\url{https://books.google.com/books?id=8SLUCgAAQBAJ\{/\&\}pgis=1}\textgreater{}
+\textless{}\href{https://books.google.com/books?id=8SLUCgAAQBAJ\%7B/\&\%7Dpgis=1}{https://books.google.com/books?id=8SLUCgAAQBAJ\{\textbackslash{}\&\}pgis=1}\textgreater{}
 
-27.Houle, D., P{é}labon, C., Wagner, G. \& Hansen, T. Measurement and
+\hypertarget{ref-Houle2011}{}
+27. Houle, D., Pélabon, C., Wagner, G. \& Hansen, T. Measurement and
 meaning in biology. \emph{The Quarterly Review of Biology} \textbf{86,}
 3--34 (2011).
 
-28.Hern{á}n, M. a \& Cole, S. R. Invited Commentary: Causal diagrams and
+\hypertarget{ref-Hernan2009}{}
+28. Hernán, M. a \& Cole, S. R. Invited Commentary: Causal diagrams and
 measurement bias. \emph{American journal of epidemiology} \textbf{170,}
 959--62; discussion 963--4 (2009).
 
-29.Harper, K. N., Peters, B. a \& Gamble, M. V. Batch effects and
+\hypertarget{ref-Harper2013}{}
+29. Harper, K. N., Peters, B. a \& Gamble, M. V. Batch effects and
 pathway analysis: two potential perils in cancer studies involving DNA
 methylation array analysis. \emph{Cancer epidemiology, biomarkers \&
 prevention : a publication of the American Association for Cancer
 Research, cosponsored by the American Society of Preventive Oncology}
 \textbf{22,} 1052--60 (2013).
 
-30.Chen, Y.-a. \emph{et al.} Discovery of cross-reactive probes and
+\hypertarget{ref-Chen2013a}{}
+30. Chen, Y.-a. \emph{et al.} Discovery of cross-reactive probes and
 polymorphic CpGs in the Illumina Infinium HumanMethylation450
 microarray. \emph{Epigenetics : official journal of the DNA Methylation
 Society} \textbf{8,} 203--9 (2013).
 
-31.Houseman, E. A. \emph{et al.} DNA methylation arrays as surrogate
+\hypertarget{ref-Houseman2012}{}
+31. Houseman, E. A. \emph{et al.} DNA methylation arrays as surrogate
 measures of cell mixture distribution. \emph{BMC bioinformatics}
 \textbf{13,} 86 (2012).
 
-32.Ahima, R. S. \& Lazar, M. A. Physiology. The health risk of
+\hypertarget{ref-Ahima2013}{}
+32. Ahima, R. S. \& Lazar, M. A. Physiology. The health risk of
 obesity--better metrics imperative. \emph{Science (New York, N.Y.)}
 \textbf{341,} 856--8 (2013).
 
-33.R Core Team. \emph{R: A Language and Environment for Statistical
+\hypertarget{ref-RCoreTeam2015}{}
+33. R Core Team. \emph{R: A Language and Environment for Statistical
 Computing}. (R Foundation for Statistical Computing, 2015). at
 \textless{}\url{https://www.r-project.org/}\textgreater{}
 
-34.Henningsen, A. \& Hamann, J. D. systemfit : A Package for Estimating
+\hypertarget{ref-Henningsen2007}{}
+34. Henningsen, A. \& Hamann, J. D. systemfit : A Package for Estimating
 Systems of Simultaneous Equations in R. \emph{Journal of Statistical
 Software} \textbf{23,} 1--40 (2007).
 
-35.Steiger, J. H. Tests for comparing elements of a correlation matrix.
+\hypertarget{ref-Steiger1980}{}
+35. Steiger, J. H. Tests for comparing elements of a correlation matrix.
 \emph{Psychological Bulletin} \textbf{87,} 245--251 (1980).
 
-36.Revelle, W. \emph{psych: Procedures for Psychological, Psychometric,
+\hypertarget{ref-Revelle2015}{}
+36. Revelle, W. \emph{psych: Procedures for Psychological, Psychometric,
 and Personality Research}. (Northwestern University, 2015). at
 \textless{}\url{http://cran.r-project.org/package=psych}\textgreater{}
 
-37.Relton, C. L. \& {Davey Smith}, G. Two-step epigenetic Mendelian
+\hypertarget{ref-Relton2012}{}
+37. Relton, C. L. \& Davey Smith, G. Two-step epigenetic Mendelian
 randomization: a strategy for establishing the causal role of epigenetic
 processes in pathways to disease. \emph{International journal of
 epidemiology} \textbf{41,} 161--76 (2012).
 
-38.Burgess, S., Freitag, D. F., Khan, H., Gorman, D. N. \& Thompson, S.
+\hypertarget{ref-Burgess2014a}{}
+38. Burgess, S., Freitag, D. F., Khan, H., Gorman, D. N. \& Thompson, S.
 G. Using multivariable Mendelian randomization to disentangle the causal
 effects of lipid fractions. \emph{PloS one} \textbf{9,} e108891 (2014).
 
-39.Burgess, S., Daniel, R. M., Butterworth, A. S. \& Thompson, S. G.
+\hypertarget{ref-Burgess2015}{}
+39. Burgess, S., Daniel, R. M., Butterworth, A. S. \& Thompson, S. G.
 Network Mendelian randomization: using genetic variants as instrumental
 variables to investigate mediation in causal pathways.
 \emph{International journal of epidemiology} \textbf{44,} 484--95
 (2015).
 
-40.Varbo, A. \emph{et al.} Remnant cholesterol, low-density lipoprotein
+\hypertarget{ref-Varbo2015}{}
+40. Varbo, A. \emph{et al.} Remnant cholesterol, low-density lipoprotein
 cholesterol, and blood pressure as mediators from obesity to ischemic
 heart disease. \emph{Circulation research} \textbf{116,} 665--73 (2015).
 
-41.Bowden, J., {Davey Smith}, G. \& Burgess, S. Mendelian randomization
+\hypertarget{ref-Bowden2015}{}
+41. Bowden, J., Davey Smith, G. \& Burgess, S. Mendelian randomization
 with invalid instruments: effect estimation and bias detection through
 Egger regression. \emph{International Journal of Epidemiology}
 \textbf{In press,} (2015).
+
 
 \end{document}
