@@ -502,7 +502,6 @@ labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
 
 ## ---- shakhbazov ----
 
-
 get_r_from_pn <- function(p, n)
 {
 	Fval <- qf(p, 1, n-1, low=FALSE)
@@ -527,6 +526,49 @@ get_r_from_pn <- function(p, n)
 	return(R2)
 }
 
+steiger_sensitivity <- function(rgx_o, rgy_o)
+{
+	if(rgy_o > rgx_o)
+	{
+		a <- rgy_o
+		b <- rgx_o
+	} else {
+		a <- rgx_o
+		b <- rgy_o
+	}
+
+	d <- expand.grid(rxx_o=seq(rgx_o,1,length.out=70), ryy_o=seq(rgy_o,1,length.out=70), type=c("A","B"))
+	d$rgy <- rgy_o / d$ryy_o
+	d$rgx <- rgx_o / d$rxx_o
+	d$z <- d$rgy - d$rgx
+	d$z[d$type=="A"] <- 0
+	temp <- wireframe(
+		z ~ rxx_o * ryy_o, 
+		groups=type, 
+		data=d, 
+		scales=list(arrows=FALSE), 
+		col.groups = colorRampPalette(c("red", "blue"))(2), 
+		drape=FALSE, 
+		xlab=expression(rho[xx[o]]), 
+		ylab=expression(rho[yy[o]]),
+		zlab=expression(rho[gy]-rho[gx])
+	)
+
+
+	vz <- a * log(a) - b * log(b) + a*b*(log(b)-log(a))
+	vz0 <- -2*b - b * log(a) - a*b*log(a) + 2*a*b
+
+	sensitivity <- vz0 / (2 * vz0 + abs(vz))
+
+	return(list(
+		vz = vz,
+		vz0 = vz0,
+		sensitivity = sensitivity,
+		pl = temp
+	))
+}
+
+
 mr_steiger <- function(p_exp, p_out, n_exp, n_out) 
 {
 	require(psych)
@@ -537,8 +579,20 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out)
 	n_out <- n_out[!index]
 	r_exp <- get_r_from_pn(p_exp, n_exp)
 	r_out <- get_r_from_pn(p_out, n_out)
+
+	sensitivity <- steiger_sensitivity(r_exp, r_out)
+
 	rtest <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp, r34 = r_out)
-	l <- list(r2_exp = r_exp^2, r2_out = r_out^2, correct_causal_direction = r_exp > r_out, steiger_test = rtest$p)
+	l <- list(
+		r2_exp = r_exp^2, 
+		r2_out = r_out^2, 
+		correct_causal_direction = r_exp > r_out, 
+		steiger_test = rtest$p,
+		vz = sensitivity$vz,
+		vz0 = sensitivity$vz0,
+		sensitivity = sensitivity$sensitivity,
+		sensitivity_plot = sensitivity$pl
+	)
 	return(l)
 }
 
@@ -572,6 +626,7 @@ for(i in 1:nrow(qtl))
 	qtl$r_meth[i] <- l$r2_exp
 	qtl$dir[i] <- l$correct_causal_direction
 	qtl$dir_p[i] <- l$steiger_test
+	qtl$sensitivity[i] <- l$sensitivity
 
 	if(qtl$AL1_meth[i] != qtl$AL1_expr[i])
 	{
@@ -610,9 +665,10 @@ shakhtab <- dplyr::group_by(shakhbazov, dir) %>%
 		n = n(),
 		nsig = sum(dir_p < 0.05),
 		pos = sum(mr_eff > 0) / n(),
-		corr = cor(pearson^2, mr_r^2)
+		corr = cor(pearson^2, mr_r^2),
+		sens = mean(sensitivity, na.rm=TRUE)
 	) %>% as.data.frame()
-names(shakhtab) <- c("Causal direction", "Count", "$p_{Steiger} < 0.05$", "P(+ve effect)", "$cor(\\rho_{MR}, \\rho_{P})$")
+names(shakhtab) <- c("Causal direction", "Count", "$p_{Steiger} < 0.05$", "P(+ve effect)", "$cor(\\rho_{MR}, \\rho_{P})$", "Mean sensitivity")
 
 
 shakhtest3 <- binom.test(sum(shakhbazov$dir == "Methylation causes Expression" & shakhbazov$dir_p < 0.05), sum(shakhbazov$dir_p < 0.05), 0.5)

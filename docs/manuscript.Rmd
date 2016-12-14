@@ -1,5 +1,5 @@
 ---
-title: "Determining the existance and direction of causality in the face of measurement error"
+title: "Determining the existence and direction of causality in the face of measurement error"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   pdf_document:
@@ -56,7 +56,7 @@ fig_nums(
 
 fig_nums(
 	"d_relationship_figure", 
-	caption="Plots depicting the parameter space in which the function $d = cor(x, x_O) - cor(x,y)cor(y, y_O)$ is negative. When $d$ is negative the Steiger test is liable to infer the wrong direction of causality. $d$ is plotted on the y axis, with measurement precision of $x$ ($cor(x,x_O)$) on the x-axis. Higher measurement precision of $y$ ($cor(y,y_O)$) is depicted by lighter coloured lines, and columns of boxes are for different true values of $cor(x,y)$. Shaded regions show the parameter space where $d$ is negative. The graph shows that for the majority of the parameter space of the function, $d$ is positive, especially where causal relationships are relatively weak.",
+	caption="Plots depicting the parameter space in which the function $d = cor(x, x_o) - cor(x,y)cor(y, y_o)$ is negative. When $d$ is negative the Steiger test is liable to infer the wrong direction of causality. $d$ is plotted on the y axis, with measurement precision of $x$ ($cor(x,x_o)$) on the x-axis. Higher measurement precision of $y$ ($cor(y,y_o)$) is depicted by lighter coloured lines, and columns of boxes are for different true values of $cor(x,y)$. Shaded regions show the parameter space where $d$ is negative. The graph shows that for the majority of the parameter space of the function, $d$ is positive, especially where causal relationships are relatively weak.",
 	display=FALSE
 )
 
@@ -69,7 +69,7 @@ fig_nums(
 
 fig_nums(
 	"cit_mr_comparison_figure", 
-	caption="Outcomes were simulated to be causally influenced by exposures, with varying degrees of measurement error applied to both. CIT and MR were used to infer evidence for causality between the exposure and outcome, and to infer the direction of causality. The value of $d = \\rho_{x, x_O} - \\rho_{x,y}\\rho_{y,y_O}$, such that when $d$ is negative we expect the Steiger test to be more likely to be wrong about the direction of causality. Rows of graphs represent the sample size used in the simulations. For the CIT method, outcome 1 denoted evidence for causality with correct model, outcomes 2 or 3 denoted evidence for causality with incorrect model, and outcome 4 denoted no evidence for causality.",
+	caption="Outcomes were simulated to be causally influenced by exposures, with varying degrees of measurement error applied to both. CIT and MR were used to infer evidence for causality between the exposure and outcome, and to infer the direction of causality. The value of $d = \\rho_{x, x_o} - \\rho_{x,y}\\rho_{y,y_o}$, such that when $d$ is negative we expect the Steiger test to be more likely to be wrong about the direction of causality. Rows of graphs represent the sample size used in the simulations. For the CIT method, outcome 1 denoted evidence for causality with correct model, outcomes 2 or 3 denoted evidence for causality with incorrect model, and outcome 4 denoted no evidence for causality.",
 	display=FALSE
 )
 
@@ -240,15 +240,15 @@ An advantage of using the Steiger test in the two sample context is that it can 
 
 ### Simulations
 
-Simulations were conducting by creating variables of sample size $n$ for the exposure $x$, the measured values of the exposure $x_O$, the outcome $y$, the measured values of the outcome $y_O$ and the instrument $g$. In all models $x$ causes $y$ and $g$ is an instrument for $x$. Each variable was simulated such that:
+Simulations were conducting by creating variables of sample size $n$ for the exposure $x$, the measured values of the exposure $x_o$, the outcome $y$, the measured values of the outcome $y_o$ and the instrument $g$. In all models $x$ causes $y$ and $g$ is an instrument for $x$. Each variable was simulated such that:
 
 $$
 \begin{aligned}
 g & \sim Binom(2, 0.5) \\
 x & = \alpha_g + \beta_g g + \epsilon_g \\
-x_O & = \alpha_{mx} + \beta_{mx} x + \epsilon_{mx} \\
+x_o & = \alpha_{mx} + \beta_{mx} x + \epsilon_{mx} \\
 y & = \alpha_x + \beta_x x + \epsilon_x \\
-y_O & = \alpha_{my} + \beta_{my} y + \epsilon_{my} \\
+y_o & = \alpha_{my} + \beta_{my} y + \epsilon_{my} \\
 \end{aligned}
 $$
 
@@ -278,7 +278,7 @@ Two sample MR [@Pierce2013] was performed using the summary statistics presented
 
 ### The influence of measurement error on mediation
 
-Measurement error of an exposure can be modeled as some transformation of the true value that leads to the observed value, $x_O = f(x)$. For example, we can define $f(x) = \alpha_{mx} + \beta_{mx} x + \epsilon_{mx}$, where $\alpha_{mx}$ and $\beta_{mx}$ influence the error in the measurement of $x$, and $\epsilon_{mx}$ represents the imprecision in the measurement of $x$. Here the true value of the exposure is partially explained by the genetic instrument, $g$, such that
+Measurement error of an exposure can be modeled as some transformation of the true value that leads to the observed value, $x_o = f(x)$. For example, we can define $f(x) = \alpha_{mx} + \beta_{mx} x + \epsilon_{mx}$, where $\alpha_{mx}$ and $\beta_{mx}$ influence the error in the measurement of $x$, and $\epsilon_{mx}$ represents the imprecision in the measurement of $x$. Here the true value of the exposure is partially explained by the genetic instrument, $g$, such that
 
 $$
 x = \alpha_g + \beta_g g + \epsilon_g
@@ -290,11 +290,11 @@ $$
 y = \alpha_x + \beta_x x + \epsilon_x
 $$
 
-where $\beta_x$ is the true effect of the exposure on the outcome. In the causal inference test (CIT), an omnibus p-value is generated from four hypothesis tests: 1) $g$ is associated with $x$; 2) $g$ is associated with $y$; 3) $x$ is associated with $y$; and 4) $g$ is independent of $y|x$. The 4th condition employs mediation for causal inference, and can be expressed as $cov(g, y - \hat{y}) = 0$, where $\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_O$. When measurement error is introduced it can be shown using basic covariance properties (Appendix 1) that
+where $\beta_x$ is the true effect of the exposure on the outcome. In the causal inference test (CIT), an omnibus p-value is generated from four hypothesis tests: 1) $g$ is associated with $x$; 2) $g$ is associated with $y$; 3) $x$ is associated with $y$; and 4) $g$ is independent of $y|x$. The 4th condition employs mediation for causal inference, and can be expressed as $cov(g, y - \hat{y}) = 0$, where $\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_o$. When measurement error is introduced it can be shown using basic covariance properties (Appendix 1) that
 
 $$
 \begin{aligned}
-cov(g, y - \hat{y}) & = cov(g, y_O) - cov(g, \hat{y}_O)  \\
+cov(g, y - \hat{y}) & = cov(g, y_o) - cov(g, \hat{y}_o)  \\
                     & = \beta_{my} \beta_g \beta_x var(g) - D \beta_{my} \beta_g \beta_x var(g)
 \end{aligned}
 $$
@@ -305,9 +305,9 @@ $$
 D = \frac{\beta^2_{mx} var(x)} {\beta^2_{mx} var(x) + var(\epsilon_{mx})}
 $$
 
-Thus an observational study will find $cov(g, y_O - \hat{y_O}) = 0$ when the true model is causal only when $D = 1$. Therefore, if there is any measurement error that incurs imprecision (i.e. $var(\epsilon_{mx}) \neq 0$) then there will remain an association between $g$ and $y_O | x$, which is in violation of the the 4th condition of the CIT. Note that linear transformation of $x$ or $y$ without any incurred imprecision is insufficient to lead to a violation of the test statistic assumptions.
+Thus an observational study will find $cov(g, y_o - \hat{y_o}) = 0$ when the true model is causal only when $D = 1$. Therefore, if there is any measurement error that incurs imprecision (i.e. $var(\epsilon_{mx}) \neq 0$) then there will remain an association between $g$ and $y_o | x$, which is in violation of the the 4th condition of the CIT. Note that linear transformation of $x$ or $y$ without any incurred imprecision is insufficient to lead to a violation of the test statistic assumptions.
 
-We performed simulations to verify that this problem does arise using the CIT method. `r cfig("cit_measurement_error_figure")` shows that when there is no measurement error in the exposure or outcome variables ($\rho_{x, x_O}=1$) the CIT is reliable in identifying the correct causal direction. However, as measurement error increases in the exposure variable, eventually the CIT is more likely to infer a robust causal association in the wrong direction. Also of concern here is that increasing sample size does not solve the issue, indeed it only strengthens the apparent evidence for the incorrect inference.
+We performed simulations to verify that this problem does arise using the CIT method. `r cfig("cit_measurement_error_figure")` shows that when there is no measurement error in the exposure or outcome variables ($\rho_{x, x_o}=1$) the CIT is reliable in identifying the correct causal direction. However, as measurement error increases in the exposure variable, eventually the CIT is more likely to infer a robust causal association in the wrong direction. Also of concern here is that increasing sample size does not solve the issue, indeed it only strengthens the apparent evidence for the incorrect inference.
 
 
 ### Using MR to infer the existence of causality
@@ -316,13 +316,13 @@ When selecting an instrument $g$ that has a direct influence on $x$ where $x$ is
 
 $$
 \begin{aligned}
-\beta_{MR} = \frac{\beta_{y_O}}{\beta_g} & = \frac{cov(y_O, g)}{cov(x_O, g)} \\
+\beta_{MR} = \frac{\beta_{y_o}}{\beta_g} & = \frac{cov(y_o, g)}{cov(x_o, g)} \\
                                          & = \frac{\beta_{my} \beta_x cov(x, g)} {\beta_{mx} cov(x, g)} \\
                                          & = \frac{\beta_{my}} {\beta_{mx}} \beta_x
 \end{aligned}
 $$
 
-Thus we obtain an estimate of the effect of $x_O$ on $y$ that is scaled by the measurement error in $x$ and $y$, but is unrelated to measurement imprecision. Measurement error and imprecision are likely to reduce the power of MR inferring a causal association (increased false negative rate), but importantly the evidence for causal association, based on rejecting the null hypothesis that $\beta_{MR} = 0$, is not inflated when the null hypothesis is true.
+Thus we obtain an estimate of the effect of $x_o$ on $y$ that is scaled by the measurement error in $x$ and $y$, but is unrelated to measurement imprecision. Measurement error and imprecision are likely to reduce the power of MR inferring a causal association (increased false negative rate), but importantly the evidence for causal association, based on rejecting the null hypothesis that $\beta_{MR} = 0$, is not inflated when the null hypothesis is true.
 
 We performed simulations to compare the performance of MR against CIT in detecting a causal association between simulated variables under different levels of imprecision simulated in the exposure. `r cfig("causality_exists_tpr")` shows the true positive rates between the CIT and MR for detecting a causal association. We observe that the CIT has lower power in all cases, with performance declining as measurement imprecision increases in the exposure. The performance of MR in detecting an association is unrelated to measurement error in. Measurement error in the outcome does not induce a substantive difference in performance between CIT and MR.
 
@@ -331,7 +331,7 @@ We performed simulations to compare the performance of MR against CIT in detecti
 
 If we do not know whether the SNP $g$ has a direct influence on $x$ or $y$ then further efforts are required. If $x$ causes $y$ and $g$ is a valid instrument for $x$ then we expect that $\rho_{g,x}$ to be greater than $\rho_{g,y}$ because the association of $g$ with $y$ is the proportion of the true causal association between $x$ and $y$ scaled by the association between $g$ and $x$. We can use the Steiger test of correlated correlations to formally test the difference in magnitude of $\rho_{g,x}$ and $\rho_{g,y}$, where the variable with the largest correlation on $g$ is deemed to be the variable which is imposing the causal effect.
 
-This is a simple method to orient the direction of causality in an MR analysis when the underlying biology of the SNP is not fully understood. But it can be shown that in the presence of measurement imprecision, $d = \rho_{x, x_O} - \rho_{x,y}\rho_{y,y_O}$ (Appendix 2), where $d$ is a metric of the degree to which the Steiger test is liable to provide the wrong estimate (*i.e.* if $d>0$ then the Steiger test is likely to be correct about the causal direction). Thus it is important to note that under certain conditions when measurement imprecision is present the Steiger test could make erroneous inference about the causal direction because the value of $d$ is not restricted to being greater than 0. However `r cfig("d_relationship_figure")` shows that when there is no measurement error in $y$, the Steiger test is unlikely to infer the wrong direction of causality even if there is measurement error in $x$. It also shows that in most cases where $y$ is measured with error, especially when the causal effect between $x$ and $y$ is not very large, the condition of $d > 0$ is satisfied.
+This is a simple method to orient the direction of causality in an MR analysis when the underlying biology of the SNP is not fully understood. But it can be shown that in the presence of measurement imprecision, $d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}$ (Appendix 2), where $d$ is a metric of the degree to which the Steiger test is liable to provide the wrong estimate (*i.e.* if $d>0$ then the Steiger test is likely to be correct about the causal direction). Thus it is important to note that under certain conditions when measurement imprecision is present the Steiger test could make erroneous inference about the causal direction because the value of $d$ is not restricted to being greater than 0. However `r cfig("d_relationship_figure")` shows that when there is no measurement error in $y$, the Steiger test is unlikely to infer the wrong direction of causality even if there is measurement error in $x$. It also shows that in most cases where $y$ is measured with error, especially when the causal effect between $x$ and $y$ is not very large, the condition of $d > 0$ is satisfied.
 
 We performed simulations to explore the performance of this approach in comparison to CIT in terms of the rate at which a strong causal relationship is obtained for the correct direction of causality, and the rate at which a strong causal relationship is obtained where the reported direction of causality is incorrect. `r cfig("cit_mr_comparison_figure")` shows that when $d < 0$ the MR analysis is indeed liable to infer the wrong direction of causality, and that this erroneous result is more likely to occur with increasing sample size. However, the CIT is in general much more fallable to reporting a robust causal association for the wrong direction of causality. When $d > 0$ is satisfied we observe that in most cases the MR method has greater power to obtain evidence for causality than CIT, and always obtains the correct direction of causality.
 
@@ -420,21 +420,21 @@ We assume the following model
 $$
 \begin{aligned}
 x   & = \alpha_g + \beta_g g + \epsilon_g \\
-x_O & = \alpha_{mx} + \beta_{mx} x + \epsilon_{mx} \\
+x_o & = \alpha_{mx} + \beta_{mx} x + \epsilon_{mx} \\
 y   & = \alpha_x + \beta_x x + \epsilon_x \\
-y_O & = \alpha_{my} + \beta_{my} y + \epsilon_{my}
+y_o & = \alpha_{my} + \beta_{my} y + \epsilon_{my}
 \end{aligned}
 $$
 
-where $x$ is the exposure on the outcome $y$, $g$ is an instrument that has a direct effect on $x$, $x_O$ is the measured quantity of $x$, where measurement error is incurred from linear transformation in $\alpha_{mx}$ and $\beta_{mx}$ and imprecision from $\epsilon_{mx}$, and $y_O$ is the measured quantity of $y$, where measurement error is incurred from linear transformation in $\alpha_{my}$ and $\beta_{my}$ and imprecision from $\epsilon_{my}$. Our objective is to estimate the expected magnitude of association between $g$ and $y$ after conditioning on $x$. Under the CIT, this is expected to be $cov(g, y_O - \hat{y}_O) = 0$ when $x$ causes $y$, where $\hat{y}_O = \hat{a}_{x_O} + \hat{\beta}_{x_O} x_O$ is the predicted value of $y_O$ using the measured value of $x_O$.
+where $x$ is the exposure on the outcome $y$, $g$ is an instrument that has a direct effect on $x$, $x_o$ is the measured quantity of $x$, where measurement error is incurred from linear transformation in $\alpha_{mx}$ and $\beta_{mx}$ and imprecision from $\epsilon_{mx}$, and $y_o$ is the measured quantity of $y$, where measurement error is incurred from linear transformation in $\alpha_{my}$ and $\beta_{my}$ and imprecision from $\epsilon_{my}$. Our objective is to estimate the expected magnitude of association between $g$ and $y$ after conditioning on $x$. Under the CIT, this is expected to be $cov(g, y_o - \hat{y}_o) = 0$ when $x$ causes $y$, where $\hat{y}_o = \hat{a}_{x_o} + \hat{\beta}_{x_o} x_o$ is the predicted value of $y_o$ using the measured value of $x_o$.
 
-We can split $cov(g, y_O - \hat{y}_O)$ into two parts, $cov(g, y_O)$ and $cov(g, \hat{y}_O)$.
+We can split $cov(g, y_o - \hat{y}_o)$ into two parts, $cov(g, y_o)$ and $cov(g, \hat{y}_o)$.
 
 **Part 1**
 
 $$
 \begin{aligned}
-cov(g, y_O) & = cov(g, \beta_{my} y) \\
+cov(g, y_o) & = cov(g, \beta_{my} y) \\
             & = cov(g, \beta_{my} \beta_x x) \\
             & = cov(g, \beta_{my} \beta_x \beta_g g) \\
             & = \beta_{my} \beta_x \beta_g var(g)
@@ -445,10 +445,10 @@ $$
 
 $$
 \begin{aligned}
-cov(g, \hat{y}_O) & = cov(g, \hat{\beta}_{x_O} x_O) \\
-                  & = cov(g, \hat{\beta}_{x_O} \beta_{mx} x) \\
-                  & = cov(g, \hat{\beta}_{x_O} \beta_{mx} \beta_g g) \\
-                  & = \hat{\beta}_{x_O} \beta_{mx} \beta_g var(g)
+cov(g, \hat{y}_o) & = cov(g, \hat{\beta}_{x_o} x_o) \\
+                  & = cov(g, \hat{\beta}_{x_o} \beta_{mx} x) \\
+                  & = cov(g, \hat{\beta}_{x_o} \beta_{mx} \beta_g g) \\
+                  & = \hat{\beta}_{x_o} \beta_{mx} \beta_g var(g)
 \end{aligned}
 $$
 
@@ -456,7 +456,7 @@ Simpifying further
 
 $$
 \begin{aligned}
-\hat{\beta}_{x_O} & = \frac{cov(y_O, x_O)} {var(x_O)} \\
+\hat{\beta}_{x_o} & = \frac{cov(y_o, x_o)} {var(x_o)} \\
                   & = \frac{cov(\beta_{my} y, \beta_{mx} x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \\
                   & = \frac{\beta_{mx} \beta_{my} cov(y, x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \\
                   & = \frac{\beta_{mx} \beta_{my} \beta_x var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})}
@@ -467,7 +467,7 @@ which can be substituted back to give
 
 $$
 \begin{aligned}
-cov(g, \hat{y}_O) & = \frac{\beta_{my} \beta_x \beta_g var(g) \beta_{mx}^2 var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \\
+cov(g, \hat{y}_o) & = \frac{\beta_{my} \beta_x \beta_g var(g) \beta_{mx}^2 var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \\
                   & = \frac{\beta_{mx}^2 var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \times \beta_{my} \beta_x \beta_g var(g)
 \end{aligned}
 $$
@@ -476,11 +476,11 @@ Finally
 
 $$
 \begin{aligned}
-cov(g, y_O - \hat{y}_O) & = \beta_{my} \beta_x \beta_g var(g) - \frac{\beta_{mx}^2 var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_m)} \times \beta_{my} \beta_x \beta_g var(g)
+cov(g, y_o - \hat{y}_o) & = \beta_{my} \beta_x \beta_g var(g) - \frac{\beta_{mx}^2 var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_m)} \times \beta_{my} \beta_x \beta_g var(g)
 \end{aligned}
 $$
 
-thus $cov(g, y_O - \hat{y}_O) = 0$ if the measurement imprecision in $x_O$ is $var(\epsilon_m) = 0$. However if there is any imprecision then the condition $cov(g, y_O - \hat{y}_O) = 0$ will not hold.
+thus $cov(g, y_o - \hat{y}_o) = 0$ if the measurement imprecision in $x_o$ is $var(\epsilon_m) = 0$. However if there is any imprecision then the condition $cov(g, y_o - \hat{y}_o) = 0$ will not hold.
 
 \newpage
 
@@ -498,14 +498,14 @@ $$
 y = \alpha_2 + \beta_2 \hat{x} + e_2
 $$
 
-where $\hat{x} = \hat{\alpha}_1 + \hat{\beta}_1 g$. Writing in scale free terms, $\rho_{g, x}$ denotes the correlation between $g$ and the exposure variable $x$, and it is expected that $\rho_{g, x} > \rho_{g, y}$ because $\rho_{g, y} = \rho_{g, x}\rho_{x, y}$, where $\rho_{x, y}$ is the causal association between $x$ and $y$ (which is likely to be less than 1). In the presence of measurement error in $x$ and $y$, however, Steiger test will instead be assessing the inequality $\rho_{g, x_O} > \rho_{g, y_O}$, which can be simplified:
+where $\hat{x} = \hat{\alpha}_1 + \hat{\beta}_1 g$. Writing in scale free terms, $\rho_{g, x}$ denotes the correlation between $g$ and the exposure variable $x$, and it is expected that $\rho_{g, x} > \rho_{g, y}$ because $\rho_{g, y} = \rho_{g, x}\rho_{x, y}$, where $\rho_{x, y}$ is the causal association between $x$ and $y$ (which is likely to be less than 1). In the presence of measurement error in $x$ and $y$, however, Steiger test will instead be assessing the inequality $\rho_{g, x_o} > \rho_{g, y_o}$, which can be simplified:
 
 $$
 \begin{aligned}
-\rho_{g, x_O} & > \rho_{g, y_O} \\
-\rho_{g, x} \rho_{x, x_O} & > \rho_{g,y}\rho_{y,y_O}\\
-\rho_{g, x} \rho_{x, x_O} & > \rho_{g,x}\rho_{x,y}\rho_{y,y_O}\\
-\rho_{x, x_O} & > \rho_{x,y}\rho_{y,y_O}
+\rho_{g, x_o} & > \rho_{g, y_o} \\
+\rho_{g, x} \rho_{x, x_o} & > \rho_{g,y}\rho_{y,y_o}\\
+\rho_{g, x} \rho_{x, x_o} & > \rho_{g,x}\rho_{x,y}\rho_{y,y_o}\\
+\rho_{x, x_o} & > \rho_{x,y}\rho_{y,y_o}
 \end{aligned}
 $$
 
@@ -515,49 +515,42 @@ $$
 
 ## Appendix 3
 
-Sensitivity analysis for the Steiger test involves evaluating the probability that the inferred causal direction is incorrect due to differences in measurement error between the hypothesised exposure, $x$, and hypothesised outcome, $y$, variables. The objective is to calculate what the true $\rho_{g, x}$ and $\rho_{g, y}$ values would be given empirical estimates of $\rho_{g, x_O}$ and $\rho_{g, y_O}$ across all possible values of measurement error.
+The Steiger test is susceptible to inferring the wrong direction of causality under some measurement error parameters. For an observed association between the instrument $g$ and the measured exposure $x_o$, $\rho_{g,x_o}$, the association between $g$ and the true exposure (without measurement error) $x$, $\rho_{g,x} = \frac{\rho_{x,x_o}}{\rho_{g,x_o}}$ where the bounds $\rho_{g,x_o} \leq \rho_{x,x_o} \leq 1$ are the theoretical limits of the correlation between true and measured $x$. The same logic applies to the association between the instrument and the outcome variable.
+
+For the values $\rho_{g,x_o} = 0.3$ and $\rho_{g,y_o} = 0.05$, the possible true $\rho_{g,x}$ and $\rho_{g,y}$ enumerated for all possible values of measurement error can be visualised as so:
+
+```{r, fig.width=6, fig.height=6}
+
+sensitivity_example <- steiger_sensitivity(0.3, 0.05)
+sensitivity_example$pl
+
+```
+
+Here, where $z = \rho_{g,y} - \rho_{g,x} < 0$ the measurement error range in $x_o$ and $y_o$ will not change the qualitative inference of the direction of causality. To evaluate the sensitivity, $S$ of the Steiger test to measurement error, the objective is to calculate the proportion of the total absolute volume of this function that is above the $z = 0$ plane,
 
 $$
-\rho_{g,x} = \frac{\rho_{x,x_O}}{\rho_{g,x_O}}
+S = \frac{V_{z>0}}{2V_{z>0} + |V_{z}|}
 $$
 
-and
-
-$$
-\rho_{g,y} = \frac{\rho_{y,y_O}}{\rho_{g,y_O}}
-$$
-
-If $\rho_{g,x} > \rho_{g,y}$ then we infer that the causal direction is from exposure to outcome. Assume that all measurement error values for $x$ and $y$ are equally probable, the surface of possible values of this inequality is $z = \frac{\rho_{y,y_O}}{\rho_{g,y_O}} - \frac{\rho_{x,x_O}}{\rho_{g,x_O}}$, and the objective is to calculate $P(z > 0)$, which corresponds to the proportion of measurement error values that would lead to the Steiger test being incorrect.
-
-The surface area of $z$ across the domain $\rho_{g,y_O} \leq \rho_{y,y_O} \leq 1; \rho_{g,x_O} \leq \rho_{x,x_O} \leq 1$ is obtained from 
-
-$$
-\begin{aligned}
-S_z & = \int^1_{\rho_{g,x_o}} \int^1_{\rho_{g,y_o}} \sqrt{  \frac{\partial}{\partial \rho_{x,x_o}} \left (\frac{\rho_{g,x_O}}{\rho_{x,x_O}} \right )^2 +  \left (\frac{\rho_{g,y_O}}{\rho_{y,y_O}} \right )^2   +1 }\, dydx \\
-& = \int^1_{\rho_{g,x_o}} \int^1_{\rho_{g,y_o}} \sqrt{ \frac{\rho_{g,x_O}^2}{\rho_{x,x_O}^4} + \frac{\rho_{g,y_O}^2}{\rho_{y,y_O}^4} + 1}\, dydx
-\end{aligned}
-$$
-
-and the proportion of the surface for which $z > 0$ is obtained from
+$V_{z}$, the total volume of the function, can be obtained analytically by solving the double integral:
 
 $$
 \begin{aligned}
-S_{z>0} = \int^1_{\rho_{g,x_o}} \int^{R}_{\rho_{g,y_o}} \sqrt{ \frac{\rho_{g,x_O}^2}{\rho_{x,x_O}^4} + \frac{\rho_{g,y_O}^2}{\rho_{y,y_O}^4} + 1}\, dydx
+V_z & = \int^1_{\rho_{g,x_o}} \int^1_{\rho_{g,y_o}} \frac{\rho_{g,y_o}}{\rho_{y,y_o}} - \frac{\rho_{g,x_o}}{\rho_{x,x_o}}\,\,\,\, d\rho_{y,y_o}d\rho_{x,x_o} \\
+& = \rho_{g,x_o}log(\rho_{g,x_o}) - \rho_{g,y_o}log(\rho_{g,y_o}) + \rho_{g,x_o}\rho_{g,y_o}(log(\rho_{g,y_o})-log(\rho_{g,x_o}))
 \end{aligned}
 $$
 
-where $R$ is the function for which $0 = \frac{\rho_{y,y_O}}{\rho_{g,y_O}} - \frac{\rho_{x,x_O}}{\rho_{g,x_O}}$, i.e.
+$V_{z>0}$, the proportion of the volume that lies above the $z=0$ plane, can also be obtained analytically. The region of this volume is bound by the values of $\rho_{x,x_o}$ and $\rho_{y,y_o}$ where $0 = \rho_{g,y} - \rho_{g,x}$, which can be expanded to $\rho_{y,y_o} = \rho_{g,y_o}\rho_{x,x_o} / \rho_{g,x_o}$. Hence,
 
 $$
-R = \frac{\rho_{g,y_o}\rho_{g,x}}{\rho_{g,x_o}}
+\begin{aligned}
+V_{z>0} & = \int^1_{\rho_{g,x_o}} \int^{\frac{\rho_{g,y_o}\rho_{x,x_o}}{\rho_{g,x_o}}}_{\rho_{g,y_o}} \frac{\rho_{g,y_o}}{\rho_{y,y_o}} - \frac{\rho_{g,x_o}}{\rho_{x,x_o}}\,\,\,\, d\rho_{y,y_o}d\rho_{x,x_o} \\
+& = 2\rho_{g,x_o}\rho_{g,y_o} - 2\rho_{g,y_o} - \rho_{g,y_o}log(\rho_{g,x_o}) - \rho_{g,x_o}\rho_{g,y_o}log(\rho_{g,x_o})
+\end{aligned}
 $$
 
-Finally, the probability that the inference of $x \rightarrow y$ obtained from the Steiger test is incorrect due to measurement error is obtained from
+$S$ can take values from 0 to 0.5, where low values suggest low sensitivity of the Steiger test to measurement error. For the values used to plot the function above, $\rho_{g,x_o} = 0.3$ and $\rho_{g,y_o} = 0.05$, we obtain $S = `r round(sensitivity_example$sensitivity,3)`$. Hence, the majority of the parameter space of measurement error will not change the inferred causal direction of $x \rightarrow y$ for these values.
 
-$$
-P(M) = \frac{S_{z>0}}{S_z}
-$$
-
-$P(M)$ can range from 0 to 1, where a small value indicates that the Steiger test is relatively insensitive to measurement error. This value is estimated through simulation.
 
 ## References

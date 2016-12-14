@@ -257,7 +257,6 @@ c = xy
 library(lattice)
 
 
-
 rgx_o <- 0.7
 rgy_o <- 0.2
 
@@ -267,7 +266,7 @@ d$rgx <- rgx_o / d$rxx_o
 d$z <- d$rgy - d$rgx
 d$z[d$type=="A"] <- 0
 d$col <- d$z > 0
-wireframe(z ~ ryy_o * rxx_o, groups=type, data=d, scales=list(arrows=FALSE), col.groups = colorRampPalette(c("red", "blue"))(2), drape=FALSE, pretty=TRUE)
+temp <- wireframe(z ~ ryy_o * rxx_o, groups=type, data=d, scales=list(arrows=FALSE), col.groups = colorRampPalette(c("red", "blue"))(2), drape=FALSE, pretty=TRUE)
 
 0.6*0.8
 
@@ -326,44 +325,102 @@ plot(act ~ bin)
 
 
 
-a=0.3
-b=0.1
-x=0.5
-
-a/x^2 + x^2/(2*a) - x^2*b^2/(6*a) - (a*b/x^2 + b*x^2/(2*a) - x^2*b^2/(6*a*b^3))
-a/x^2 * (1-b) + x^2/(2*a) * (1 - b^2/3 - b + 1/(3*b))
-
-a/x^2 - a*b/x^2
-a/x^2 * (1-b)
-
-x^2/(2*a) - x^2*b^2/(6*a) - b*x^2/(2*a) - x^2*b^2 / (6*a*b^3)
-x^2/(2*a) * (1 - b^2/3 - 1/(3*b))
-
-
-
-
-optim.get_p_from_rn <- function(x, sample_size, pvalue)
+get_r_from_pn <- function(p, n)
 {
-	abs(-log10(get_p_from_rn(x, sample_size)) - -log10(pvalue))
+	Fval <- qf(p, 1, n-1, low=FALSE)
+	# print(Fval)
+	if(!is.finite(Fval))
+	{
+		get_p_from_rn <- function(r, n)
+		{
+			fval <- r * (n-2) / (1 - r)
+			pval <- pf(fval, 1, n-1, low=FALSE)
+			return(pval)
+		}
+		optim.get_p_from_rn <- function(x, sample_size, pvalue)
+		{
+			abs(-log10(get_p_from_rn(x, sample_size)) - -log10(pvalue))
+		}
+		R2 <- optim(0.1, optim.get_p_from_rn, sample_size=n, pvalue=p)$par
+		# print(R2)
+		return(R2)
+	}
+	R2 <- Fval / (n - 2 + Fval)
+	return(R2)
 }
 
-optim.get_p_from_rn(0.47, 860, 1e-120)
+steiger_sensitivity <- function(rgx_o, rgy_o)
+{
+	if(rgy_o > rgx_o)
+	{
+		a <- rgy_o
+		b <- rgx_o
+	} else {
+		a <- rgx_o
+		b <- rgy_o
+	}
 
-optim(0.1, optim.get_p_from_rn, sample_size=860, pvalue=1e-120)
+	d <- expand.grid(rxx_o=seq(rgx_o,1,length.out=70), ryy_o=seq(rgy_o,1,length.out=70), type=c("A","B"))
+	d$rgy <- rgy_o / d$ryy_o
+	d$rgx <- rgx_o / d$rxx_o
+	d$z <- d$rgy - d$rgx
+	d$z[d$type=="A"] <- 0
+	temp <- wireframe(
+		z ~ rxx_o * ryy_o, 
+		groups=type, 
+		data=d, 
+		scales=list(arrows=FALSE), 
+		col.groups = colorRampPalette(c("red", "blue"))(2), 
+		drape=FALSE, 
+		xlab=expression(rho[xx[o]]), 
+		ylab=expression(rho[yy[o]]),
+		zlab=expression(rho[gy]-rho[gx])
+	)
 
 
+	vz <- a * log(a) - b * log(b) + a*b*(log(b)-log(a))
+	vz0 <- -2*b - b * log(a) - a*b*log(a) + 2*a*b
 
-fr <- function(x) {   ## Rosenbrock Banana function
-	x1 <- x[1]
-	x2 <- x[2]
-	100 * (x2 - x1 * x1)^2 + (1 - x1)^2
+	sensitivity <- vz0 / (2 * vz0 + abs(vz))
+
+	return(list(
+		vz = vz,
+		vz0 = vz0,
+		sensitivity = sensitivity,
+		pl = temp
+	))
 }
-grr <- function(x) { ## Gradient of 'fr'
-	x1 <- x[1]
-	x2 <- x[2]
-	c(-400 * x1 * (x2 - x1 * x1) - 2 * (1 - x1),
-	200 *      (x2 - x1 * x1))
-}
-optim(c(1.1026,1.000506), fr)
 
-fr(c(1.1026,1.000506))
+
+mr_steiger <- function(p_exp, p_out, n_exp, n_out) 
+{
+	require(psych)
+	index <- any(is.na(p_exp)) | any(is.na(p_out)) | any(is.na(n_exp)) | any(is.na(n_out))
+	p_exp <- p_exp[!index]
+	p_out <- p_out[!index]
+	n_exp <- n_exp[!index]
+	n_out <- n_out[!index]
+	r_exp <- get_r_from_pn(p_exp, n_exp)
+	r_out <- get_r_from_pn(p_out, n_out)
+
+	sensitivity <- steiger_sensitivity(r_exp, r_out)
+
+	rtest <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp, r34 = r_out)
+	l <- list(
+		r2_exp = r_exp^2, 
+		r2_out = r_out^2, 
+		correct_causal_direction = r_exp > r_out, 
+		steiger_test = rtest$p,
+		vz = sensitivity$vz,
+		vz0 = sensitivity$vz0,
+		sensitivity = sensitivity$sensitivity,
+		sensitivity_plot = sensitivity$pl
+	)
+	return(l)
+}
+
+
+mr_steiger(1e-120, 1e-30, 900, 300)
+
+temp <- steiger_sensitivity(0.3, 0.05)
+pdf("")
