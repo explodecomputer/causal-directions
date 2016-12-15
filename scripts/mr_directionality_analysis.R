@@ -505,12 +505,11 @@ labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
 get_r_from_pn <- function(p, n)
 {
 	Fval <- qf(p, 1, n-1, low=FALSE)
-	# print(Fval)
 	if(!is.finite(Fval))
 	{
-		get_p_from_rn <- function(r, n)
+		get_p_from_r2n <- function(r2, n)
 		{
-			fval <- r * (n-2) / (1 - r)
+			fval <- r2 * (n-2) / (1 - r2)
 			pval <- pf(fval, 1, n-1, low=FALSE)
 			return(pval)
 		}
@@ -519,11 +518,10 @@ get_r_from_pn <- function(p, n)
 			abs(-log10(get_p_from_rn(x, sample_size)) - -log10(pvalue))
 		}
 		R2 <- optim(0.1, optim.get_p_from_rn, sample_size=n, pvalue=p)$par
-		# print(R2)
 		return(R2)
 	}
 	R2 <- Fval / (n - 2 + Fval)
-	return(R2)
+	return(sqrt(R2))
 }
 
 steiger_sensitivity <- function(rgx_o, rgy_o)
@@ -537,7 +535,7 @@ steiger_sensitivity <- function(rgx_o, rgy_o)
 		b <- rgy_o
 	}
 
-	d <- expand.grid(rxx_o=seq(rgx_o,1,length.out=70), ryy_o=seq(rgy_o,1,length.out=70), type=c("A","B"))
+	d <- expand.grid(rxx_o=seq(rgx_o,1,length.out=50), ryy_o=seq(rgy_o,1,length.out=50), type=c("A","B"))
 	d$rgy <- rgy_o / d$ryy_o
 	d$rgx <- rgx_o / d$rxx_o
 	d$z <- d$rgy - d$rgx
@@ -554,7 +552,6 @@ steiger_sensitivity <- function(rgx_o, rgy_o)
 		zlab=expression(rho[gy]-rho[gx])
 	)
 
-
 	vz <- a * log(a) - b * log(b) + a*b*(log(b)-log(a))
 	vz0 <- -2*b - b * log(a) - a*b*log(a) + 2*a*b
 
@@ -569,7 +566,7 @@ steiger_sensitivity <- function(rgx_o, rgy_o)
 }
 
 
-mr_steiger <- function(p_exp, p_out, n_exp, n_out) 
+mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_xxo = 1, r_yyo=1) 
 {
 	require(psych)
 	index <- any(is.na(p_exp)) | any(is.na(p_out)) | any(is.na(n_exp)) | any(is.na(n_out))
@@ -580,14 +577,22 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out)
 	r_exp <- get_r_from_pn(p_exp, n_exp)
 	r_out <- get_r_from_pn(p_out, n_out)
 
+	r_exp_adj <- sqrt(r_exp^2 / r_xxo^2)
+	r_out_adj <- sqrt(r_out^2 / r_yyo^2)
+
 	sensitivity <- steiger_sensitivity(r_exp, r_out)
 
 	rtest <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp, r34 = r_out)
+	rtest_adj <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp_adj, r34 = r_out_adj)
 	l <- list(
 		r2_exp = r_exp^2, 
 		r2_out = r_out^2, 
+		r2_exp_adj = r_exp_adj^2, 
+		r2_out_adj = r_out_adj^2, 
 		correct_causal_direction = r_exp > r_out, 
 		steiger_test = rtest$p,
+		correct_causal_direction_adj = r_exp_adj > r_out_adj, 
+		steiger_test_adj = rtest_adj$p,
 		vz = sensitivity$vz,
 		vz0 = sensitivity$vz0,
 		sensitivity = sensitivity$sensitivity,
@@ -612,6 +617,16 @@ qtl <- qtl[order(qtl$PVALUE_expr), ]
 qtl <- subset(qtl, !duplicated(paste0(meth_ind, exp_ind)))
 cors <- read.csv("../data/12864_2016_2498_MOESM8_ESM.csv")
 
+me <- expand.grid(rxx_o=c(0.5,0.75,1), ryy_o=c(0.5,0.75,1))
+qtl <- group_by(me, rxx_o, ryy_o) %>%
+	do({
+		x <- .
+		y <- qtl
+		y$rxx_o <- x$rxx_o[1]
+		y$ryy_o <- x$ryy_o[1]
+		return(y)
+	})
+
 qtl$r_exp <- NA
 qtl$r_meth <- NA
 qtl$dir <- NA
@@ -619,13 +634,21 @@ qtl$dir_p <- NA
 qtl$mr_eff <- NA
 qtl$mr_se <- NA
 qtl$mr_p <- NA
+
+
 for(i in 1:nrow(qtl))
 {
-	l <- mr_steiger(qtl$PVALUE_meth[i], qtl$PVALUE_expr[i], 610, 862)
-	qtl$r_exp[i] <- l$r2_out
-	qtl$r_meth[i] <- l$r2_exp
-	qtl$dir[i] <- l$correct_causal_direction
-	qtl$dir_p[i] <- l$steiger_test
+	l <- mr_steiger(
+		qtl$PVALUE_meth[i], 
+		qtl$PVALUE_expr[i], 
+		610, 862,
+		qtl$rxx_o[i],
+		qtl$ryy_o[i]
+	)
+	qtl$r_exp[i] <- l$r2_out_adj
+	qtl$r_meth[i] <- l$r2_exp_adj
+	qtl$dir[i] <- l$correct_causal_direction_adj
+	qtl$dir_p[i] <- l$steiger_test_adj
 	qtl$sensitivity[i] <- l$sensitivity
 
 	if(qtl$AL1_meth[i] != qtl$AL1_expr[i])
@@ -660,10 +683,10 @@ shakhbazov$dir[shakhbazov$dir=="FALSE"] <- "Expression causes Methylation"
 shakhtest1 <- fisher.test(table(sign(shakhbazov$mr_eff), shakhbazov$dir))
 shakhtest2 <- fisher.test(table(sign(shakhbazov$mr_eff[shakhbazov$dir_p < 0.05]), shakhbazov$dir[shakhbazov$dir_p < 0.05]))
 
-shakhtab <- dplyr::group_by(shakhbazov, dir) %>%
+shakhtab <- dplyr::group_by(shakhbazov, rxx_o, ryy_o, dir) %>%
 	dplyr::summarise(
 		n = n(),
-		nsig = sum(dir_p < 0.05),
+		nsig = sum(dir_p < 0.05, na.rm=TRUE),
 		pos = sum(mr_eff > 0) / n(),
 		corr = cor(pearson^2, mr_r^2),
 		sens = mean(sensitivity, na.rm=TRUE)
