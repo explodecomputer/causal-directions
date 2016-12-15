@@ -497,9 +497,6 @@ facet_grid(noisea ~ noiseb) +
 labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
 
 
-
-
-
 ## ---- shakhbazov ----
 
 get_r_from_pn <- function(p, n)
@@ -515,7 +512,7 @@ get_r_from_pn <- function(p, n)
 		}
 		optim.get_p_from_rn <- function(x, sample_size, pvalue)
 		{
-			abs(-log10(get_p_from_rn(x, sample_size)) - -log10(pvalue))
+			abs(-log10(get_p_from_r2n(x, sample_size)) - -log10(pvalue))
 		}
 		R2 <- optim(0.1, optim.get_p_from_rn, sample_size=n, pvalue=p)$par
 		return(R2)
@@ -612,16 +609,16 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 	return(list(b = b, se = se, pval = pval, nsnp = 1))
 }
 
-qtl <- read.csv("../data/12864_2016_2498_MOESM16_ESM.csv")
-qtl <- qtl[order(qtl$PVALUE_expr), ]
-qtl <- subset(qtl, !duplicated(paste0(meth_ind, exp_ind)))
+qtl_orig <- read.csv("../data/12864_2016_2498_MOESM16_ESM.csv")
+qtl_orig <- qtl_orig[order(qtl_orig$PVALUE_expr), ]
+qtl_orig <- subset(qtl_orig, !duplicated(paste0(meth_ind, exp_ind)))
 cors <- read.csv("../data/12864_2016_2498_MOESM8_ESM.csv")
 
 me <- expand.grid(rxx_o=c(0.5,0.75,1), ryy_o=c(0.5,0.75,1))
 qtl <- group_by(me, rxx_o, ryy_o) %>%
 	do({
 		x <- .
-		y <- qtl
+		y <- qtl_orig
 		y$rxx_o <- x$rxx_o[1]
 		y$ryy_o <- x$ryy_o[1]
 		return(y)
@@ -634,8 +631,6 @@ qtl$dir_p <- NA
 qtl$mr_eff <- NA
 qtl$mr_se <- NA
 qtl$mr_p <- NA
-
-
 for(i in 1:nrow(qtl))
 {
 	l <- mr_steiger(
@@ -683,7 +678,7 @@ shakhbazov$dir[shakhbazov$dir=="FALSE"] <- "Expression causes Methylation"
 shakhtest1 <- fisher.test(table(sign(shakhbazov$mr_eff), shakhbazov$dir))
 shakhtest2 <- fisher.test(table(sign(shakhbazov$mr_eff[shakhbazov$dir_p < 0.05]), shakhbazov$dir[shakhbazov$dir_p < 0.05]))
 
-shakhtab <- dplyr::group_by(shakhbazov, rxx_o, ryy_o, dir) %>%
+shakhsummary <- dplyr::group_by(shakhbazov, rxx_o, ryy_o, dir) %>%
 	dplyr::summarise(
 		n = n(),
 		nsig = sum(dir_p < 0.05, na.rm=TRUE),
@@ -691,16 +686,38 @@ shakhtab <- dplyr::group_by(shakhbazov, rxx_o, ryy_o, dir) %>%
 		corr = cor(pearson^2, mr_r^2),
 		sens = mean(sensitivity, na.rm=TRUE)
 	) %>% as.data.frame()
-names(shakhtab) <- c("Causal direction", "Count", "$p_{Steiger} < 0.05$", "P(+ve effect)", "$cor(\\rho_{MR}, \\rho_{P})$", "Mean sensitivity")
 
 
 shakhtest3 <- binom.test(sum(shakhbazov$dir == "Methylation causes Expression" & shakhbazov$dir_p < 0.05), sum(shakhbazov$dir_p < 0.05), 0.5)
 shakhtest4 <- binom.test(sum(shakhbazov$dir == "Methylation causes Expression"), nrow(shakhbazov), 0.5)
 
 
+## ---- shakhplot ----
+
+temp <- gather(shakhsummary, key, value, n, nsig)
+temp$rxx_o_lab <- paste0("cor(X,Xo) = ", temp$rxx_o)
+temp$ryy_o_lab <- paste0("cor(Y,Yo) = ", temp$ryy_o)
+
+ggplot(temp, aes(x=key, y=value)) +
+geom_bar(stat="Identity", aes(fill=dir), position="stack") +
+facet_grid(rxx_o_lab ~ ryy_o_lab) 
+
+
+p1 <- ggplot(subset(temp, key=="n"), aes(x=rxx_o, y=value)) +
+geom_bar(stat="Identity", aes(fill=dir), position="stack") +
+geom_hline(yintercept = nrow(qtl_orig)/2) +
+facet_grid(. ~ ryy_o_lab) +
+labs(x="cor(X,Xo)")
+
+ggplot(subset(shakhbazov, rxx_o==1 & ryy_o==1), aes(x=sensitivity)) +
+geom_histogram(aes(fill=dir), alpha=0.5, bins=10)
+
+
+
 ## ---- shakhtab ----
 
-
+shakhtab <- shakhsummary
+names(shakhtab) <- c("$\\rho_{x,x_o}$", "$\\rho_{y,y_o}$", "Causal direction", "Count", "$p_{Steiger} < 0.05$", "P(+ve effect)", "$cor(\\rho_{MR}, \\rho_{P})$", "Mean sensitivity")
 kable(shakhtab)
 
 
@@ -714,7 +731,6 @@ table(shakhbazov$dir[shakhbazov$dir_p < 0.05])
 table(sign(shakhbazov$mr_eff), shakhbazov$dir)
 
 summary(glm(as.factor(dir) ~ mr_eff, shakhbazov[shakhbazov$dir_p < 0.05,], family="binomial"))
-
 
 library(ggplot2)
 ggplot(temp, aes(x=dir, y=pos)) +
