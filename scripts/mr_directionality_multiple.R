@@ -94,36 +94,23 @@ get_regressions <- function(X, y)
 	return(mat)
 }
 
-get_effects_from_system <- function(dat)
+get_effects_from_system <- function(dat, reverse=FALSE)
 {
 	inst_names <- grep("Z.", names(dat))
-	return(list(
+	l <- list(
 		A = get_regressions(dat[,inst_names], dat$A),
 		B = get_regressions(dat[,inst_names], dat$B),
 		Ap = get_regressions(dat[,inst_names], dat$Ap),
 		Bp = get_regressions(dat[,inst_names], dat$Bp)
-	))
+	)
+	if(reverse)
+	{
+		names(l) <- gsub("A", "C", names(l))
+		names(l) <- gsub("B", "A", names(l))
+		names(l) <- gsub("C", "B", names(l))
+	}
+	return(l)
 }
-
-dat <- make_system(2000, 100, sqrt(0.2), sqrt(0.1), sqrt(0.03), sqrt(0.5), sqrt(0.5), sqrt(0.5))
-out <- get_effects_from_system(dat)
-
-plot(out$B$b ~ out$A$b)
-
-
-dat <- make_system(20000, 40, sqrt(0.4), sqrt(0.2), sqrt(0.001), -0.05, NULL, sqrt(0.5), sqrt(0.5))
-out <- get_effects_from_system(dat)
-
-temp1 <- mr_ivw(out$A$b, out$B$b, out$A$se, out$B$se)
-temp2 <- mr_egger_regression(out$A$b, out$B$b, out$A$se, out$B$se)
-temp3 <- mr_weighted_median(out$A$b, out$B$b, out$A$se, out$B$se)
-
-plot(temp2$dat$b_out ~ temp2$dat$b_exp)
-abline(a=0,b=temp1$b)
-abline(a=temp2$b_i, b=temp2$b, col="red")
-temp1$b^2
-temp2$b^2
-
 
 make_adjusted_plot <- function(out)
 {	
@@ -159,23 +146,40 @@ make_adjusted_plot <- function(out)
 
 	s <- data.frame(intercept = c(0, temp2$b_i, 0),
 		slope = c(temp1$b, temp2$b, temp3$b),
+		pval = c(temp1$pval, temp2$pval, temp3$pval),
 		method=c("IVW", "MR Egger", "Weighted median")
 	)
 
 
-	ggplot(d, aes(x=b_exp, y=value)) +
+	p <- ggplot(d, aes(x=b_exp, y=value)) +
 	geom_line(aes(group=id)) +
 	facet_grid(. ~ method) +
 	geom_point(data=subset(d, key=="b_out")) +
 	geom_abline(data=s, aes(intercept=intercept, slope=slope), linetype="dotted") +
 	labs(x="Effect on exposure", y="Effect on outcome")
+	return(list(s=s, p=p))
 }
-make_adjusted_plot(out)
-
-plot(out$B$b ~ out$A$b)
-plot(out$B$b)
 
 
+dat <- make_system(20000, 40, sqrt(0.4), sqrt(0.2), sqrt(0.001), -0.05, NULL, sqrt(0.5), sqrt(0.5))
+out1 <- get_effects_from_system(dat, FALSE)
+out2 <- get_effects_from_system(dat, TRUE)
+make_adjusted_plot(out1)
+make_adjusted_plot(out2)
+dev.new()
+
+
+
+
+head(dat)
+
+
+r = cov(x,y) / sd(x)sd(y)
+b = cov(x,y) / var(x)
+
+pval + n -> r
+
+b = sd(x)sd(y) / r / var(x)
 
 
 
