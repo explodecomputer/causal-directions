@@ -78,19 +78,19 @@ get_regression <- function(x, y)
 	Fval <- (SSF) / (SSR/(n-2))
 	pval <- pf(Fval, 1, n-2, lowe=F)
 	se <- sqrt(sum(residuals^2) / ((n - 2) * sum((x-mean(x))^2)))
-	return(c(ahat, bhat, se, pval))
+	return(c(ahat, bhat, se, pval, n))
 }
 
 get_regressions <- function(X, y)
 {
 	nsnp <- ncol(X)
-	mat <- matrix(0, nsnp, 4)
+	mat <- matrix(0, nsnp, 5)
 	for(i in 1:nsnp)
 	{
 		mat[i,] <- get_regression(X[,i], y)
 	}
 	mat <- as.data.frame(mat)
-	names(mat) <- c("intercept", "b", "se", "pval")
+	names(mat) <- c("intercept", "b", "se", "pval", "n")
 	return(mat)
 }
 
@@ -161,25 +161,76 @@ make_adjusted_plot <- function(out)
 }
 
 
+get_predicted_effects <- function(out)
+{
+	temp1 <- mr_ivw(out$A$b, out$B$b, out$A$se, out$B$se)
+	temp2 <- mr_egger_regression(out$A$b, out$B$b, out$A$se, out$B$se)
+	temp3 <- mr_weighted_median(out$A$b, out$B$b, out$A$se, out$B$se, default_parameters())
+
+	d <- temp2$dat
+
+	pred_ivw <- d$b_exp * temp1$b
+	pred_egg <- d$b_exp * temp2$b + temp2$b_i
+	pred_wme <- d$b_exp * temp3$b
+
+	r_a <- get_r_from_pn(out$A$pval, out$A$n)
+	r <- get_r_from_pn(out$B$pval, out$B$n)
+	coef <- abs(r / out$B$b)
+	r_ivw <- pred_ivw * coef
+	r_egg <- pred_egg * coef
+	r_wme <- pred_wme * coef
+
+	return(data.frame(r_a^2, r^2, r_ivw^2, r_egg^2, r_wme^2))
+}
+
+
+get_r_from_pn <- function(p, n)
+{
+	get_p_from_r2n <- function(r2, n)
+	{
+		fval <- r2 * (n-2) / (1 - r2)
+		pval <- pf(fval, 1, n-1, low=FALSE)
+		return(pval)
+	}
+	optim.get_p_from_rn <- function(x, sample_size, pvalue)
+	{
+		abs(-log10(get_p_from_r2n(x, sample_size)) - -log10(pvalue))
+	}
+
+	if(length(p) > 1 & length(n) == 1)
+	{
+		message("Assuming n the same for all p values")
+		n <- rep(n, length(p))
+	}
+
+	Fval <- qf(p, 1, n-1, low=FALSE)
+	R2 <- Fval / (n - 2 + Fval)
+	index <- !is.finite(Fval)
+	if(any(index))
+	{
+		index <- which(index)
+		for(i in 1:length(index))
+		{
+			R2[index[i]] <- optim(0.001, optim.get_p_from_rn, sample_size=n[index[i]], pvalue=p[index[i]])$par
+		}
+	}
+	return(sqrt(R2))
+}
+
+
+
 dat <- make_system(20000, 40, sqrt(0.4), sqrt(0.2), sqrt(0.001), -0.05, NULL, sqrt(0.5), sqrt(0.5))
 out1 <- get_effects_from_system(dat, FALSE)
 out2 <- get_effects_from_system(dat, TRUE)
-make_adjusted_plot(out1)
-make_adjusted_plot(out2)
+(res1 <- make_adjusted_plot(out1))
 dev.new()
+(res2 <- make_adjusted_plot(out2))
 
 
 
+r1 <- get_predicted_effects(out1)
+colSums(r1)
+r2 <- get_predicted_effects(out2)
+colSums(r2)
 
-head(dat)
-
-
-r = cov(x,y) / sd(x)sd(y)
-b = cov(x,y) / var(x)
-
-pval + n -> r
-
-b = sd(x)sd(y) / r / var(x)
-
-
-
+# This doesn't work...
