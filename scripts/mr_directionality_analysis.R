@@ -501,25 +501,37 @@ labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
 
 get_r_from_pn <- function(p, n)
 {
-	Fval <- qf(p, 1, n-1, low=FALSE)
-	if(!is.finite(Fval))
+	get_p_from_r2n <- function(r2, n)
 	{
-		get_p_from_r2n <- function(r2, n)
-		{
-			fval <- r2 * (n-2) / (1 - r2)
-			pval <- pf(fval, 1, n-1, low=FALSE)
-			return(pval)
-		}
-		optim.get_p_from_rn <- function(x, sample_size, pvalue)
-		{
-			abs(-log10(get_p_from_r2n(x, sample_size)) - -log10(pvalue))
-		}
-		R2 <- optim(0.1, optim.get_p_from_rn, sample_size=n, pvalue=p)$par
-		return(R2)
+		fval <- r2 * (n-2) / (1 - r2)
+		pval <- pf(fval, 1, n-1, low=FALSE)
+		return(pval)
 	}
+	optim.get_p_from_rn <- function(x, sample_size, pvalue)
+	{
+		abs(-log10(get_p_from_r2n(x, sample_size)) - -log10(pvalue))
+	}
+
+	if(length(p) > 1 & length(n) == 1)
+	{
+		message("Assuming n the same for all p values")
+		n <- rep(n, length(p))
+	}
+
+	Fval <- qf(p, 1, n-1, low=FALSE)
 	R2 <- Fval / (n - 2 + Fval)
+	index <- !is.finite(Fval)
+	if(any(index))
+	{
+		index <- which(index)
+		for(i in 1:length(index))
+		{
+			R2[index[i]] <- optim(0.001, optim.get_p_from_rn, sample_size=n[index[i]], pvalue=p[index[i]])$par
+		}
+	}
 	return(sqrt(R2))
 }
+
 
 steiger_sensitivity <- function(rgx_o, rgy_o)
 {
