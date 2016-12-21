@@ -675,8 +675,10 @@ shakhbazov$dir <- as.character(shakhbazov$dir)
 shakhbazov$dir[shakhbazov$dir=="TRUE"] <- "Methylation causes Expression"
 shakhbazov$dir[shakhbazov$dir=="FALSE"] <- "Expression causes Methylation"
 
-shakhtest1 <- fisher.test(table(sign(shakhbazov$mr_eff), shakhbazov$dir))
-shakhtest2 <- fisher.test(table(sign(shakhbazov$mr_eff[shakhbazov$dir_p < 0.05]), shakhbazov$dir[shakhbazov$dir_p < 0.05]))
+real_index <- shakhbazov$rxx_o == 1 & shakhbazov$ryy_o == 1
+table(real_index)
+shakhtest1 <- fisher.test(table(sign(shakhbazov$mr_eff[real_index]), shakhbazov$dir[real_index]))
+shakhtest2 <- fisher.test(table(sign(shakhbazov$mr_eff[real_index & shakhbazov$dir_p < 0.05]), shakhbazov$dir[real_index & shakhbazov$dir_p < 0.05]))
 
 shakhsummary <- dplyr::group_by(shakhbazov, rxx_o, ryy_o, dir) %>%
 	dplyr::summarise(
@@ -688,8 +690,18 @@ shakhsummary <- dplyr::group_by(shakhbazov, rxx_o, ryy_o, dir) %>%
 	) %>% as.data.frame()
 
 
-shakhtest3 <- binom.test(sum(shakhbazov$dir == "Methylation causes Expression" & shakhbazov$dir_p < 0.05), sum(shakhbazov$dir_p < 0.05), 0.5)
-shakhtest4 <- binom.test(sum(shakhbazov$dir == "Methylation causes Expression"), nrow(shakhbazov), 0.5)
+shakhtest3 <- binom.test(sum(shakhbazov$dir == "Methylation causes Expression" & shakhbazov$dir_p < 0.05 & real_index), sum(shakhbazov$dir_p < 0.05 & real_index), 0.5)
+shakhtest4 <- binom.test(sum(shakhbazov$dir == "Methylation causes Expression" & real_index), sum(real_index), 0.5)
+library(dplyr)
+a <- subset(shakhbazov, dir_p < 0.05 & real_index) %>%
+	group_by(dir) %>%
+	mutate(mr_eff = as.numeric(scale(mr_eff)), pos = ifelse(mr_eff >=0, "Positive effect", "Negative effect"))
+
+ggplot(a, aes(x=mr_eff)) + 
+geom_density(aes(fill=dir), alpha=0.5, bw=0.4) + 
+facet_grid(. ~ pos, scale="free_x") +
+labs(x="Causal effect (unit/unit change)", fill="Causal direction")
+
 
 
 ## ---- shakhplot ----
@@ -708,9 +720,11 @@ geom_bar(stat="Identity", aes(fill=dir), position="stack") +
 geom_hline(yintercept = nrow(qtl_orig)/2) +
 facet_grid(. ~ ryy_o_lab) +
 labs(x="cor(X,Xo)")
-
+p1
 ggplot(subset(shakhbazov, rxx_o==1 & ryy_o==1), aes(x=sensitivity)) +
 geom_histogram(aes(fill=dir), alpha=0.5, bins=10)
+
+
 
 
 
