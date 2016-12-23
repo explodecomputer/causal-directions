@@ -7,6 +7,131 @@ suppressPackageStartupMessages(library(psych))
 suppressPackageStartupMessages(library(lattice))
 suppressPackageStartupMessages(library(latex2exp))
 suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(gridExtra))
+
+
+get_p_from_r2n <- function(r2, n)
+{
+	fval <- r2 * (n-2) / (1 - r2)
+	pval <- pf(fval, 1, n-1, low=FALSE)
+	return(pval)
+}
+
+get_r_from_pn <- function(p, n)
+{
+	optim.get_p_from_rn <- function(x, sample_size, pvalue)
+	{
+		abs(-log10(get_p_from_r2n(x, sample_size)) - -log10(pvalue))
+	}
+
+	if(length(p) > 1 & length(n) == 1)
+	{
+		message("Assuming n the same for all p values")
+		n <- rep(n, length(p))
+	}
+
+	Fval <- qf(p, 1, n-1, low=FALSE)
+	R2 <- Fval / (n - 2 + Fval)
+	index <- !is.finite(Fval)
+	if(any(index))
+	{
+		index <- which(index)
+		for(i in 1:length(index))
+		{
+			R2[index[i]] <- optim(0.001, optim.get_p_from_rn, sample_size=n[index[i]], pvalue=p[index[i]])$par
+		}
+	}
+	return(sqrt(R2))
+}
+
+
+steiger_sensitivity <- function(rgx_o, rgy_o)
+{
+	if(rgy_o > rgx_o)
+	{
+		a <- rgy_o
+		b <- rgx_o
+	} else {
+		a <- rgx_o
+		b <- rgy_o
+	}
+
+	d <- expand.grid(rxx_o=seq(rgx_o,1,length.out=50), ryy_o=seq(rgy_o,1,length.out=50), type=c("A","B"))
+	d$rgy <- d$ryy_o / rgy_o
+	d$rgx <- d$rxx_o / rgx_o
+	d$z <- d$rgy - d$rgx
+	d$z[d$type=="A"] <- 0
+	temp <- wireframe(
+		z ~ rxx_o * ryy_o, 
+		groups=type, 
+		data=d, 
+		scales=list(arrows=FALSE), 
+		col.groups = colorRampPalette(c("red", "blue"))(2), 
+		drape=FALSE, 
+		xlab=expression(rho[xx[o]]), 
+		ylab=expression(rho[yy[o]]),
+		zlab=expression(rho[gy]-rho[gx])
+	)
+
+	vz <- a * log(a) - b * log(b) + a*b*(log(b)-log(a))
+	vz0 <- -2*b - b * log(a) - a*b*log(a) + 2*a*b
+
+	sensitivity <- vz0 / (2 * vz0 + abs(vz))
+
+	return(list(
+		vz = vz,
+		vz0 = vz0,
+		sensitivity = sensitivity,
+		pl = temp
+	))
+}
+
+
+mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_xxo = 1, r_yyo=1) 
+{
+	require(psych)
+	index <- any(is.na(p_exp)) | any(is.na(p_out)) | any(is.na(n_exp)) | any(is.na(n_out))
+	p_exp <- p_exp[!index]
+	p_out <- p_out[!index]
+	n_exp <- n_exp[!index]
+	n_out <- n_out[!index]
+	r_exp <- get_r_from_pn(p_exp, n_exp)
+	r_out <- get_r_from_pn(p_out, n_out)
+
+	r_exp_adj <- sqrt(r_exp^2 / r_xxo^2)
+	r_out_adj <- sqrt(r_out^2 / r_yyo^2)
+
+	sensitivity <- steiger_sensitivity(r_exp, r_out)
+
+	rtest <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp, r34 = r_out)
+	rtest_adj <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp_adj, r34 = r_out_adj)
+	l <- list(
+		r2_exp = r_exp^2, 
+		r2_out = r_out^2, 
+		r2_exp_adj = r_exp_adj^2, 
+		r2_out_adj = r_out_adj^2, 
+		correct_causal_direction = r_exp > r_out, 
+		steiger_test = rtest$p,
+		correct_causal_direction_adj = r_exp_adj > r_out_adj, 
+		steiger_test_adj = rtest_adj$p,
+		vz = sensitivity$vz,
+		vz0 = sensitivity$vz0,
+		sensitivity = sensitivity$sensitivity,
+		sensitivity_plot = sensitivity$pl
+	)
+	return(l)
+}
+
+mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters) 
+{
+	if (length(b_exp) > 1) {
+		return(list(b = NA, se = NA, pval = NA, nsnp = NA))
+	}
+	b <- b_out/b_exp
+	se <- se_out/abs(b_exp)
+	pval <- pnorm(abs(b)/se, lower.tail = F) * 2
+	return(list(b = b, se = se, pval = pval, nsnp = 1))
+}
 
 
 ## ---- read_data ----
@@ -156,12 +281,21 @@ area <- group_by(ineq, ablab) %>%
 		data.frame(cora=c(x1, x2, x3), d=c(y1, y2, y3), f=1)
 	})
 
-ggplot(ineq, aes(x=cora, y=d)) +
+
+p1 <- ggplot(ineq, aes(x=cora, y=d)) +
 geom_polygon(data=area, fill="grey", aes(x=cora, y=d)) +
 geom_line(aes(colour=corb, group=corb)) +
 geom_hline(yintercept=0, linetype=2) +
 facet_wrap(~ ablab) +
-labs(x=TeX("$cor(x, x_O)$"), y="d", colour=TeX("$cor(y, y_O)$"))
+labs(x=TeX("$cor(x, x_o)$"), y="d", colour=TeX("$cor(y, y_o)$"))
+
+p2 <- mr_steiger(
+	p_exp = get_p_from_r2n(0.1, 1000),
+	p_out = get_p_from_r2n(0.1 * 0.9, 1000),
+	n_exp = 1000,
+	n_out = 1000
+)$sensitivity_plot
+grid.arrange(p1, p2, ncol=1)
 
 
 ## ---- cit_mr_comparison_figure ----
@@ -499,127 +633,6 @@ labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
 
 ## ---- shakhbazov ----
 
-get_r_from_pn <- function(p, n)
-{
-	get_p_from_r2n <- function(r2, n)
-	{
-		fval <- r2 * (n-2) / (1 - r2)
-		pval <- pf(fval, 1, n-1, low=FALSE)
-		return(pval)
-	}
-	optim.get_p_from_rn <- function(x, sample_size, pvalue)
-	{
-		abs(-log10(get_p_from_r2n(x, sample_size)) - -log10(pvalue))
-	}
-
-	if(length(p) > 1 & length(n) == 1)
-	{
-		message("Assuming n the same for all p values")
-		n <- rep(n, length(p))
-	}
-
-	Fval <- qf(p, 1, n-1, low=FALSE)
-	R2 <- Fval / (n - 2 + Fval)
-	index <- !is.finite(Fval)
-	if(any(index))
-	{
-		index <- which(index)
-		for(i in 1:length(index))
-		{
-			R2[index[i]] <- optim(0.001, optim.get_p_from_rn, sample_size=n[index[i]], pvalue=p[index[i]])$par
-		}
-	}
-	return(sqrt(R2))
-}
-
-
-steiger_sensitivity <- function(rgx_o, rgy_o)
-{
-	if(rgy_o > rgx_o)
-	{
-		a <- rgy_o
-		b <- rgx_o
-	} else {
-		a <- rgx_o
-		b <- rgy_o
-	}
-
-	d <- expand.grid(rxx_o=seq(rgx_o,1,length.out=50), ryy_o=seq(rgy_o,1,length.out=50), type=c("A","B"))
-	d$rgy <- rgy_o / d$ryy_o
-	d$rgx <- rgx_o / d$rxx_o
-	d$z <- d$rgy - d$rgx
-	d$z[d$type=="A"] <- 0
-	temp <- wireframe(
-		z ~ rxx_o * ryy_o, 
-		groups=type, 
-		data=d, 
-		scales=list(arrows=FALSE), 
-		col.groups = colorRampPalette(c("red", "blue"))(2), 
-		drape=FALSE, 
-		xlab=expression(rho[xx[o]]), 
-		ylab=expression(rho[yy[o]]),
-		zlab=expression(rho[gy]-rho[gx])
-	)
-
-	vz <- a * log(a) - b * log(b) + a*b*(log(b)-log(a))
-	vz0 <- -2*b - b * log(a) - a*b*log(a) + 2*a*b
-
-	sensitivity <- vz0 / (2 * vz0 + abs(vz))
-
-	return(list(
-		vz = vz,
-		vz0 = vz0,
-		sensitivity = sensitivity,
-		pl = temp
-	))
-}
-
-
-mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_xxo = 1, r_yyo=1) 
-{
-	require(psych)
-	index <- any(is.na(p_exp)) | any(is.na(p_out)) | any(is.na(n_exp)) | any(is.na(n_out))
-	p_exp <- p_exp[!index]
-	p_out <- p_out[!index]
-	n_exp <- n_exp[!index]
-	n_out <- n_out[!index]
-	r_exp <- get_r_from_pn(p_exp, n_exp)
-	r_out <- get_r_from_pn(p_out, n_out)
-
-	r_exp_adj <- sqrt(r_exp^2 / r_xxo^2)
-	r_out_adj <- sqrt(r_out^2 / r_yyo^2)
-
-	sensitivity <- steiger_sensitivity(r_exp, r_out)
-
-	rtest <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp, r34 = r_out)
-	rtest_adj <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp_adj, r34 = r_out_adj)
-	l <- list(
-		r2_exp = r_exp^2, 
-		r2_out = r_out^2, 
-		r2_exp_adj = r_exp_adj^2, 
-		r2_out_adj = r_out_adj^2, 
-		correct_causal_direction = r_exp > r_out, 
-		steiger_test = rtest$p,
-		correct_causal_direction_adj = r_exp_adj > r_out_adj, 
-		steiger_test_adj = rtest_adj$p,
-		vz = sensitivity$vz,
-		vz0 = sensitivity$vz0,
-		sensitivity = sensitivity$sensitivity,
-		sensitivity_plot = sensitivity$pl
-	)
-	return(l)
-}
-
-mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters) 
-{
-	if (length(b_exp) > 1) {
-		return(list(b = NA, se = NA, pval = NA, nsnp = NA))
-	}
-	b <- b_out/b_exp
-	se <- se_out/abs(b_exp)
-	pval <- pnorm(abs(b)/se, lower.tail = F) * 2
-	return(list(b = b, se = se, pval = pval, nsnp = 1))
-}
 
 qtl_orig <- read.csv("../data/12864_2016_2498_MOESM16_ESM.csv")
 qtl_orig <- qtl_orig[order(qtl_orig$PVALUE_expr), ]
@@ -779,4 +792,48 @@ labs(x=TeX("$|\\rho_{P}|$"), y=TeX("$|\\rho_{MR}|$"))
 plot(shakhbazov$pearson, shakhbazov$mr_r)
 subset(shakhbazov, sign(mr_eff) != sign(pearson))
 
+
+
+
+## ---- temp ----
+
+x <- rnorm(100000)
+y <- x + rnorm(100000)
+xo <- 2*x + rnorm(100000)
+
+cor(x,y)
+cor(xo,y) / cor(xo,x)
+
+
+cor(x,y)
+cor(xo,y)
+cor(x,xo)
+
+
+cor(x,y) * cor(x,xo)
+cor(xo,y)
+
+cor(xo,y) / cor(x,xo)
+cor(x,y)
+
+
+temp <- expand.grid(
+	r_xxo = seq(0,1,0.2),
+	r_yyo = seq(0,1,0.2),
+	r_xy = seq(-1,1,0.5),
+	r_gx = c(0.01,0.05,0.1),
+	n = c(100,1000,10000)
+)
+
+temp$r_gy <- temp$r_xy * temp$r_gx
+temp$r_gxo <- temp$r_gx * temp$r_xxo
+temp$r_gyo <- temp$r_gy * temp$r_yyo
+temp$p_gyo <- get_p_from_r2n(temp$r_gyo^2, temp$n)
+temp$p_gxo <- get_p_from_r2n(temp$r_gxo^2, temp$n)
+
+plot(-log10(p_gxo) ~ r_gxo^2, temp)
+temp$
+for(i in 1:)
+
+dim(temp)
 
