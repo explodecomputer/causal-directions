@@ -8,6 +8,7 @@ suppressPackageStartupMessages(library(lattice))
 suppressPackageStartupMessages(library(latex2exp))
 suppressPackageStartupMessages(library(knitr))
 suppressPackageStartupMessages(library(gridExtra))
+suppressPackageStartupMessages(library(grid))
 
 
 get_p_from_r2n <- function(r2, n)
@@ -45,7 +46,7 @@ get_r_from_pn <- function(p, n)
 }
 
 
-steiger_sensitivity <- function(rgx_o, rgy_o)
+steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 {
 	if(rgy_o > rgx_o)
 	{
@@ -57,8 +58,8 @@ steiger_sensitivity <- function(rgx_o, rgy_o)
 	}
 
 	d <- expand.grid(rxx_o=seq(rgx_o,1,length.out=50), ryy_o=seq(rgy_o,1,length.out=50), type=c("A","B"))
-	d$rgy <- d$ryy_o / rgy_o
-	d$rgx <- d$rxx_o / rgx_o
+	d$rgy <- rgy_o / d$ryy_o
+	d$rgx <- rgx_o / d$rxx_o
 	d$z <- d$rgy - d$rgx
 	d$z[d$type=="A"] <- 0
 	temp <- wireframe(
@@ -68,9 +69,11 @@ steiger_sensitivity <- function(rgx_o, rgy_o)
 		scales=list(arrows=FALSE), 
 		col.groups = colorRampPalette(c("red", "blue"))(2), 
 		drape=FALSE, 
-		xlab=expression(rho[xx[o]]), 
-		ylab=expression(rho[yy[o]]),
-		zlab=expression(rho[gy]-rho[gx])
+		ylab=expression(rho[xx[o]]), 
+		xlab=expression(rho[yy[o]]),
+		zlab=expression(rho[gy]-rho[gx]),
+		par.settings = list(axis.line=list(col="transparent")),
+		...
 	)
 
 	vz <- a * log(a) - b * log(b) + a*b*(log(b)-log(a))
@@ -87,7 +90,7 @@ steiger_sensitivity <- function(rgx_o, rgy_o)
 }
 
 
-mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_xxo = 1, r_yyo=1) 
+mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...) 
 {
 	require(psych)
 	index <- any(is.na(p_exp)) | any(is.na(p_out)) | any(is.na(n_exp)) | any(is.na(n_out))
@@ -101,7 +104,7 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_xxo = 1, r_yyo=1)
 	r_exp_adj <- sqrt(r_exp^2 / r_xxo^2)
 	r_out_adj <- sqrt(r_out^2 / r_yyo^2)
 
-	sensitivity <- steiger_sensitivity(r_exp, r_out)
+	sensitivity <- steiger_sensitivity(r_exp, r_out, ...)
 
 	rtest <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp, r34 = r_out)
 	rtest_adj <- psych::r.test(n = mean(n_exp), n2 = mean(n_out), r12 = r_exp_adj, r34 = r_out_adj)
@@ -250,6 +253,9 @@ facet_grid(n ~ ., scale="free_y")
 
 
 ## ---- d_relationship_figure ----
+
+# There is something that i don't understand about this
+# Replacing with steiger_sensitivity chunk below
 
 ineq <- expand.grid(
 	cora = seq(0, 1, by=0.02),
@@ -663,8 +669,10 @@ for(i in 1:nrow(qtl))
 		qtl$PVALUE_expr[i], 
 		610, 862,
 		qtl$rxx_o[i],
-		qtl$ryy_o[i]
+		qtl$ryy_o[i],
+		screen = list(z = 70, x = -60, y = 3)
 	)
+	l$sensitivity_plot
 	qtl$r_exp[i] <- l$r2_out_adj
 	qtl$r_meth[i] <- l$r2_exp_adj
 	qtl$dir[i] <- l$correct_causal_direction_adj
@@ -695,15 +703,11 @@ for(i in 1:nrow(qtl))
 
 shakhbazov <- merge(qtl, subset(cors, select=c(meth_ind, exp_ind, pearson)), by=c("meth_ind", "exp_ind"), all.x=TRUE)
 shakhbazov$mr_r <- sign(shakhbazov$mr_eff) * sqrt(abs(qnorm(shakhbazov$mr_p, low=FALSE))^2 / (abs(qnorm(shakhbazov$mr_p, low=FALSE))^2 + 400))
-
 shakhbazov$dir <- as.character(shakhbazov$dir)
 shakhbazov$dir[shakhbazov$dir=="TRUE"] <- "Methylation causes Expression"
 shakhbazov$dir[shakhbazov$dir=="FALSE"] <- "Expression causes Methylation"
-
 real_index <- shakhbazov$rxx_o == 1 & shakhbazov$ryy_o == 1
-table(real_index)
-shakhtest1 <- fisher.test(table(sign(shakhbazov$mr_eff[real_index]), shakhbazov$dir[real_index]))
-shakhtest2 <- fisher.test(table(sign(shakhbazov$mr_eff[real_index & shakhbazov$dir_p < 0.05]), shakhbazov$dir[real_index & shakhbazov$dir_p < 0.05]))
+
 
 shakhsummary <- dplyr::group_by(shakhbazov, rxx_o, ryy_o, dir) %>%
 	dplyr::summarise(
@@ -715,41 +719,76 @@ shakhsummary <- dplyr::group_by(shakhbazov, rxx_o, ryy_o, dir) %>%
 	) %>% as.data.frame()
 
 
-shakhtest3 <- binom.test(sum(shakhbazov$dir == "Methylation causes Expression" & shakhbazov$dir_p < 0.05 & real_index), sum(shakhbazov$dir_p < 0.05 & real_index), 0.5)
-shakhtest4 <- binom.test(sum(shakhbazov$dir == "Methylation causes Expression" & real_index), sum(real_index), 0.5)
-library(dplyr)
-a <- subset(shakhbazov, dir_p < 0.05 & real_index) %>%
-	group_by(dir) %>%
-	mutate(mr_eff = as.numeric(scale(mr_eff)), pos = ifelse(mr_eff >=0, "Positive effect", "Negative effect"))
+## ---- shakhbazov_tests ----
 
-ggplot(a, aes(x=mr_eff)) + 
-geom_density(aes(fill=dir), alpha=0.5, bw=0.4) + 
-facet_grid(. ~ pos, scale="free_x") +
-labs(x="Causal effect (unit/unit change)", fill="Causal direction")
+# Is methylation's effect on expression more likely to be negative?
+
+shakhtest1 <- fisher.test(
+	table(sign(shakhbazov$mr_eff[real_index]), shakhbazov$dir[real_index])
+)
+
+
+# Is methylation's effect on expression more likely to be negative amongst dir < 0.05?
+
+shakhtest2 <- fisher.test(
+	table(
+		sign(shakhbazov$mr_eff[real_index & shakhbazov$dir_p < 0.05]), 
+		shakhbazov$dir[real_index & shakhbazov$dir_p < 0.05]
+	)
+)
+
+
+# Is methylation more likely to cause expression amongst dor < 0.05
+
+shakhtest3 <- binom.test(
+	sum(shakhbazov$dir == "Methylation causes Expression" & shakhbazov$dir_p < 0.05 & real_index), 
+	sum(shakhbazov$dir_p < 0.05 & real_index), 
+	0.5
+)
+
+
+# Is methylation more likely to cause expression?
+
+shakhtest4 <- binom.test(
+	sum(shakhbazov$dir == "Methylation causes Expression" & real_index), 
+	sum(real_index),
+	0.5
+)
 
 
 
 ## ---- shakhplot ----
 
+# temp <- subset(shakhbazov, dir_p < 0.05 & real_index) %>%
+# 	group_by(dir) %>%
+# 	mutate(mr_eff = as.numeric(scale(mr_eff)), pos = ifelse(mr_eff >=0, "Positive effect", "Negative effect"))
+
+
+# ggplot(temp, aes(x=mr_eff)) + 
+# geom_density(aes(fill=dir), alpha=0.5, bw=0.04) + 
+# # facet_grid(. ~ pos, scale="free_x") +
+# labs(x="Causal effect (unit/unit change)", fill="Causal direction")
+
+# temp2 <- table(temp$pos, temp$dir) %>% as.data.frame()
+# ggplot(temp2, aes(y=Freq, x=Var2)) +
+# geom_bar(aes(fill=Var1), position="stack", stat="identity")
+
+
+
 temp <- gather(shakhsummary, key, value, n, nsig)
-temp$rxx_o_lab <- paste0("cor(X,Xo) = ", temp$rxx_o)
-temp$ryy_o_lab <- paste0("cor(Y,Yo) = ", temp$ryy_o)
+temp$rxx_o_lab <- paste0("cor(E,Eo) = ", temp$rxx_o)
+temp$ryy_o_lab <- paste0("cor(M,Mo) = ", temp$ryy_o)
 
-ggplot(temp, aes(x=key, y=value)) +
+# ggplot(temp, aes(x=key, y=value)) +
+# geom_bar(stat="Identity", aes(fill=dir), position="stack") +
+# facet_grid(rxx_o_lab ~ ryy_o_lab) 
+
+
+ggplot(subset(temp, key=="n"), aes(x=as.factor(rxx_o), y=value)) +
 geom_bar(stat="Identity", aes(fill=dir), position="stack") +
-facet_grid(rxx_o_lab ~ ryy_o_lab) 
-
-
-p1 <- ggplot(subset(temp, key=="n"), aes(x=rxx_o, y=value)) +
-geom_bar(stat="Identity", aes(fill=dir), position="stack") +
-geom_hline(yintercept = nrow(qtl_orig)/2) +
+geom_hline(yintercept = nrow(qtl_orig)/2, linetype="dotted") +
 facet_grid(. ~ ryy_o_lab) +
-labs(x="cor(X,Xo)")
-p1
-ggplot(subset(shakhbazov, rxx_o==1 & ryy_o==1), aes(x=sensitivity)) +
-geom_histogram(aes(fill=dir), alpha=0.5, bins=10)
-
-
+labs(x="cor(E,Eo)", fill=NULL)
 
 
 
@@ -761,79 +800,63 @@ kable(shakhtab)
 
 
 
-## ---- shakhbazov_other ----
-
-psych::r.test(n=212, n2=246, r12=0.5629, r34=0.4384)
-table(shakhbazov$dir)
-table(shakhbazov$dir_p < 0.05)
-table(shakhbazov$dir[shakhbazov$dir_p < 0.05])
-table(sign(shakhbazov$mr_eff), shakhbazov$dir)
-
-summary(glm(as.factor(dir) ~ mr_eff, shakhbazov[shakhbazov$dir_p < 0.05,], family="binomial"))
-
-library(ggplot2)
-ggplot(temp, aes(x=dir, y=pos)) +
-geom_bar(stat="identity")
-
+## ---- shakhbazov_mr_vs_cor ----
 
 cor(shakhbazov$mr_r, shakhbazov$pearson)
 summary(lm(abs(mr_r) ~ abs(pearson), shakhbazov))
 plot(abs(mr_r) ~ abs(pearson), shakhbazov)
 abline(lm(abs(mr_r) ~ abs(pearson), shakhbazov))
 
-ggplot(shakhbazov, aes(x=(pearson), y=(mr_r))) +
+ggplot(shakhbazov, aes(x=abs(pearson), y=abs(mr_r))) +
 # geom_errorbar(aes(ymin = abs(mr_r) - mr_se * 1.96, ymax = abs(mr_r) + mr_se * 1.96), colour="grey") +
 geom_point() +
 stat_smooth(method="lm") +
 facet_grid(. ~ dir) +
 labs(x=TeX("$|\\rho_{P}|$"), y=TeX("$|\\rho_{MR}|$"))
 
-# Is the MR estimate similar to the pearson correlation?
-plot(shakhbazov$pearson, shakhbazov$mr_r)
-subset(shakhbazov, sign(mr_eff) != sign(pearson))
 
 
 
 
-## ---- temp ----
+## ---- steiger_sensitivity ----
 
-x <- rnorm(100000)
-y <- x + rnorm(100000)
-xo <- 2*x + rnorm(100000)
-
-cor(x,y)
-cor(xo,y) / cor(xo,x)
-
-
-cor(x,y)
-cor(xo,y)
-cor(x,xo)
-
-
-cor(x,y) * cor(x,xo)
-cor(xo,y)
-
-cor(xo,y) / cor(x,xo)
-cor(x,y)
-
-
-temp <- expand.grid(
-	r_xxo = seq(0,1,0.2),
-	r_yyo = seq(0,1,0.2),
-	r_xy = seq(-1,1,0.5),
-	r_gx = c(0.01,0.05,0.1),
-	n = c(100,1000,10000)
+sensitivity_parameters <- expand.grid(
+	r_xy = c(seq(-1,-0.1,0.1), -0.001, 0.001, seq(0.1,1,0.1)),
+	r_gx = sqrt(c(0.01,0.05,0.1)),
+	n=1000,
+	sensitivity = NA
 )
 
-temp$r_gy <- temp$r_xy * temp$r_gx
-temp$r_gxo <- temp$r_gx * temp$r_xxo
-temp$r_gyo <- temp$r_gy * temp$r_yyo
-temp$p_gyo <- get_p_from_r2n(temp$r_gyo^2, temp$n)
-temp$p_gxo <- get_p_from_r2n(temp$r_gxo^2, temp$n)
+sensitivity_parameters$r_gy <- sensitivity_parameters$r_xy * sensitivity_parameters$r_gx
+sensitivity_parameters$p_gy <- get_p_from_r2n(sensitivity_parameters$r_gy^2, sensitivity_parameters$n)
+sensitivity_parameters$p_gx <- get_p_from_r2n(sensitivity_parameters$r_gx^2, sensitivity_parameters$n)
 
-plot(-log10(p_gxo) ~ r_gxo^2, temp)
-temp$
-for(i in 1:)
+for(i in 1:nrow(sensitivity_parameters))
+{
+	sensitivity_parameters$sensitivity[i] <- mr_steiger(sensitivity_parameters$p_gx[i], sensitivity_parameters$p_gy[i], sensitivity_parameters$n[i], sensitivity_parameters$n[i])$sensitivity
+}
 
-dim(temp)
+
+## ---- steiger_sensitivity_plot ----
+
+example_sensitivity <- mr_steiger(
+	get_p_from_r2n(sqrt(0.01), 10001),
+	get_p_from_r2n(sqrt(0.01 * 0.1), 10001),
+	10001, 10001,
+	screen=list(z = 55, x = -60, y = 3), bty="n"
+)
+
+p1 <- example_sensitivity$sensitivity_plot
+
+p2 <- ggplot(sensitivity_parameters, aes(y=sensitivity, x=r_xy, group=factor(r_gx^2))) +
+	geom_point(aes(colour=factor(r_gx^2))) +
+	geom_line(aes(colour=factor(r_gx^2))) +
+	labs(x=expression(rho[xy]), y="Sensitivity", colour=expression(rho[gx]^2)) +
+	scale_colour_brewer(type="qual")
+
+grid.arrange(
+	textGrob("a)", x=unit(0.1, "npc")), textGrob("b)", x=unit(0.1, "npc")),
+	p1, p2, 
+	ncol=2, heights=c(1,10)
+)
 

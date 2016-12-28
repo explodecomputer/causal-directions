@@ -28,7 +28,6 @@
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
-\usepackage{longtable,booktabs}
 \usepackage{graphicx,grffile}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -81,7 +80,8 @@ measurement error}
   \preauthor{}\postauthor{}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{14 December 2016}
+  \date{28 December 2016}
+
 
 \begin{document}
 \maketitle
@@ -523,14 +523,15 @@ for different values of \(cor(g, x)\).
 \subsection{Two sample MR}\label{two-sample-mr}
 
 Two sample MR\textsuperscript{19} was performed using the summary
-statistics presented in\textsuperscript{18} for each of 458 associations
-between DNA methylation and gene expression levels. Because only summary
-statistics were available (effect, standard error, effect allele, sample
-size, p-values) for the instrumental SNP on the methylation and gene
-expression levels, the Steiger test of two independent correlations was
-used to infer the direction of causality for each of the associations.
-The Wald ratio test was then used to estimate the causal effect size for
-the estimated direction for each association.
+statistics presented in\textsuperscript{18} for each of 4122
+associations between DNA methylation and gene expression levels. Because
+only summary statistics were available (effect, standard error, effect
+allele, sample size, p-values) for the instrumental SNP on the
+methylation and gene expression levels, the Steiger test of two
+independent correlations was used to infer the direction of causality
+for each of the associations. The Wald ratio test was then used to
+estimate the causal effect size for the estimated direction for each
+association.
 
 \subsection{Results}\label{results}
 
@@ -591,7 +592,7 @@ without any incurred imprecision is insufficient to lead to a violation
 of the test statistic assumptions.
 
 We performed simulations to verify that this problem does arise using
-the CIT method. Figure 1 shows that when there is no measurement error
+the CIT method. Figure 2 shows that when there is no measurement error
 in the exposure or outcome variables (\(\rho_{x, x_o}=1\)) the CIT is
 reliable in identifying the correct causal direction. However, as
 measurement error increases in the exposure variable, eventually the CIT
@@ -627,7 +628,7 @@ inflated when the null hypothesis is true.
 
 We performed simulations to compare the performance of MR against CIT in
 detecting a causal association between simulated variables under
-different levels of imprecision simulated in the exposure. Figure 3
+different levels of imprecision simulated in the exposure. Figure 4
 shows the true positive rates between the CIT and MR for detecting a
 causal association. We observe that the CIT has lower power in all
 cases, with performance declining as measurement imprecision increases
@@ -659,7 +660,7 @@ likely to be correct about the causal direction). Thus it is important
 to note that under certain conditions when measurement imprecision is
 present the Steiger test could make erroneous inference about the causal
 direction because the value of \(d\) is not restricted to being greater
-than 0. However Figure 2 shows that when there is no measurement error
+than 0. However Figure 7 shows that when there is no measurement error
 in \(y\), the Steiger test is unlikely to infer the wrong direction of
 causality even if there is measurement error in \(x\). It also shows
 that in most cases where \(y\) is measured with error, especially when
@@ -670,7 +671,7 @@ We performed simulations to explore the performance of this approach in
 comparison to CIT in terms of the rate at which a strong causal
 relationship is obtained for the correct direction of causality, and the
 rate at which a strong causal relationship is obtained where the
-reported direction of causality is incorrect. Figure 4 shows that when
+reported direction of causality is incorrect. Figure 5 shows that when
 \(d < 0\) the MR analysis is indeed liable to infer the wrong direction
 of causality, and that this erroneous result is more likely to occur
 with increasing sample size. However, the CIT is in general much more
@@ -683,20 +684,20 @@ causality.
 \subsubsection{MR analysis of gene expression and DNA
 methylation}\label{mr-analysis-of-gene-expression-and-dna-methylation}
 
-We used the Steiger test to test if DNA methylation levels are more
-likely to causally influence gene expression levels or vice versa. To do
-this we obtained a list of 458 gene expression - DNA methylation
-associations as reported in Shakhbazov et al\textsuperscript{18}. These
-were filtered to be located on the same chromosome, have robost
-correlations after correcting for multiple testing, and to share a SNP
-that had a robust cis-acting effect on both the DNA methylation probe
-and the gene expression probe. Using the reported summary data we used
-the Steiger test of two independent correlations to identify which
-direction of causality was most likely for each association. We found
-that the causal direction commonly goes in both directions (Table 1) but
-methylation levels were more likely to influence expression levels than
-vice versa (probability of expression causing methylation = 0.0019317
-(95\% CI 0.3455756 - 0.4653544) amongst 272 associations with
+We used the Steiger test to infer the direction of causality between DNA
+methylation levels and gene expression levels. To do this we obtained a
+list of 458 gene expression - DNA methylation associations as reported
+in Shakhbazov et al\textsuperscript{18}. These were filtered to be
+located on the same chromosome, have robost correlations after
+correcting for multiple testing, and to share a SNP that had a robust
+cis-acting effect on both the DNA methylation probe and the gene
+expression probe. Using the reported summary data we used the Steiger
+test of two independent correlations to identify which direction of
+causality was most likely for each association. We found that the causal
+direction commonly goes in both directions (Table 1) but methylation
+levels were more likely to influence expression levels than vice versa
+(probability of expression causing methylation = 0.0163873 (95\% CI
+0.3738727 - 0.4874269) amongst NA associations with
 \(p_{Steiger} < 0.05\)).
 
 We performed two sample MR\textsuperscript{19} for each association in
@@ -709,8 +710,8 @@ the observational Pearson correlation (Table 1).
 
 We also observed that for associations where methylation caused gene
 expression the causal effect was more likely to be negative than for the
-associations where gene expression caused methylation (OR = 0.4615363
-(95\% CI 0.259998 - 0.8052745)), suggesting that reducing gene
+associations where gene expression caused methylation (OR = 0.5326663
+(95\% CI 0.3172203 - 0.8851868)), suggesting that reducing gene
 expression levels at a controlling CpG typically leads to increased gene
 expression levels, consistent with expectation\textsuperscript{2}.
 
@@ -813,36 +814,27 @@ varying levels of measurement error.
 
 \newpage
 
-\subsection{Tables}\label{tables}
+\subsection{Figures}\label{figures}
 
-\begin{longtable}[]{@{}lrrrrr@{}}
-\toprule
-Causal direction & Count & \(p_{Steiger} < 0.05\) & P(+ve effect) &
-\(cor(\rho_{MR}, \rho_{P})\) & Mean sensitivity\tabularnewline
-\midrule
-\endhead
-Expression causes Methylation & 246 & 162 & 0.3902439 & 0.5629453 &
-0.2031556\tabularnewline
-Methylation causes Expression & 212 & 110 & 0.2877358 & 0.4384660 &
-0.2365816\tabularnewline
-\bottomrule
-\end{longtable}
+\includegraphics{../images/dag-01.png}
 
-Table 1: Summary of MR analysis on gene expression and DNA methylation
-associations. `Count (\(p_{Steiger} < 0.05\))' denotes the number of
-associations that have a p-value \textless{} 0.05 from the Steiger test.
-P(+ve effect) denotes the proportion of associations that were positive.
-\(cor(\rho_{MR}, \rho_{P})\) is the correlation of the MR estimate
-obtained in this analysis and the Pearson correlation between reported
-in Shakhbazov et al 2016.
+Figure 1: Gene expression levels (blue blocks) and DNA methylation
+levels (green triangles) may be correlated but the causal direction is
+unknown. If a SNP (yellow circle) is associated with both DNA
+methylation and gene expression levels then it can be used as an
+instrument, but there are two competing models for these variables. a)
+Methylation causes gene expression. The left figure shows that the SNP
+influences methylation levels that in turn influence gene expression
+levels. The right figure shows the directed acyclic graph that
+represents this model. Faded symbols represent the measured values
+whereas solid symbols represent the true values. b) The same as in A,
+except the causal direction is from gene expression to DNA methylation.
 
 \newpage
 
-\subsection{Figures}\label{figures}
-
 \includegraphics{manuscript_files/figure-latex/cit_measurement_error_figure-1.pdf}
 
-Figure 1: The CIT was performed on simulated variables where the
+Figure 2: The CIT was performed on simulated variables where the
 exposure influenced the outcome and the exposure was instrumented by a
 SNP. The test statistic from CIT when testing if the exposure caused the
 outcome (the true model) is in red, and the test for the outcome causing
@@ -853,35 +845,43 @@ gets stronger and the test statistic for the correct model gets weaker.
 
 \newpage
 
-\includegraphics{manuscript_files/figure-latex/d_relationship_figure-1.pdf}
+\includegraphics{manuscript_files/figure-latex/steiger_sensitivity_plot-1.pdf}
 
-Figure 2: Plots depicting the parameter space in which the function
-\(d = cor(x, x_o) - cor(x,y)cor(y, y_o)\) is negative. When \(d\) is
-negative the Steiger test is liable to infer the wrong direction of
-causality. \(d\) is plotted on the y axis, with measurement precision of
-\(x\) (\(cor(x,x_o)\)) on the x-axis. Higher measurement precision of
-\(y\) (\(cor(y,y_o)\)) is depicted by lighter coloured lines, and
-columns of boxes are for different true values of \(cor(x,y)\). Shaded
-regions show the parameter space where \(d\) is negative. The graph
-shows that for the majority of the parameter space of the function,
-\(d\) is positive, especially where causal relationships are relatively
-weak.
+Figure 3: a) We can predict the values the Steiger test would take
+(z-axis) for different potential values of measurement error (x and y
+axes), drawn here as the blue surface. When \(\rho_{g,y} > \rho_{g,x}\),
+as denoted by range of values where the blue surface is above the red
+plane, those values of measurement error lead to our observed Steiger
+test inferring the wrong causal direction. Where the blue surface lies
+below the red plane, these measurement error values support the inferred
+causal direction of X to Y. A measure of sensitivity, therefore, is the
+volume of the positive space bound by the blue surface as a proportion
+of the total space bound by the blue surface. Sensitivity of 0 denotes
+no measurement error values that could lead to inferrence of incorrect
+direction, whereas the maximum value of 0.5 denotes measurement error
+equal chance of either direction across all measurement error ranges. In
+this case, where \(\rho_{g,x}^2 = 0.01\) and \(\rho_{x,y}^2 = 0.1\), the
+sensitivity is 0.18. b) The influence of \(\rho_{x,y}\) (x-axis) on the
+Steiger sensitivity values (y-axis) for different values of
+\(\rho_{g,x}^2\). Inferring the direction of causality is more
+susceptible to measurement error when there are stronger causal
+associations between X and Y.
 
 \newpage
 
 \includegraphics{manuscript_files/figure-latex/causality_exists_tpr-1.pdf}
 
-Figure 3: Outcomes were simulated to be causally influenced by exposures
+Figure 4: Outcomes were simulated to be causally influenced by exposures
 with varying degrees of measurement imprecision applied to the exposure
 variable (x axis). True positive rates (y axis) for MR and CIT were
-compared with for varying levels of measurement imprecision in the
-outcome variable (rows of boxes) and sample sizes (columns of boxes).
+compared for varying levels of measurement imprecision in the outcome
+variable (rows of boxes) and sample sizes (columns of boxes).
 
 \newpage
 
 \includegraphics{manuscript_files/figure-latex/cit_mr_comparison_figure-1.pdf}
 
-Figure 4: Outcomes were simulated to be causally influenced by
+Figure 5: Outcomes were simulated to be causally influenced by
 exposures, with varying degrees of measurement error applied to both.
 CIT and MR were used to infer evidence for causality between the
 exposure and outcome, and to infer the direction of causality. The value
@@ -892,6 +892,21 @@ size used in the simulations. For the CIT method, outcome 1 denoted
 evidence for causality with correct model, outcomes 2 or 3 denoted
 evidence for causality with incorrect model, and outcome 4 denoted no
 evidence for causality.
+
+\newpage
+
+\includegraphics{manuscript_files/figure-latex/shakhplot-1.pdf}
+
+Figure 6: Using 458 putative associations between DNA methylation and
+gene expression we used the Steiger test to infer the direction of
+causality between them. The rightmost bar shows the proportion of
+associations for each of the two possible causal directions (colour key)
+assuming no measurement error in either gene expression or DNA
+methylation levels. The proportions change when we assume different
+levels of measurement error in gene expression levels (x-axis) or DNA
+methylation levels (columns of boxes). If there is systematically higher
+measurement error in one platform it will appear to be less likely to be
+the causal factor.
 
 \newpage
 
@@ -1005,42 +1020,24 @@ the exposure variable \(x\), and it is expected that
 \(\rho_{g, x} > \rho_{g, y}\) because
 \(\rho_{g, y} = \rho_{g, x}\rho_{x, y}\), where \(\rho_{x, y}\) is the
 causal association between \(x\) and \(y\) (which is likely to be less
-than 1). In the presence of measurement error in \(x\) and \(y\),
-however, Steiger test will instead be assessing the inequality
-\(\rho_{g, x_o} > \rho_{g, y_o}\), which can be simplified:
+than 1).
 
-\[
-\begin{aligned}
-\rho_{g, x_o} & > \rho_{g, y_o} \\
-\rho_{g, x} \rho_{x, x_o} & > \rho_{g,y}\rho_{y,y_o}\\
-\rho_{g, x} \rho_{x, x_o} & > \rho_{g,x}\rho_{x,y}\rho_{y,y_o}\\
-\rho_{x, x_o} & > \rho_{x,y}\rho_{y,y_o}
-\end{aligned}
-\]
+In the presence of measurement error in \(x\) and \(y\), however, the
+Steiger test will instead be assessing the inequality
+\(\rho_{g, x_o} > \rho_{g, y_o}\). In order to assess how sensitive the
+Steiger test is to measurement error, we can evaluate the range of
+potential values of measurement error in \(x\) and \(y\) over which the
+empirical result from the Steiger test would return the wrong value.
 
-\newpage
+For different values of \(\rho_{x,x_o}\),
+\(\rho_{g,x} = \frac{\rho_{g, x_o}}{\rho_{x,x_o}}\) and
+\(\rho_{g,x_o} \leq \rho_{x,x_o} \leq 1\). For different values of
+\(\rho_{y,y_o}\), \(\rho_{g,y} = \frac{\rho_{g, y_o}}{\rho_{y,y_o}}\)
+and \(\rho_{g,y_o} \leq \rho_{y,x_o} \leq 1\).
 
-\subsection{Appendix 3}\label{appendix-3}
-
-The Steiger test is susceptible to inferring the wrong direction of
-causality under some measurement error parameters. For an observed
-association between the instrument \(g\) and the measured exposure
-\(x_o\), \(\rho_{g,x_o}\), the association between \(g\) and the true
-exposure (without measurement error) \(x\),
-\(\rho_{g,x} = \frac{\rho_{x,x_o}}{\rho_{g,x_o}}\) where the bounds
-\(\rho_{g,x_o} \leq \rho_{x,x_o} \leq 1\) are the theoretical limits of
-the correlation between true and measured \(x\). The same logic applies
-to the association between the instrument and the outcome variable.
-
-For the values \(\rho_{g,x_o} = 0.3\) and \(\rho_{g,y_o} = 0.05\), the
-possible true \(\rho_{g,x}\) and \(\rho_{g,y}\) enumerated for all
-possible values of measurement error can be visualised as so:
-
-\includegraphics{manuscript_files/figure-latex/unnamed-chunk-1-1.pdf}
-
-Here, where \(z = \rho_{g,y} - \rho_{g,x} < 0\) the measurement error
-range in \(x_o\) and \(y_o\) will not change the qualitative inference
-of the direction of causality. To evaluate the sensitivity, \(S\) of the
+Where \(z = \rho_{g,y} - \rho_{g,x} < 0\) the measurement error range in
+\(x_o\) and \(y_o\) will not change the qualitative inference of the
+direction of causality. To evaluate the sensitivity, \(S\), of the
 Steiger test to measurement error, the objective is to calculate the
 proportion of the total absolute volume of this function that is above
 the \(z = 0\) plane,
@@ -1049,8 +1046,8 @@ the \(z = 0\) plane,
 S = \frac{V_{z>0}}{2V_{z>0} + |V_{z}|}
 \]
 
-\(V_{z}\), the total volume of the function, can be obtained
-analytically by solving the double integral:
+\(V_{z}\), the total volume of the function (Figure 3), can be obtained
+analytically by solving:
 
 \[
 \begin{aligned}
@@ -1072,12 +1069,10 @@ V_{z>0} & = \int^1_{\rho_{g,x_o}} \int^{\frac{\rho_{g,y_o}\rho_{x,x_o}}{\rho_{g,
 \end{aligned}
 \]
 
-\(S\) can take values from 0 to 0.5, where low values suggest low
-sensitivity of the Steiger test to measurement error. For the values
-used to plot the function above, \(\rho_{g,x_o} = 0.3\) and
-\(\rho_{g,y_o} = 0.05\), we obtain \(S = 0.032\). Hence, the majority of
-the parameter space of measurement error will not change the inferred
-causal direction of \(x \rightarrow y\) for these values.
+The sensitivity, \(S\), can take values from 0 to 0.5, where low values
+suggest there are
+
+\newpage
 
 \subsection*{References}\label{references}
 \addcontentsline{toc}{subsection}{References}
