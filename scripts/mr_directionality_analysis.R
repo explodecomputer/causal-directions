@@ -79,12 +79,17 @@ steiger_sensitivity <- function(rgx_o, rgy_o, ...)
 	vz <- a * log(a) - b * log(b) + a*b*(log(b)-log(a))
 	vz0 <- -2*b - b * log(a) - a*b*log(a) + 2*a*b
 
+	vz1 <- abs(vz - vz0)
+
 	sensitivity <- vz0 / (2 * vz0 + abs(vz))
+	sensitivity_ratio <- vz1 / vz0
 
 	return(list(
 		vz = vz,
 		vz0 = vz0,
+		vz1 = vz1,
 		sensitivity = sensitivity,
+		sensitivity_ratio = sensitivity_ratio,
 		pl = temp
 	))
 }
@@ -119,7 +124,9 @@ mr_steiger <- function(p_exp, p_out, n_exp, n_out, r_xxo = 1, r_yyo=1, ...)
 		steiger_test_adj = rtest_adj$p,
 		vz = sensitivity$vz,
 		vz0 = sensitivity$vz0,
+		vz1 = sensitivity$vz1,
 		sensitivity = sensitivity$sensitivity,
+		sensitivity_ratio = sensitivity$sensitivity_ratio,
 		sensitivity_plot = sensitivity$pl
 	)
 	return(l)
@@ -821,11 +828,13 @@ labs(x=TeX("$|\\rho_{P}|$"), y=TeX("$|\\rho_{MR}|$"))
 ## ---- steiger_sensitivity ----
 
 sensitivity_parameters <- expand.grid(
-	r_xy = c(seq(-1,-0.1,0.1), -0.001, 0.001, seq(0.1,1,0.1)),
+	r_xy = seq(-1,1,0.05),
 	r_gx = sqrt(c(0.01,0.05,0.1)),
 	n=1000,
 	sensitivity = NA
 )
+
+sensitivity_parameters$r_gy <- sensitivity_parameters$r_gx^2 * sensitivity_parameters$r_xy^2
 
 sensitivity_parameters$r_gy <- sensitivity_parameters$r_xy * sensitivity_parameters$r_gx
 sensitivity_parameters$p_gy <- get_p_from_r2n(sensitivity_parameters$r_gy^2, sensitivity_parameters$n)
@@ -833,7 +842,7 @@ sensitivity_parameters$p_gx <- get_p_from_r2n(sensitivity_parameters$r_gx^2, sen
 
 for(i in 1:nrow(sensitivity_parameters))
 {
-	sensitivity_parameters$sensitivity[i] <- mr_steiger(sensitivity_parameters$p_gx[i], sensitivity_parameters$p_gy[i], sensitivity_parameters$n[i], sensitivity_parameters$n[i])$sensitivity
+	sensitivity_parameters$sensitivity[i] <- mr_steiger(sensitivity_parameters$p_gx[i], sensitivity_parameters$p_gy[i], sensitivity_parameters$n[i], sensitivity_parameters$n[i])$sensitivity_ratio
 }
 
 
@@ -846,14 +855,16 @@ example_sensitivity <- mr_steiger(
 	screen=list(z = 55, x = -60, y = 3), bty="n"
 )
 
+example_sensitivity
+
 p1 <- example_sensitivity$sensitivity_plot
 
 p2 <- ggplot(sensitivity_parameters, aes(y=sensitivity, x=r_xy, group=factor(r_gx^2))) +
 	geom_point(aes(colour=factor(r_gx^2))) +
 	geom_line(aes(colour=factor(r_gx^2))) +
-	labs(x=expression(rho[xy]), y="Sensitivity", colour=expression(rho[gx]^2)) +
+	labs(x=expression(rho[xy]), y=expression(V[z<0]/V[z>=0]), colour=expression(rho[gx]^2)) +
 	scale_colour_brewer(type="qual")
-
+p2 + scale_y_log10()
 grid.arrange(
 	textGrob("a)", x=unit(0.1, "npc")), textGrob("b)", x=unit(0.1, "npc")),
 	p1, p2, 

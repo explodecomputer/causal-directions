@@ -82,7 +82,7 @@ fig_nums(
 
 fig_nums(
 	"steiger_sensitivity_plot", 
-	caption="a) We can predict the values the Steiger test would take (z-axis) for different potential values of measurement error (x and y axes), drawn here as the blue surface. When $\\rho_{g,y} > \\rho_{g,x}$, as denoted by range of values where the blue surface is above the red plane, those values of measurement error lead to our observed Steiger test inferring the wrong causal direction. Where the blue surface lies below the red plane, these measurement error values support the inferred causal direction of X to Y. A measure of sensitivity, therefore, is the volume of the positive space bound by the blue surface as a proportion of the total space bound by the blue surface. Sensitivity of 0 denotes no measurement error values that could lead to inferrence of incorrect direction, whereas the maximum value of 0.5 denotes measurement error equal chance of either direction across all measurement error ranges. In this case, where $\\rho_{g,x}^2 = 0.01$ and $\\rho_{x,y}^2 = 0.1$, the sensitivity is 0.18. b) The influence of $\\rho_{x,y}$ (x-axis) on the Steiger sensitivity values (y-axis) for different values of $\\rho_{g,x}^2$. Inferring the direction of causality is more susceptible to measurement error when there are stronger causal associations between X and Y.",
+	caption="a) We can predict the values the Steiger test would take (z-axis) for different potential values of measurement error (x and y axes), drawn here as the blue surface. When $\\rho_{g,y} > \\rho_{g,x}$, as denoted by range of values where the blue surface is above the red plane, those values of measurement error lead to our observed Steiger test inferring the wrong causal direction. Where the blue surface lies below the red plane, these measurement error values support the inferred causal direction of X to Y. A measure of reliability, therefore, is the ratio of the negative and positive volumes of the total space bound by the blue and red surfaces, $R = \\frac{V_{z \\geq 0}}{ - V_{z < 0} }$. In this case, where $\\rho_{g,x}^2 = 0.01$ and $\\rho_{x,y}^2 = 0.1$, the $R = 4.40$, which means that 4.40 times as much of the possible measurement error values are in support of the $x \\rightarrow y$ direction of causality than $y \\rightarrow x$. b) The influence of $\\rho_{x,y}$ (x-axis) on the Steiger reliability values (y-axis) for different values of $\\rho_{g,x}^2$. Inferring the direction of causality is more sensitive to measurement error when there are stronger causal associations between X and Y.",
 	display=FALSE
 )
 
@@ -156,7 +156,7 @@ Such is not the case for MR, where in order to infer the direction of causality 
 
 MR does however have some important advantages over mediation based approaches. First, MR is used as a tool to not just deduce the existance of causality, but to also estimate the causal effect size. Second, using mediation requires that the exposure, outcome and instrument variables are all measured in the same data, whereas recent extensions to MR circumvent this requirement, allowing causal inference to be drawn when exposure variables and outcome variables are measured in different samples [@Pierce2013]. This has the crucial advantage of improving statistical power by allowing analysis in much larger sample sizes, and dramatically expands the breadth of possible phenotypic relationships that can be evaluated. Third, MR is substantially more robust to there being measurement error in the exposure and outcome variables. Indeed instrumental variable (IV) analysis was in part initially introduced as a correction for measurement error [@Ashenfelter1994], whereas it has been noted that both classic mediation-based analyses [@LeCessie2012; @Nagarajan2013; @Shpitser2010; @Blakely2013] and mediation-based methods that use instrumental variables [@Wang2015; @Lagani2015] are prone to be unreliable in its presence. We argue that this is a serious limitation.
 
-Here we show using theory and simulations how non-differential measurement error and measurement imprecision can lead to unreliable causal inference in the mediation-based CIT method. We then present an extension to MR that allows researchers to ascertain the causal direction of an association even when the biology of the instruments are not fully understood, and to evaluate the sensitivity of the result to measurement error. This improves the utility of MR in cases where mediation based methods might have otherwise been used preferentially. Finally, we apply this new method to infer the direction of causation between DNA methylation levels and gene expression levels.
+Using theory and simulations we show how non-differential measurement error and measurement imprecision can lead to unreliable causal inference in the mediation-based CIT method. We then present an extension to MR that allows researchers to ascertain the causal direction of an association even when the biology of the instruments are not fully understood, and also a method to evaluate the sensitivity of the result to measurement error. This improves the utility of MR in cases where mediation based methods might have otherwise been used preferentially. Finally, we apply this new method to infer the direction of causation between DNA methylation levels and gene expression levels.
 
 
 ## Methods
@@ -257,6 +257,11 @@ $$
 An advantage of using the Steiger test in the two sample context is that it can compare correlations in independent samples where sample sizes are different. Steiger test statistics were calculated using the *r.test* function in the R package *R/psych* [@Revelle2015].
 
 
+### Steiger sensitivity analysis
+
+The Steiger test for testing if $x \rightarrow y$ is based on evaluating $\\rho_{gx} > \\rho_{gy}$. However, $\\rho_{gx}$ and $\\rho_{gy}$ are underestimated if $x$ and $y$ are measured imprecisely. If, for example, $x$ has lower measurement precision than $y$ then we might empirically obtain $\\rho_{g,x_o} > \\rho_{g,y_o}$. To evaluate how reliable, $R$, the Steiger test is to potential measurement imprecision in $x$ and $y$ we calculate the possible measurement error values which are compatible with the direction of causality obtained empirically from the Steiger test. We also calculate the measurement error values which are not compatible. The ratio of these quantities is an indication of how much of the measurement error space supports the inferred causal direction. A ratio $R=1$ indicates that the Steiger test is highly sensitive to measurement error, with equal weight of the measurement error parameter space supporting both directions of causality. Full details are provided in Appendix 2.
+
+
 ### Simulations
 
 Simulations were conducting by creating variables of sample size $n$ for the exposure $x$, the measured values of the exposure $x_o$, the outcome $y$, the measured values of the outcome $y_o$ and the instrument $g$. In all models $x$ causes $y$ and $g$ is an instrument for $x$. Each variable was simulated such that:
@@ -350,7 +355,7 @@ We performed simulations to compare the performance of MR against CIT in detecti
 
 If we do not know whether the SNP $g$ has a direct influence on $x$ or $y$ then further efforts are required. If $x$ causes $y$ and $g$ is a valid instrument for $x$ then we expect that $\rho_{g,x}$ to be greater than $\rho_{g,y}$ because the association of $g$ with $y$ is the proportion of the true causal association between $x$ and $y$ scaled by the association between $g$ and $x$. We can use the Steiger test of correlated correlations to formally test the difference in magnitude of $\rho_{g,x}$ and $\rho_{g,y}$, where the variable with the largest correlation on $g$ is deemed to be the variable which is imposing the causal effect.
 
-This is a simple method to orient the direction of causality in an MR analysis when the underlying biology of the SNP is not fully understood. But it can be shown that in the presence of measurement imprecision, $d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}$ (Appendix 2), where $d$ is a metric of the degree to which the Steiger test is liable to provide the wrong estimate (*i.e.* if $d>0$ then the Steiger test is likely to be correct about the causal direction). Thus it is important to note that under certain conditions when measurement imprecision is present the Steiger test could make erroneous inference about the causal direction because the value of $d$ is not restricted to being greater than 0. However `r cfig("d_relationship_figure")` shows that when there is no measurement error in $y$, the Steiger test is unlikely to infer the wrong direction of causality even if there is measurement error in $x$. It also shows that in most cases where $y$ is measured with error, especially when the causal effect between $x$ and $y$ is not very large, the condition of $d > 0$ is satisfied.
+This is a simple method to orient the direction of causality in an MR analysis when the underlying biology of the SNP is not fully understood. But it can be shown that in the presence of measurement imprecision, $d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}$ (Appendix 2), where $d$ is a metric of the degree to which the Steiger test is liable to provide the wrong estimate (*i.e.* if $d>0$ then the Steiger test is likely to be correct about the causal direction). Thus it is important to note that under certain conditions when measurement imprecision is present the Steiger test could make erroneous inference about the causal direction because the value of $d$ is not restricted to being greater than 0. However `r cfig("d_relationship_figure")` shows that when there is no measurement error in $x$, the Steiger test is unlikely to infer the wrong direction of causality even if there is measurement error in $y$. It also shows that in most cases where $x$ is measured with error, especially when the causal effect between $x$ and $y$ is not very large, the sensitivity of the Steiger test to measurement error is relatively low.
 
 We performed simulations to explore the performance of this approach in comparison to CIT in terms of the rate at which a strong causal relationship is obtained for the correct direction of causality, and the rate at which a strong causal relationship is obtained where the reported direction of causality is incorrect. `r cfig("cit_mr_comparison_figure")` shows that when $d < 0$ the MR analysis is indeed liable to infer the wrong direction of causality, and that this erroneous result is more likely to occur with increasing sample size. However, the CIT is in general much more fallable to reporting a robust causal association for the wrong direction of causality. When $d > 0$ is satisfied we observe that in most cases the MR method has greater power to obtain evidence for causality than CIT, and always obtains the correct direction of causality.
 
@@ -526,17 +531,17 @@ $$
 
 where $\hat{x} = \hat{\alpha}_1 + \hat{\beta}_1 g$. Writing in scale free terms, $\rho_{g, x}$ denotes the correlation between $g$ and the exposure variable $x$, and it is expected that $\rho_{g, x} > \rho_{g, y}$ because $\rho_{g, y} = \rho_{g, x}\rho_{x, y}$, where $\rho_{x, y}$ is the causal association between $x$ and $y$ (which is likely to be less than 1). 
 
-In the presence of measurement error in $x$ and $y$, however, the Steiger test will instead be assessing the inequality $\rho_{g, x_o} > \rho_{g, y_o}$. In order to assess how sensitive the Steiger test is to measurement error, we can evaluate the range of potential values of measurement error in $x$ and $y$ over which the empirical result from the Steiger test would return the wrong value.
+In the presence of measurement error in $x$ and $y$, however, the Steiger test will instead be assessing the inequality $\rho_{g, x_o} > \rho_{g, y_o}$. In order to assess how reliable the Steiger test is in the presence of measurement imprecision, we can evaluate the range of potential values of measurement error in $x$ and $y$ over which the empirical result from the Steiger test would return the wrong value.
 
 For different values of $\rho_{x,x_o}$, $\rho_{g,x} = \frac{\rho_{g, x_o}}{\rho_{x,x_o}}$ and $\rho_{g,x_o} \leq \rho_{x,x_o} \leq 1$. For different values of $\rho_{y,y_o}$, $\rho_{g,y} = \frac{\rho_{g, y_o}}{\rho_{y,y_o}}$ and $\rho_{g,y_o} \leq \rho_{y,x_o} \leq 1$.
 
-Where $z = \rho_{g,y} - \rho_{g,x} < 0$ the measurement error range in $x_o$ and $y_o$ will not change the qualitative inference of the direction of causality. To evaluate the sensitivity, $S$, of the Steiger test to measurement error, the objective is to calculate the proportion of the total absolute volume of this function that is above the $z = 0$ plane,
+Where $z = \rho_{g,y} - \rho_{g,x} < 0$ the measurement error range in $x_o$ and $y_o$ will not change the qualitative inference of the direction of causality. To evaluate the reliability, $R$, of the Steiger test with regards to measurement error, the objective is to compare the weighted proportion of the parameter space that agrees with the inferred direction against the weighted proportion which does not:
 
 $$
-S = \frac{V_{z>0}}{2V_{z>0} + |V_{z}|}
+R = \frac{V_{z \geq 0}}{ - V_{z < 0} }
 $$
 
-$V_{z}$, the total volume of the function (`r cfig("steiger_sensitivity_plot")`), can be obtained analytically by solving:
+If $R=1$ then the direction of causality is equally probable across the range of possible measurement error values. If $R > 1$ then $R$ times as much of the weighted parameter space favours the inferred direction of causality. $V_{z}$, the total volume of the function (`r cfig("steiger_sensitivity_plot")`), can be obtained analytically by solving:
 
 $$
 \begin{aligned}
@@ -545,16 +550,16 @@ V_z & = \int^1_{\rho_{g,x_o}} \int^1_{\rho_{g,y_o}} \frac{\rho_{g,y_o}}{\rho_{y,
 \end{aligned}
 $$
 
-$V_{z>0}$, the proportion of the volume that lies above the $z=0$ plane, can also be obtained analytically. The region of this volume is bound by the values of $\rho_{x,x_o}$ and $\rho_{y,y_o}$ where $0 = \rho_{g,y} - \rho_{g,x}$, which can be expanded to $\rho_{y,y_o} = \rho_{g,y_o}\rho_{x,x_o} / \rho_{g,x_o}$. Hence,
+$V_{z \ge 0}$, the proportion of the volume that lies above the $z=0$ plane, can also be obtained analytically. The region of this volume is bound by the values of $\rho_{x,x_o}$ and $\rho_{y,y_o}$ where $0 = \rho_{g,y} - \rho_{g,x}$, which can be expanded to $\rho_{y,y_o} = \rho_{g,y_o}\rho_{x,x_o} / \rho_{g,x_o}$. Hence,
 
 $$
 \begin{aligned}
-V_{z>0} & = \int^1_{\rho_{g,x_o}} \int^{\frac{\rho_{g,y_o}\rho_{x,x_o}}{\rho_{g,x_o}}}_{\rho_{g,y_o}} \frac{\rho_{g,y_o}}{\rho_{y,y_o}} - \frac{\rho_{g,x_o}}{\rho_{x,x_o}}\,\,\,\, d\rho_{y,y_o}d\rho_{x,x_o} \\
+V_{z \ge 0} & = \int^1_{\rho_{g,x_o}} \int^{\frac{\rho_{g,y_o}\rho_{x,x_o}}{\rho_{g,x_o}}}_{\rho_{g,y_o}} \frac{\rho_{g,y_o}}{\rho_{y,y_o}} - \frac{\rho_{g,x_o}}{\rho_{x,x_o}}\,\,\,\, d\rho_{y,y_o}d\rho_{x,x_o} \\
 & = 2\rho_{g,x_o}\rho_{g,y_o} - 2\rho_{g,y_o} - \rho_{g,y_o}log(\rho_{g,x_o}) - \rho_{g,x_o}\rho_{g,y_o}log(\rho_{g,x_o})
 \end{aligned}
 $$
 
-The sensitivity, $S$, can take values from 0 to 0.5, where low values suggest there are 
+Thus $V_{z < 0} = V_{z} - V_{z \geq 0}$.
 
 
 \newpage
