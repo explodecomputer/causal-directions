@@ -362,7 +362,7 @@ We performed simulations to explore the performance of this approach in comparis
 
 ### MR analysis of gene expression and DNA methylation
 
-We used the Steiger test to infer the direction of causality between DNA methylation levels and gene expression levels. To do this we obtained a list of `r nrow(qtl_orig)` gene expression - DNA methylation associations as reported in Shakhbazov et al [-@Shakhbazov2016]. These were filtered to be located on the same chromosome, have robost correlations after correcting for multiple testing, and to share a SNP that had a robust cis-acting effect on both the DNA methylation probe and the gene expression probe. Using the reported summary data we used the Steiger test of two independent correlations to identify which direction of causality was most likely for each association. We found that the causal direction commonly goes in both directions (`r ctab("shakhtab")`) but methylation levels were more likely to influence expression levels than vice versa (probability of expression causing methylation = `r shakhtest3$p.value` (95% CI `r shakhtest3$conf.int[1]` - `r shakhtest3$conf.int[2]`) amongst `r sum(shakhbazov$dir_p < 0.05)` associations with $p_{Steiger} < 0.05$). 
+We used the Steiger test to infer the direction of causality between DNA methylation levels and gene expression levels. To do this we obtained a list of `r nrow(qtl_orig)` gene expression - DNA methylation associations as reported in Shakhbazov et al [-@Shakhbazov2016]. These were filtered to be located on the same chromosome, have robost correlations after correcting for multiple testing, and to share a SNP that had a robust cis-acting effect on both the DNA methylation probe and the gene expression probe. Using the reported summary data we used the Steiger test of two independent correlations to identify which direction of causality was most likely for each association. We found that the causal direction commonly goes in both directions (`r cfig("shakhplot")`). We then went on to predict the causal directions of the associations for varying levels of possible measurement error. `r cfig("shakhplot")` shows that the qualitative result of which of DNA methylation or gene expression is more commonly the causal factor is very strongly determined by measurement error.
 
 We performed two sample MR [@Pierce2013] for each association in the direction of causality that we estimated to be the correct direction from the Steiger test. We observed that the sign of the MR estimate was always in the same direction as the Pearson correlation coefficient reported by Shakhbazov et al [-@Shakhbazov2016], and that there was a moderate correlation between the magnitude of the causal correlation and the observational Pearson correlation (`r ctab("shakhtab")`). 
 
@@ -531,7 +531,18 @@ $$
 
 where $\hat{x} = \hat{\alpha}_1 + \hat{\beta}_1 g$. Writing in scale free terms, $\rho_{g, x}$ denotes the correlation between $g$ and the exposure variable $x$, and it is expected that $\rho_{g, x} > \rho_{g, y}$ because $\rho_{g, y} = \rho_{g, x}\rho_{x, y}$, where $\rho_{x, y}$ is the causal association between $x$ and $y$ (which is likely to be less than 1). 
 
-In the presence of measurement error in $x$ and $y$, however, the Steiger test will instead be assessing the inequality $\rho_{g, x_o} > \rho_{g, y_o}$. In order to assess how reliable the Steiger test is in the presence of measurement imprecision, we can evaluate the range of potential values of measurement error in $x$ and $y$ over which the empirical result from the Steiger test would return the wrong value.
+In the presence of measurement error in $x$ and $y$, however, the Steiger test will instead be assessing the inequality $\rho_{g, x_o} > \rho_{g, y_o}$, which can be simplified:
+
+$$
+\begin{aligned}
+\rho_{g, x_O} & > \rho_{g, y_O} \\
+\rho_{g, x} \rho_{x, x_O} & > \rho_{g,y}\rho_{y,y_O}\\
+\rho_{g, x} \rho_{x, x_O} & > \rho_{g,x}\rho_{x,y}\rho_{y,y_O}\\
+\rho_{x, x_O} & > \rho_{x,y}\rho_{y,y_O}
+\end{aligned}
+$$
+
+In order to assess how reliable the Steiger test is in the presence of measurement imprecision, we can evaluate the range of potential values of measurement error in $x$ and $y$ over which the empirical result from the Steiger test would return the wrong value.
 
 For different values of $\rho_{x,x_o}$, $\rho_{g,x} = \frac{\rho_{g, x_o}}{\rho_{x,x_o}}$ and $\rho_{g,x_o} \leq \rho_{x,x_o} \leq 1$. For different values of $\rho_{y,y_o}$, $\rho_{g,y} = \frac{\rho_{g, y_o}}{\rho_{y,y_o}}$ and $\rho_{g,y_o} \leq \rho_{y,x_o} \leq 1$.
 
