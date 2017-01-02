@@ -682,9 +682,11 @@ for(i in 1:nrow(qtl))
 	l$sensitivity_plot
 	qtl$r_exp[i] <- l$r2_out_adj
 	qtl$r_meth[i] <- l$r2_exp_adj
+	qtl$steiger[i] <- l$steiger_test
 	qtl$dir[i] <- l$correct_causal_direction_adj
 	qtl$dir_p[i] <- l$steiger_test_adj
 	qtl$sensitivity[i] <- l$sensitivity
+	qtl$reliability[i] <- l$sensitivity_ratio
 
 	if(qtl$AL1_meth[i] != qtl$AL1_expr[i])
 	{
@@ -713,6 +715,8 @@ shakhbazov$mr_r <- sign(shakhbazov$mr_eff) * sqrt(abs(qnorm(shakhbazov$mr_p, low
 shakhbazov$dir <- as.character(shakhbazov$dir)
 shakhbazov$dir[shakhbazov$dir=="TRUE"] <- "Methylation causes Expression"
 shakhbazov$dir[shakhbazov$dir=="FALSE"] <- "Expression causes Methylation"
+shakhbazov$r_diff <- abs(shakhbazov$r_exp - shakhbazov$r_meth)
+
 real_index <- shakhbazov$rxx_o == 1 & shakhbazov$ryy_o == 1
 
 
@@ -722,7 +726,8 @@ shakhsummary <- dplyr::group_by(shakhbazov, rxx_o, ryy_o, dir) %>%
 		nsig = sum(dir_p < 0.05, na.rm=TRUE),
 		pos = sum(mr_eff > 0) / n(),
 		corr = cor(pearson^2, mr_r^2),
-		sens = mean(sensitivity, na.rm=TRUE)
+		sens = mean(sensitivity, na.rm=TRUE),
+		reliability = mean(reliability, na.rm=TRUE)
 	) %>% as.data.frame()
 
 
@@ -791,12 +796,35 @@ temp$ryy_o_lab <- paste0("cor(M,Mo) = ", temp$ryy_o)
 # facet_grid(rxx_o_lab ~ ryy_o_lab) 
 
 
-ggplot(subset(temp, key=="n"), aes(x=as.factor(rxx_o), y=value)) +
+p1 <- ggplot(subset(temp, key=="n"), aes(x=as.factor(rxx_o), y=value)) +
 geom_bar(stat="Identity", aes(fill=dir), position="stack") +
 geom_hline(yintercept = nrow(qtl_orig)/2, linetype="dotted") +
 facet_grid(. ~ ryy_o_lab) +
-labs(x="cor(E,Eo)", fill=NULL)
+labs(x="cor(E,Eo)", y="Count", fill=NULL, title="a)")
 
+
+p2 <- ggMarginal(
+	ggplot(shakhbazov[real_index,], aes(x=reliability, y=r_diff)) + 
+	geom_point() +
+	labs(x="Steiger reliability", y="| cor(g,Eo) - cor(g,Mo) |", title="b)")
+)
+
+p3 <- ggplot(shakhbazov[real_index,], aes(x=(pearson), y=(mr_r))) +
+# geom_errorbar(aes(ymin = abs(mr_r) - mr_se * 1.96, ymax = abs(mr_r) + mr_se * 1.96), colour="grey") +
+geom_point() +
+stat_smooth(method="lm") +
+geom_hline(yintercept=0, linetype="dotted") +
+geom_vline(xintercept=0, linetype="dotted") +
+# facet_grid(. ~ dir) +
+labs(x=TeX("$\\rho_{Pearson}$"), y=TeX("$\\beta_{MR}$"), title="b)")
+
+p4 <- ggplot(shakhbazov[real_index & shakhbazov$dir_p < 1 / sum(real_index), ], 
+	aes(x=mr_r)) +
+geom_density(aes(fill=dir), alpha=0.9) +
+labs(fill=NULL, x=TeX("$\\beta_{MR}$"), title="c)") +
+theme(legend.position="none")
+
+grid.arrange(p1, p3, p4, ncol=2, layout_matrix=rbind(c(1,1), c(2,3)))
 
 
 ## ---- shakhtab ----
@@ -806,21 +834,19 @@ names(shakhtab) <- c("$\\rho_{x,x_o}$", "$\\rho_{y,y_o}$", "Causal direction", "
 kable(shakhtab)
 
 
-
 ## ---- shakhbazov_mr_vs_cor ----
 
-cor(shakhbazov$mr_r, shakhbazov$pearson)
-summary(lm(abs(mr_r) ~ abs(pearson), shakhbazov))
-plot(abs(mr_r) ~ abs(pearson), shakhbazov)
-abline(lm(abs(mr_r) ~ abs(pearson), shakhbazov))
+# cor(shakhbazov$mr_r, shakhbazov$pearson)
+# summary(lm(abs(mr_r) ~ abs(pearson), shakhbazov))
+# plot(abs(mr_r) ~ abs(pearson), shakhbazov)
+# abline(lm(abs(mr_r) ~ abs(pearson), shakhbazov))
 
-ggplot(shakhbazov, aes(x=abs(pearson), y=abs(mr_r))) +
-# geom_errorbar(aes(ymin = abs(mr_r) - mr_se * 1.96, ymax = abs(mr_r) + mr_se * 1.96), colour="grey") +
-geom_point() +
-stat_smooth(method="lm") +
-facet_grid(. ~ dir) +
-labs(x=TeX("$|\\rho_{P}|$"), y=TeX("$|\\rho_{MR}|$"))
-
+# ggplot(shakhbazov, aes(x=abs(pearson), y=abs(mr_r))) +
+# # geom_errorbar(aes(ymin = abs(mr_r) - mr_se * 1.96, ymax = abs(mr_r) + mr_se * 1.96), colour="grey") +
+# geom_point() +
+# stat_smooth(method="lm") +
+# facet_grid(. ~ dir) +
+# labs(x=TeX("$|\\rho_{P}|$"), y=TeX("$|\\rho_{MR}|$"))
 
 
 
