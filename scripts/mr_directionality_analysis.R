@@ -2,6 +2,7 @@
 
 suppressPackageStartupMessages(library(dplyr))
 suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(ggExtra))
 suppressPackageStartupMessages(library(tidyr))
 suppressPackageStartupMessages(library(psych))
 suppressPackageStartupMessages(library(lattice))
@@ -881,8 +882,6 @@ example_sensitivity <- mr_steiger(
 	screen=list(z = 55, x = -60, y = 3), bty="n"
 )
 
-example_sensitivity
-
 p1 <- example_sensitivity$sensitivity_plot
 
 p2 <- ggplot(sensitivity_parameters, aes(y=sensitivity, x=r_xy, group=factor(r_gx^2))) +
@@ -890,7 +889,7 @@ p2 <- ggplot(sensitivity_parameters, aes(y=sensitivity, x=r_xy, group=factor(r_g
 	geom_line(aes(colour=factor(r_gx^2))) +
 	labs(x=expression(rho[xy]), y=expression(V[z<0]/V[z>=0]), colour=expression(rho[gx]^2)) +
 	scale_colour_brewer(type="qual")
-p2 + scale_y_log10()
+
 grid.arrange(
 	textGrob("a)", x=unit(0.1, "npc")), textGrob("b)", x=unit(0.1, "npc")),
 	p1, p2, 
