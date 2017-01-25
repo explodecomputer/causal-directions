@@ -191,19 +191,20 @@ get_cit_direction <- function(p1, p2, thresh)
 parameters$cit_res <- get_cit_direction(parameters$cit_AB, parameters$cit_BA, 0.05)
 parameters$cit_correct_direction <- parameters$cit_res == 1
 
-# Get the p-value for the CIT direction
-# ab < 0.05 & ba > 0.05 = correct
-# ab > 0.05 & ba < 0.05 = incorrect
-# ab < 0.05 & ba < 0.05 = no call
-# ab > 0.05 & ba > 0.05 = incorrect
 
 
 parameters$cit_p <- parameters$cit_AB
 parameters$cit_p[parameters$cit_res == 2] <- parameters$cit_BA[parameters$cit_res == 2]
 parameters$cit_p[parameters$cit_res == 3] <- 0.5
-parameters$cit_p[parameters$cit_res == 4] <- 0.01
+parameters$cit_p[parameters$cit_res == 4] <- 0.5
 
 # Do we classify 4 as being significant wrong causal direction, or no causal inference?
+
+# Get the p-value for the CIT direction
+# ab < 0.05 & ba > 0.05 = correct
+# ab > 0.05 & ba < 0.05 = incorrect
+# ab < 0.05 & ba < 0.05 = no call
+# ab > 0.05 & ba > 0.05 = no call
 
 
 parameters$cit_p <- -log10(parameters$cit_p)
