@@ -134,6 +134,10 @@ sfig_nums("",
 
 ### Abstract
 
+Genetic associations have the desirable property of ensuring the causal direction is from genotype to trait. Mediation based approaches such as the causal inference test (CIT) use this property to infer the causal direction between two traits, while Mendelian randomization uses the property to estimate the causal effect size if knowledge of the 
+
+ by evaluating if the genetic association on the consequential trait is abbrogated by adjusting for the causal trait. Mendelian randomization, by contrast assumes a priori knowledge of which of the two traits the genetic variant is acting on primarily, and then creates a proxy to estimate its causal effect on 
+
 A common approach for inferring causal relationships between two traits is to use genetic instruments in mediation-based analyses. Here we show that when measurement error is present, widely used tools predicated on this approach, such as the causal inference test (CIT) are susceptible to making erroneous inference of both the existence of causality and the causal direction. Increasing sample size for these tests, rather than reducing bias, can often have the effect of increasing certainty in the wrong answer. We demonstrate that Mendelian randomization (MR) is a technique for causal inference that is relatively robust to measurement error, and here we extend the method with new sensitivity analyses to estimate the direction of causality between correlated variables even when the biology of the instrument is unknown. This extension is less susceptible to measurement error than mediation-based analyses and only requires GWAS summary data. We use it to demonstrate empirically that inferring the direction of causality between correleted DNA methylation and gene expression levels is highly susceptible to differences in measurement error between the two assaying platforms. Other 'omic platforms are likely to be similarly susceptible, necessitating the use of sensitivity analyses to evaluate reliability.
 
 
