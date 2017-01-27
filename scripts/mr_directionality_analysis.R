@@ -10,6 +10,9 @@ suppressPackageStartupMessages(library(latex2exp))
 suppressPackageStartupMessages(library(knitr))
 suppressPackageStartupMessages(library(gridExtra))
 suppressPackageStartupMessages(library(grid))
+suppressPackageStartupMessages(library(network))
+suppressPackageStartupMessages(library(sna))
+suppressPackageStartupMessages(library(ggnetwork))
 
 
 get_p_from_r2n <- function(r2, n)
@@ -147,9 +150,16 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 ## ---- read_data ----
 
+load("~/repo/cit_measurement_error/results/mr_directionality_20170126.RData")
+parametersc <- parameters
+parametersc$model <- "Non-causal"
 load("~/repo/cit_measurement_error/results/mr_directionality_20160211.RData")
+parameters$model <- "Causal"
+parameters <- rbind(parameters, parametersc)
 
 parameters <- subset(parameters, r_ab != 1)
+index_causal <- parameters$model == "Causal"
+index_ncausal <- parameters$model == "Non-causal"
 
 parameters$p_az <- -log10(parameters$p_az)
 parameters$p_bz <- -log10(parameters$p_bz)
@@ -166,7 +176,8 @@ parameters$rhs_lhs_diff <- parameters$lhs - parameters$rhs
 a <- r.test(n=parameters$n, r12=parameters$cor_zap, r13=parameters$cor_zbp, r23=parameters$cor_abp)
 parameters$cortest_t <- a$t
 parameters$cortest_p <- -log10(a$p)
-parameters$cortest_correct_direction <- sign(parameters$cortest_t) == 1
+parameters$cortest_correct_direction[index_causal] <- sign(parameters$cortest_t[index_causal]) == 1
+parameters$cortest_correct_direction[index_ncausal] <- FALSE
 parameters$cortest_correct_direction[is.na(parameters$cortest_correct_direction)] <- FALSE
 
 
@@ -189,21 +200,28 @@ get_cit_direction <- function(p1, p2, thresh)
 }
 
 parameters$cit_res <- get_cit_direction(parameters$cit_AB, parameters$cit_BA, 0.05)
-parameters$cit_correct_direction <- parameters$cit_res == 1
+parameters$cit_correct_direction[index_causal] <- parameters$cit_res[index_causal] == 1
+parameters$cit_correct_direction[index_ncausal] <- parameters$cit_res[index_ncausal] == 3
+
+parameters$cit_p[index_causal] <- parameters$cit_AB[index_causal]
+parameters$cit_p[parameters$cit_res == 2 & index_causal] <- parameters$cit_BA[parameters$cit_res == 2 & index_causal]
+parameters$cit_p[parameters$cit_res == 3 & index_causal] <- 0.01
+parameters$cit_p[parameters$cit_res == 4 & index_causal] <- 0.5
 
 
 
-parameters$cit_p <- parameters$cit_AB
-parameters$cit_p[parameters$cit_res == 2] <- parameters$cit_BA[parameters$cit_res == 2]
-parameters$cit_p[parameters$cit_res == 3] <- 0.5
-parameters$cit_p[parameters$cit_res == 4] <- 0.5
+parameters$cit_p[index_ncausal] <- pmax(parameters$cit_AB[index_ncausal], parameters$cit_BA[index_ncausal])
+parameters$cit_p[parameters$cit_res == 1 & index_ncausal] <- parameters$cit_BA[parameters$cit_res == 1 & index_ncausal]
+parameters$cit_p[parameters$cit_res == 2 & index_ncausal] <- parameters$cit_BA[parameters$cit_res == 2 & index_ncausal]
 
-# Do we classify 4 as being significant wrong causal direction, or no causal inference?
+
+# For causal model 
+# Do we classify 3 as being significant wrong causal direction, or no causal inference?
 
 # Get the p-value for the CIT direction
 # ab < 0.05 & ba > 0.05 = correct
 # ab > 0.05 & ba < 0.05 = incorrect
-# ab < 0.05 & ba < 0.05 = no call
+# ab < 0.05 & ba < 0.05 = incorrect
 # ab > 0.05 & ba > 0.05 = no call
 
 
@@ -226,7 +244,7 @@ pl$direction_p_value[is.infinite(pl$direction_p_value)] <- max(is.finite(pl$dire
 
 # Reduce
 psum1 <- pl %>%
-	group_by(n, p, r_ab, r_za, noisea, noiseb, test) %>%
+	group_by(n, p, r_ab, r_za, noisea, noiseb, test, model) %>%
 	dplyr::summarise(
 		prop_correct_direction=sum(correct_direction, na.rm=TRUE)/n(),
 		prop_correct_direction_sig=sum(correct_direction & direction_p_value > -log10(0.05) & test_p_value > -log10(0.05), na.rm=TRUE)/n(),
@@ -316,7 +334,7 @@ grid.arrange(p1, p2, ncol=1)
 ## ---- cit_mr_comparison_figure ----
 
 psum2 <- gather(psum1, eval, value, prop_sig_correct, prop_sig_incorrect, prop_nonsig, factor_key=TRUE) %>%
-	dplyr::group_by(n, rhs_lhs_diff_bin, r_za, eval, test) %>%
+	dplyr::group_by(n, rhs_lhs_diff_bin, r_za, eval, test, model) %>%
 	dplyr::summarise(value=mean(value, na.rm=TRUE), nsim=n())
 
 temp2 <- do.call(rbind, strsplit(as.character(psum2$rhs_lhs_diff_bin), split=","))
@@ -326,13 +344,62 @@ psum2$rhs_lhs_diff_bin_lab <- factor(psum2$rhs_lhs_diff_bin_lab, levels=levels(p
 
 levels(psum2$eval) <- c("Evidence for causality\nunder correct model", "Evidence for causality\nunder incorrect model", "No evidence for causality")
 
-ggplot(subset(psum2, round(r_za,2)==0.01), aes(x=test, y=value)) +
+
+legend <- cowplot::get_legend(
+	ggplot(subset(psum2, round(r_za,2)==0.01 & model == "Causal"), aes(x=test, y=value)) +
+	geom_bar(stat="identity", aes(fill=eval)) +
+	facet_grid(n ~ rhs_lhs_diff_bin) +
+	scale_fill_brewer(type="qual") +
+	labs(x="Method", y="Proportion of simulations", fill="") +
+	theme(legend.key=element_rect(size=3), legend.key.size = unit(2, "lines"))
+)
+
+p1 <- ggplot(subset(psum2, round(r_za,2)==0.01 & model == "Causal"), aes(x=test, y=value)) +
 geom_bar(stat="identity", aes(fill=eval)) +
 facet_grid(n ~ rhs_lhs_diff_bin) +
 scale_fill_brewer(type="qual") +
 labs(x="Method", y="Proportion of simulations", fill="") +
-theme(legend.key=element_rect(size=3), legend.key.size = unit(2, "lines"))
+theme(legend.position="none")
 
+p2 <- ggplot(subset(psum2, round(r_za,2)==0.01 & model == "Non-causal"), aes(x=test, y=value)) +
+geom_bar(stat="identity", aes(fill=eval)) +
+facet_grid(n ~ rhs_lhs_diff_bin) +
+scale_fill_brewer(type="qual") +
+labs(x="Method", y="Proportion of simulations", fill="") +
+theme(legend.position="none")
+
+matc <- t(matrix(c(0,1,0,0,0,1,0,0,0), 3, 3))
+matnc <- t(matrix(c(0,1,1,0,0,0,0,0,0), 3, 3))
+n <- network(matnc, directed = TRUE)
+n %v% "what" <- c("G", "A", "B")
+p3 <- ggplot(ggnetwork(n, layout="circle", arrow.gap=0.05), aes(x = x, y = y, xend = xend, yend = yend)) +
+  # geom_nodes(size = 11, aes(color=what)) +
+  geom_edges(arrow = arrow(type = "closed")) +
+  geom_nodelabel(aes(label = what), fontface = "bold") +
+  theme_blank() +
+  theme(legend.position="none") +
+  labs(title="a)")
+
+n <- network(matc, directed = TRUE)
+n %v% "what" <- c("G", "A", "B")
+p4 <- ggplot(ggnetwork(n, layout="circle", arrow.gap=0.05), aes(x = x, y = y, xend = xend, yend = yend)) +
+  # geom_nodes(size = 11, aes(color=what)) +
+  geom_edges(arrow = arrow(type = "closed")) +
+  geom_nodelabel(aes(label = what), fontface = "bold") +
+  theme_blank() +
+  theme(legend.position="none") +
+  labs(title="b)")
+
+
+cowplot::plot_grid(
+	gridExtra::arrangeGrob(
+		grobs=list(p3, p1, legend, p4, p2), 
+		ncol=3, 
+		nrow=2, 
+		heights=c(4,4),
+		widths=c(2,4,2)
+	)
+)
 
 
 ## ---- plot1 ----
