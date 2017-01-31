@@ -71,7 +71,7 @@ cfig <- function(x) fig_nums(x, display="c")
 
 fig_nums(
 	"dag_figure",
-	caption="Gene expression levels (blue blocks) and DNA methylation levels (green triangles) may be correlated but the causal direction is unknown. If a SNP (yellow circle) is associated with both DNA methylation and gene expression levels then it can be used as an instrument, but there are two competing models for these variables. a) Methylation causes gene expression. The left figure shows that the SNP influences methylation levels that in turn influence gene expression levels. The right figure shows the directed acyclic graph that represents this model. Faded symbols represent the measured values whereas solid symbols represent the true values. b) The same as in A, except the causal direction is from gene expression to DNA methylation.",
+	caption="Gene expression levels (blue blocks) and DNA methylation levels (green triangles) may be correlated but the causal direction is unknown. If a SNP (yellow circle) is associated with both DNA methylation and gene expression levels then it can be used as an instrument, but there are three competing models for these variables. The causal inference test attempts to delineate between them. a) Methylation causes gene expression. The left figure shows that the SNP influences methylation levels that in turn influence gene expression levels. The right figure shows the directed acyclic graph that represents this model. Faded symbols represent the measured values whereas solid symbols represent the true values. b) The same as in A, except the causal direction is from gene expression to DNA methylation.",
 	display=FALSE
 )
 

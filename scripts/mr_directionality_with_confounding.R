@@ -189,7 +189,15 @@ for(i in 1:nrow(parameters))
 	message(i, " of ", nrow(parameters))
 	dat <- with(parameters[i,], make_system(n, p, r_ab, r_za, noisea, noiseb))
 	parameters$cit_AB[i] <- cit.cp(dat$Z, dat$Ap, dat$Bp)[1]
+	parameters$cit_AB1[i] <- cit.cp(dat$Z, dat$Ap, dat$Bp)[2]
+	parameters$cit_AB2[i] <- cit.cp(dat$Z, dat$Ap, dat$Bp)[3]
+	parameters$cit_AB3[i] <- cit.cp(dat$Z, dat$Ap, dat$Bp)[4]
+	parameters$cit_AB4[i] <- cit.cp(dat$Z, dat$Ap, dat$Bp)[5]
 	parameters$cit_BA[i] <- cit.cp(dat$Z, dat$Bp, dat$Ap)[1]
+	parameters$cit_BA1[i] <- cit.cp(dat$Z, dat$Bp, dat$Ap)[2]
+	parameters$cit_BA2[i] <- cit.cp(dat$Z, dat$Bp, dat$Ap)[3]
+	parameters$cit_BA3[i] <- cit.cp(dat$Z, dat$Bp, dat$Ap)[4]
+	parameters$cit_BA4[i] <- cit.cp(dat$Z, dat$Bp, dat$Ap)[5]
 	parameters$cor_aap[i] <- cor(dat$A, dat$Ap)
 	parameters$cor_bbp[i] <- cor(dat$B, dat$Bp)
 	parameters$cor_abp[i] <- cor(dat$Ap, dat$Bp)

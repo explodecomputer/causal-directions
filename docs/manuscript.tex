@@ -80,8 +80,7 @@ of measurement error}
   \preauthor{}\postauthor{}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{03 January 2017}
-
+  \date{27 January 2017}
 
 \begin{document}
 \maketitle
@@ -96,24 +95,37 @@ School of Social and Community Medicine, Bristol, UK
 
 \subsubsection{Abstract}\label{abstract}
 
+Genetic associations have the desirable property of ensuring the causal
+direction is from genotype to trait. Mediation based approaches such as
+the causal inference test (CIT) use this property to infer the causal
+direction between two traits, while Mendelian randomization uses the
+property to estimate the causal effect size if knowledge of the
+
+by evaluating if the genetic association on the consequential trait is
+abbrogated by adjusting for the causal trait. Mendelian randomization,
+by contrast assumes a priori knowledge of which of the two traits the
+genetic variant is acting on primarily, and then creates a proxy to
+estimate its causal effect on
+
 A common approach for inferring causal relationships between two traits
 is to use genetic instruments in mediation-based analyses. Here we show
-that when measurement error is present, commonly-used tools predicated
-on this approach are susceptible to making erroneous inference of both
-the existence of causality and the causal direction, and that increasing
-sample size, rather than reducing bias, can often have the effect of
-increasing certainty in the wrong answer. We demonstrate that Mendelian
-randomization (MR) is a technique for causal inference that is robust to
-measurement error, and here we extend the method with new sensitivity
-analyses to estimate the direction of causality between correlated
-variables even when the biology of the instrument is unknown. This
-extension is less susceptible to measurement error than mediation-based
-analyses. We use it to demonstrate empirically that inferring the
-direction of causality between correleted DNA methylation and gene
-expression levels is highly susceptible to differences in measurement
-error between the two assaying platforms. Other 'omic platforms are
-likely to be similarly susceptible, necessitating the use of sensitivity
-analyses to evaluate reliability.
+that when measurement error is present, widely used tools predicated on
+this approach, such as the causal inference test (CIT) are susceptible
+to making erroneous inference of both the existence of causality and the
+causal direction. Increasing sample size for these tests, rather than
+reducing bias, can often have the effect of increasing certainty in the
+wrong answer. We demonstrate that Mendelian randomization (MR) is a
+technique for causal inference that is relatively robust to measurement
+error, and here we extend the method with new sensitivity analyses to
+estimate the direction of causality between correlated variables even
+when the biology of the instrument is unknown. This extension is less
+susceptible to measurement error than mediation-based analyses and only
+requires GWAS summary data. We use it to demonstrate empirically that
+inferring the direction of causality between correleted DNA methylation
+and gene expression levels is highly susceptible to differences in
+measurement error between the two assaying platforms. Other 'omic
+platforms are likely to be similarly susceptible, necessitating the use
+of sensitivity analyses to evaluate reliability.
 
 \subsection{Introduction}\label{introduction}
 
@@ -126,24 +138,28 @@ instrumentation has emerged as a technique for improving the reliability
 of causal inference in observational data, and with the coincident rise
 in genome-wide association studies it is now a prominent tool that is
 applied in several different guises\textsuperscript{3--6}. However,
-potential pitfalls still persist and one that is often neglected is the
+potential pitfalls remain and one that is often neglected is the
 influence of non-differential measurement error on the reliability of
 causal inference.
 
-Non-differential measurement error (or observational error, henceforth
-referred to simply as measurement error) is the difference between the
-measured value of a quantity and its true value. Such variability can
-arise through a whole plethora of mechanisms, which are often unique to
-the study design and difficult to avoid\textsuperscript{7,8}. Array
-technology is now commonly used to obtain high throughput phenotyping at
-low cost, but they come with the problem of having imperfect resolution,
-for instance methylation levels as measured by the Illumina450k chip are
-prone to have some amount of noise around the true
-value\textsuperscript{9,10}. Relatedly, if the measurement of biological
-interest is the methylation level in a T cell, then measurement error of
-this value can be introduced by using methylation levels from whole
-blood samples because the measured value will be an assay of many cell
-types\textsuperscript{11}.
+Measurement error (or observational error, henceforth referred to simply
+as measurement error) is the difference between the measured value of a
+quantity and its true value. This study focuses specifically on
+non-differential measurement error where all strata of a measured
+variable have the same error rate, which can manifest as changes in
+scale or levels of imprecision (noise) of the measurement. Such
+variability can arise through a whole plethora of mechanisms, which are
+often unique to the study design and difficult to
+avoid\textsuperscript{7,8}. Array technology is now commonly used to
+obtain high throughput phenotyping at low cost, but comes with the
+problem of having imperfect resolution, for instance methylation levels
+as measured by the Illumina450k chip are prone to have some amount of
+noise around the true value due to imperfect
+sensitivity\textsuperscript{9,10}. Relatedly, if the measurement of
+biological interest is the methylation level in a T cell, then
+measurement error of this value can be introduced by using methylation
+levels from whole blood samples because the measured value will be an
+assay of many cell types\textsuperscript{11}.
 
 Measurement error will of course arise in more basic data too, for
 example when measuring BMI one is typically interested in using this as
@@ -158,25 +174,25 @@ analysis will lead to a new variable that will typically incur both
 changes in scale and imprecision (noise) compared to the original
 variable. The sources of measurement error are not limited to this
 list\textsuperscript{8}, and its impact has been explored in the
-epidemiological literature extensively\textsuperscript{13,14}.
+epidemiological literature extensively\textsuperscript{13,14}. Given the
+near-ubiquitous presence of measurement error in phenomic data it is
+vital to understand its impact on the tools we use for causal inference.
 
-Given the near-ubiquitous presence of measurement error in phenomic data
-it is vital to understand its impact on the tools we use for causal
-inference. An established study design that can provide information
-about causality is randomisation. Given the hypothesis that trait A
-(henceforth referred to as the exposure) is causally related to trait B
-(henceforth referred to as the outcome), randomisation can be employed
-to assess the causal nature of the association by randomly splitting the
-sample into two groups, subjecting one group to the exposure and leaving
-the other as a control. The association between the exposure and the
-outcome in this setting provides a robust estimate of the causal
-relationship. This provides the theoretical basis behind randomised
-control trials, but in practice randomisation is often impossible to
-implement in an experimental context due to cost, scale or inability to
-manipulate the exposure. The principle, however, can be employed in
-extant observational data through the use of genetic variants associated
-with the exposure (instruments), where the inheritance of an allele
-serves as a random lifetime allocation of differential exposure
+An established study design that can provide information about causality
+is randomisation. Given the hypothesis that trait A (henceforth referred
+to as the exposure) is causally related to trait B (henceforth referred
+to as the outcome), randomisation can be employed to assess the causal
+nature of the association by randomly splitting the sample into two
+groups, subjecting one group to the exposure and leaving the other as a
+control. The association between the exposure and the outcome in this
+setting provides a robust estimate of the causal relationship. This
+provides the theoretical basis behind randomised control trials, but in
+practice randomisation is often impossible to implement in an
+experimental context due to cost, scale or inability to manipulate the
+exposure. The principle, however, can be employed in extant
+observational data through the use of genetic variants associated with
+the exposure (instruments), where the inheritance of an allele serves as
+a random lifetime allocation of differential exposure
 levels\textsuperscript{15,16}. Two statistical approaches to exploiting
 the properties of genetic instruments are widely used: mediation-based
 approaches and Mendelian randomisation (MR).
@@ -197,7 +213,7 @@ methods including Bayesian approaches\textsuperscript{6}. They have been
 employed by a number of recent publications that make causal inferences
 in large scale `omics datasets\textsuperscript{6,19--23}.
 
-MR can operate on the same data - phenotypic measures of the exposure
+MR can be applied to the same data - phenotypic measures of the exposure
 and the outcome variables and a genetic instrument for the exposure -
 but the genetic instrument is employed in a subtly different manner.
 Here the SNP, which is assumed to have a direct association with the

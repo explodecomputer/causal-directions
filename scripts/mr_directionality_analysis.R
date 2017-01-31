@@ -275,7 +275,7 @@ levels(dat$eval) <- c("Correct causal model", "Incorrect causal model")
 
 ggplot(subset(dat, n %in% c(100, 1000, 10000)), aes(x=sqrt(rsq),y=-log10(pval))) +
 geom_point(aes(colour=eval)) +
-labs(y=expression(-log[10]*p), x=expression(cor(x, x[O])), colour="") +
+labs(y=expression(-log[10]*p), x=expression(rho[xx[o]]), colour="") +
 facet_grid(n ~ ., scale="free_y")
 
 
@@ -393,7 +393,7 @@ p4 <- ggplot(ggnetwork(n, layout="circle", arrow.gap=0.05), aes(x = x, y = y, xe
 
 cowplot::plot_grid(
 	gridExtra::arrangeGrob(
-		grobs=list(p3, p1, legend, p4, p2), 
+		grobs=list(p4, p1, legend, p3, p2), 
 		ncol=3, 
 		nrow=2, 
 		heights=c(4,4),
