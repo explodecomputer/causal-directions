@@ -10,6 +10,7 @@ suppressPackageStartupMessages(library(latex2exp))
 suppressPackageStartupMessages(library(knitr))
 suppressPackageStartupMessages(library(gridExtra))
 suppressPackageStartupMessages(library(grid))
+suppressPackageStartupMessages(library(cowplot))
 suppressPackageStartupMessages(library(network))
 suppressPackageStartupMessages(library(sna))
 suppressPackageStartupMessages(library(ggnetwork))
@@ -271,6 +272,7 @@ psum1$rhs_lhs_diff_bin <- cut(psum1$rhs_lhs_diff, breaks=seq(-0.2, 1.1, by=0.1))
 
 ## ---- cit_measurement_error_figure ----
 
+
 load("~/repo/cit_measurement_error/results/20141114.RData")
 dat <- gather(dat, eval, pval, GT, TG, factor_key=TRUE)
 levels(dat$eval) <- c("Correct causal model", "Incorrect causal model")
@@ -334,6 +336,7 @@ grid.arrange(p1, p2, ncol=1)
 
 
 ## ---- cit_mr_comparison_figure ----
+
 
 psum2 <- gather(psum1, eval, value, prop_sig_correct, prop_sig_incorrect, prop_nonsig, factor_key=TRUE) %>%
 	dplyr::group_by(n, rhs_lhs_diff_bin, r_za, eval, test, model) %>%
@@ -609,6 +612,7 @@ facet_grid(noisea ~ noiseb)
 
 
 ## ---- causality_exists_tpr ----
+
 
 pl$causality_exists <- TRUE
 pl$causality_exists[pl$test == "MR"] <- pl$p_bz[pl$test == "MR"] > -log10(0.05)
@@ -944,6 +948,7 @@ for(i in 1:nrow(sensitivity_parameters))
 
 
 ## ---- steiger_sensitivity_plot ----
+
 
 example_sensitivity <- mr_steiger(
 	get_p_from_r2n(sqrt(0.01), 10001),
