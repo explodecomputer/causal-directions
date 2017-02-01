@@ -6,6 +6,7 @@ suppressWarnings(suppressPackageStartupMessages(library(ggnetwork)))
 suppressWarnings(suppressPackageStartupMessages(library(gridExtra)))
 suppressWarnings(suppressPackageStartupMessages(library(dplyr)))
 suppressWarnings(suppressPackageStartupMessages(library(tidyr)))
+suppressWarnings(suppressPackageStartupMessages(library(cit)))
 
 nid <- 10000
 l <- m <- list()
@@ -90,8 +91,9 @@ l[[3]] <- ggplot(ggnetwork(n, layout="circle", arrow.gap=0.05), aes(x = x, y = y
   labs(title="Model 3")
 
 g <- rnorm(nid)
-a <- g + rnorm(nid)
-b <- g + rnorm(nid)
+u <- g + rnorm(nid)
+a <- u + rnorm(nid)
+b <- u + rnorm(nid)
 m[[3]] <- rbind(
 	cit.cp(L=g, G=a, T=b),
 	cit.cp(L=g, G=b, T=a)

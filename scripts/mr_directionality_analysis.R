@@ -155,6 +155,8 @@ parametersc <- parameters
 parametersc$model <- "Non-causal"
 load("~/repo/cit_measurement_error/results/mr_directionality_20160211.RData")
 parameters$model <- "Causal"
+parameters$cit_AB1 <- parameters$cit_AB2 <- parameters$cit_AB3 <- parameters$cit_AB4 <- NA
+parameters$cit_BA1 <- parameters$cit_BA2 <- parameters$cit_BA3 <- parameters$cit_BA4 <- NA
 parameters <- rbind(parameters, parametersc)
 
 parameters <- subset(parameters, r_ab != 1)
@@ -205,7 +207,7 @@ parameters$cit_correct_direction[index_ncausal] <- parameters$cit_res[index_ncau
 
 parameters$cit_p[index_causal] <- parameters$cit_AB[index_causal]
 parameters$cit_p[parameters$cit_res == 2 & index_causal] <- parameters$cit_BA[parameters$cit_res == 2 & index_causal]
-parameters$cit_p[parameters$cit_res == 3 & index_causal] <- 0.01
+parameters$cit_p[parameters$cit_res == 3 & index_causal] <- 0.0001
 parameters$cit_p[parameters$cit_res == 4 & index_causal] <- 0.5
 
 
@@ -359,36 +361,36 @@ geom_bar(stat="identity", aes(fill=eval)) +
 facet_grid(n ~ rhs_lhs_diff_bin) +
 scale_fill_brewer(type="qual") +
 labs(x="Method", y="Proportion of simulations", fill="") +
-theme(legend.position="none")
+theme(legend.position="none", strip.text.x=element_text(angle=90), axis.text.x=element_text(angle=90, hjust=1, vjust=0.5))
 
 p2 <- ggplot(subset(psum2, round(r_za,2)==0.01 & model == "Non-causal"), aes(x=test, y=value)) +
 geom_bar(stat="identity", aes(fill=eval)) +
 facet_grid(n ~ rhs_lhs_diff_bin) +
 scale_fill_brewer(type="qual") +
 labs(x="Method", y="Proportion of simulations", fill="") +
-theme(legend.position="none")
+theme(legend.position="none", strip.text.x=element_text(angle=90), axis.text.x=element_text(angle=90, hjust=1, vjust=0.5))
 
 matc <- t(matrix(c(0,1,0,0,0,1,0,0,0), 3, 3))
 matnc <- t(matrix(c(0,1,1,0,0,0,0,0,0), 3, 3))
 n <- network(matnc, directed = TRUE)
-n %v% "what" <- c("G", "A", "B")
+n %v% "what" <- c("G", "X", "Y")
 p3 <- ggplot(ggnetwork(n, layout="circle", arrow.gap=0.05), aes(x = x, y = y, xend = xend, yend = yend)) +
   # geom_nodes(size = 11, aes(color=what)) +
   geom_edges(arrow = arrow(type = "closed")) +
   geom_nodelabel(aes(label = what), fontface = "bold") +
   theme_blank() +
   theme(legend.position="none") +
-  labs(title="a)")
+  labs(title="b)")
 
 n <- network(matc, directed = TRUE)
-n %v% "what" <- c("G", "A", "B")
+n %v% "what" <- c("G", "X", "Y")
 p4 <- ggplot(ggnetwork(n, layout="circle", arrow.gap=0.05), aes(x = x, y = y, xend = xend, yend = yend)) +
   # geom_nodes(size = 11, aes(color=what)) +
   geom_edges(arrow = arrow(type = "closed")) +
   geom_nodelabel(aes(label = what), fontface = "bold") +
   theme_blank() +
   theme(legend.position="none") +
-  labs(title="b)")
+  labs(title="a)")
 
 
 cowplot::plot_grid(
@@ -743,7 +745,7 @@ for(i in 1:nrow(qtl))
 	l <- mr_steiger(
 		qtl$PVALUE_meth[i], 
 		qtl$PVALUE_expr[i], 
-		610, 862,
+		420, 862,
 		qtl$rxx_o[i],
 		qtl$ryy_o[i],
 		screen = list(z = 70, x = -60, y = 3)
@@ -819,7 +821,7 @@ shakhtest2 <- fisher.test(
 )
 
 
-# Is methylation more likely to cause expression amongst dor < 0.05
+# Is methylation more likely to cause expression amongst dir < 0.05
 
 shakhtest3 <- binom.test(
 	sum(shakhbazov$dir == "Methylation causes Expression" & shakhbazov$dir_p < 0.05 & real_index), 
