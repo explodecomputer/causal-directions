@@ -203,9 +203,6 @@ where $\alpha_{mx}$ and $\beta_{mx}$ influence the error in the measurement of $
 
 ## Methods
 
-The analysis proceeds by simulating variables that have known causal effects and valid instruments, and then applying measurement error in different configurations. We then assess the performance of the CIT test and MR analysis for a) inference of a causal relationship and b) inferring the correct direction of causality. Included in the MR analysis is a simple extension that is used to make inference of the causal direction when it is unknown which of the correlated variables the instrument is directly acting upon. All analysis was performed using the R programming language [@RCoreTeam2015] and code is made available at [github url to go here]() and implemented in the MR-Base (http://wwww.mrbase.org) platform [@Hemani2016].
-
-
 ### CIT test
 
 The CIT method [@Millstein2009] is implemented in the R package *R/cit* [@Millstein2016]. The methodology of the CIT is as follows. Assume an exposure $x$ is instrumented by a SNP $g$, and the exposure $x$ is causally related to an outcome $y$. Thus,
@@ -301,9 +298,9 @@ $$
 An advantage of using the Steiger test in the two sample context is that it can compare correlations in independent samples where sample sizes are different. Steiger test statistics were calculated using the *r.test* function in the R package *R/psych* [@Revelle2015].
 
 
-### Steiger sensitivity analysis
+### Causal direction sensitivity analysis
 
-The Steiger test for inferring if $x \rightarrow y$ is based on evaluating $\rho_{gx} > \rho_{gy}$. However, $\rho_{gx}$ and $\rho_{gy}$ are underestimated if $x$ and $y$ are measured imprecisely. If, for example, $x$ has lower measurement precision than $y$ then we might empirically obtain $\rho_{g,x_o} > \rho_{g,y_o}$. As we show in the appendix, the maximum measurement error of $x_o$ is $\rho_{g,x_o}$ and the minimum is 0 (same applies to $y_o$). It is possible to simulate what the inferred causal direction would be for all values within these bounds. To evaluate how reliable, $R$, the Steiger test is to potential measurement imprecision in $x$ and $y$ we integrate over the simulated $R$ values for the possible measurement error values which are compatible with the direction of causality obtained empirically from the Steiger test. We also do the same for the measurement error values which are not compatible. The ratio of these quantities is an indication of how much of the measurement error space supports the inferred causal direction. A ratio $R=1$ indicates that the Steiger test is highly sensitive to measurement error, with equal weight of the measurement error parameter space supporting both directions of causality. Full details are provided in Appendix 2 and `r cfig("steiger_sensitivity_plot")`a.
+The Steiger test for inferring if $x \rightarrow y$ is based on evaluating $\rho_{gx} > \rho_{gy}$. However, $\rho_{gx}$ and $\rho_{gy}$ are underestimated if $x$ and $y$ are measured imprecisely. If, for example, $x$ has lower measurement precision than $y$ then we might empirically obtain $\rho_{g,x_o} > \rho_{g,y_o}$. As we show in the appendix, the maximum measurement error of $x_o$ is $\rho_{g,x_o}$ and the minimum is 0 (same applies to $y_o$). It is possible to simulate what the inferred causal direction would be for all values within these bounds. To evaluate how reliable, $R$, the inference of the causal direction is to potential measurement imprecision in $x$ and $y$ we integrate over the simulated $R$ values for the possible measurement error values which are compatible with the direction of causality obtained empirically from the Steiger test. We also do the same for the measurement error values which are not compatible. The ratio of these quantities is an indication of how much of the measurement error space supports the inferred causal direction. A ratio $R=1$ indicates that the Steiger test is highly sensitive to measurement error, with equal weight of the measurement error parameter space supporting both directions of causality. Full details are provided in Appendix 2 and `r cfig("steiger_sensitivity_plot")`a.
 
 
 ### Simulations
@@ -354,6 +351,9 @@ giving a total of 432 combinations of parameters. Simulations using each of thes
 
 Two sample MR [@Pierce2013] was performed using the summary statistics presented in [@Shakhbazov2016] for each of `r nrow(shakhbazov)` associations between DNA methylation and gene expression levels. To do this we obtained a list of `r nrow(qtl_orig)` gene expression - DNA methylation associations as reported in Shakhbazov et al [-@Shakhbazov2016]. These were filtered to be located on the same chromosome, have robust correlations after correcting for multiple testing, and to share a SNP that had a robust cis-acting effect on both the DNA methylation probe and the gene expression probe. Because only summary statistics were available (effect, standard error, effect allele, sample size, p-values) for the instrumental SNP on the methylation and gene expression levels, the Steiger test of two independent correlations was used to infer the direction of causality for each of the associations. The Wald ratio test was then used to estimate the causal effect size for the estimated direction for each association.
 
+All analysis was performed using the R programming language [@RCoreTeam2015] and code is made available at [github url to go here]() and implemented in the MR-Base (http://wwww.mrbase.org) platform [@Hemani2016].
+
+
 
 ## Results
 
@@ -381,11 +381,11 @@ We performed simulations to verify that this problem does arise using the CIT me
 We performed simulations to compare the performance of MR against CIT in detecting a causal association between simulated variables under different levels of imprecision simulated in the exposure. `r cfig("causality_exists_tpr")` shows the true positive rates between the CIT and MR for detecting a causal association. We observe that the CIT has lower power in all cases, with performance declining as measurement imprecision increases in the exposure. When MR assumptions are satisfied, notably that it is known on which of $x$ and $y$ the SNP $g$ has a primary influence, the performance of MR in detecting an association is unrelated to measurement error in the exposure. Measurement error in the outcome does reduce power, but does not induce a substantive difference in performance between CIT and MR.
 
 
-### Using MR to infer the direction of causality
+### Using MR Steiger to infer the direction of causality
 
-If we do not know whether the SNP $g$ has a direct influence on $x$ or $y$ then further efforts are required. If $x$ causes $y$ and $g$ is a valid instrument for $x$ then we expect that $\rho_{g,x}$ to be greater than $\rho_{g,y}$ because the association of $g$ with $y$ is the proportion of the true causal association between $x$ and $y$ scaled by the association between $g$ and $x$. We can use the Steiger test of correlated correlations to formally test the difference in magnitude of $\rho_{g,x}$ and $\rho_{g,y}$, where the variable with the largest correlation on $g$ is deemed to be the variable which is imposing the causal effect.
+If we do not know whether the SNP $g$ has a primary influence on $x$ or $y$ then CIT can attempt to infer the causal direction. Here we introduce the MR Steiger approach to also orient the direction of causality in an MR analysis when the underlying biology of the SNP is not fully understood. 
 
-This is a simple method to orient the direction of causality in an MR analysis when the underlying biology of the SNP is not fully understood. But it can be shown that in the presence of measurement imprecision, $d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}$ (Appendix 2), where $d$ is a metric of the degree to which the Steiger test is liable to provide the wrong estimate (*i.e.* if $d>0$ then the Steiger test is likely to be correct about the causal direction). Thus it is important to note that under certain conditions when measurement imprecision is present the Steiger test could make erroneous inference about the causal direction because the value of $d$ is not restricted to being greater than 0. However `r cfig("d_relationship_figure")` shows that when there is no measurement error in $x$, the Steiger test is unlikely to infer the wrong direction of causality even if there is measurement error in $y$. It also shows that in most cases where $x$ is measured with error, especially when the causal effect between $x$ and $y$ is not very large, the sensitivity of the Steiger test to measurement error is relatively low.
+We show that in the presence of measurement imprecision, $d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}$ (Appendix 2), where $d$ is a metric of the degree to which the Steiger test is liable to provide the wrong estimate (*i.e.* if $d>0$ then the Steiger test is likely to be correct about the causal direction). Thus it is important to note that under certain conditions when measurement imprecision is present the Steiger test could make erroneous inference about the causal direction because the value of $d$ is not restricted to being greater than 0. However `r cfig("d_relationship_figure")` shows that when there is no measurement error in $x$, the Steiger test is unlikely to infer the wrong direction of causality even if there is measurement error in $y$. It also shows that in most cases where $x$ is measured with error, especially when the causal effect between $x$ and $y$ is not very large, the sensitivity of the Steiger test to measurement error is relatively low.
 
 We performed simulations to explore the performance of this approach in comparison to CIT in terms of the rate at which a strong causal relationship is obtained for the correct direction of causality, and the rate at which a strong causal relationship is obtained where the reported direction of causality is incorrect. Simulations were performed for two models, one for a "causal model" where there was a causal relationship between $x$ and $y$; and one for a "non-causal model" where $x$ and $y$ were not causally related, but had a confounded association induced by the SNP $g$ influencing a confounder variable $u$.
 
@@ -546,7 +546,9 @@ thus $cov(g, y_o - \hat{y}_o) = 0$ if the measurement imprecision in $x_o$ is $v
 
 ## Appendix 2
 
-The Steiger test is used to infer if the variant $g$ has a direct influence on $x$ or $y$ when it is known that it associates with both, but the direction of causality between $x$ and $y$ is unknown. Assuming the causal direction is $x \to y$, two stage MR is formulated using the following regression models:
+Assuming that either $x \rightarrow y$ or $y \rightarrow x$, the causal direction can be inferred by evaluating which of $\rho_{g, x}$ and $\rho_{g, y}$ is larger in magnitude. The Steiger test is a hypothesis test that provides a p-value for observing the difference in these correlations under the null hypothesis that they are equal.
+
+Assuming the causal direction is $x \to y$, two stage MR is formulated using the following regression models:
 
 $$
 x = \alpha_1 + \beta_1 g + e_1
@@ -560,7 +562,7 @@ $$
 
 where $\hat{x} = \hat{\alpha}_1 + \hat{\beta}_1 g$. Writing in scale free terms, $\rho_{g, x}$ denotes the correlation between $g$ and the exposure variable $x$, and it is expected that $\rho_{g, x} > \rho_{g, y}$ because $\rho_{g, y} = \rho_{g, x}\rho_{x, y}$, where $\rho_{x, y}$ is the causal association between $x$ and $y$ (which is likely to be less than 1). 
 
-In the presence of measurement error in $x$ and $y$, however, the Steiger test will instead be assessing the inequality $\rho_{g, x_o} > \rho_{g, y_o}$, which can be simplified:
+In the presence of measurement error in $x$ and $y$, however, the empirical inference of the causal direction will instead be based on evaluating $\rho_{g, x_o} > \rho_{g, y_o}$, which can be simplified:
 
 $$
 \begin{aligned}
@@ -571,7 +573,7 @@ $$
 \end{aligned}
 $$
 
-In order to assess how reliable the Steiger test is in the presence of measurement imprecision, we can evaluate the range of potential values of measurement error in $x$ and $y$ over which the empirical result from the Steiger test would return the wrong value.
+In order to assess how reliable the inference of the causal direction is in the presence of measurement imprecision, we can evaluate the range of potential values of measurement error in $x$ and $y$ over which the empirical difference in $\rho_{g, x_o}$ and $\rho_{g, y_o}$ would return the wrong causal direction.
 
 For different values of $\rho_{x,x_o}$, $\rho_{g,x} = \frac{\rho_{g, x_o}}{\rho_{x,x_o}}$ and $\rho_{g,x_o} \leq \rho_{x,x_o} \leq 1$. For different values of $\rho_{y,y_o}$, $\rho_{g,y} = \frac{\rho_{g, y_o}}{\rho_{y,y_o}}$ and $\rho_{g,y_o} \leq \rho_{y,x_o} \leq 1$.
 
