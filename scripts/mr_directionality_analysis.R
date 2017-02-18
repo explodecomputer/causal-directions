@@ -962,12 +962,62 @@ p1 <- example_sensitivity$sensitivity_plot
 p2 <- ggplot(sensitivity_parameters, aes(y=sensitivity, x=r_xy, group=factor(r_gx^2))) +
 	geom_point(aes(colour=factor(r_gx^2))) +
 	geom_line(aes(colour=factor(r_gx^2))) +
-	labs(x=expression(rho[xy]), y=expression(V[z<0]/V[z>=0]), colour=expression(rho[gx]^2)) +
-	scale_colour_brewer(type="qual")
+	labs(x=expression(rho[xy]), y=expression(V[z>=0]/-V[z<0]), colour=expression(rho[gx]^2)) +
+	scale_colour_brewer(type="qual") +
+	scale_y_log10()
+
+ineq <- expand.grid(
+	cora = seq(0, 1, by=0.02),
+	corb = seq(0, 1, by=0.2),
+	ab = c(0.1, 0.5, 0.9)
+)
+
+ineq$lhs <- ineq$cora
+ineq$rhs <- ineq$corb * ineq$ab
+ineq$d <- ineq$lhs - ineq$rhs
+ineq$ablab <- paste0("cor(x,y) = ", ineq$ab)
+
+
+area <- group_by(ineq, ablab) %>%
+	do({
+
+		temp1 <- subset(., corb == max(corb) & d <= 0)
+
+		y1 <- min(temp1$d)
+		x1 <- min(temp1$cora)
+
+		y2 <- min(abs(temp1$d), 0)
+		x2 <- max(temp1$cora)
+
+		temp2 <- subset(., corb == min(corb))
+		y3 <- min(abs(temp2$d), 0)
+		x3 <- min(temp2$cora)
+
+		data.frame(cora=c(x1, x2, x3), d=c(y1, y2, y3), f=1)
+	})
+
+
+
+p3 <- ggplot(ineq, aes(x=cora, y=d)) +
+geom_polygon(data=area, fill="grey", aes(x=cora, y=d)) +
+geom_line(aes(colour=corb, group=corb)) +
+geom_hline(yintercept=0, linetype=2) +
+facet_wrap(~ ablab) +
+labs(x=TeX("$cor(x, x_o)$"), y="d", colour=TeX("$cor(y, y_o)$")) +
+theme(axis.text.x=element_text(angle=45, vjust=0.5))
+
+
+suppressPackageStartupMessages(library(grid))
+suppressPackageStartupMessages(library(gridExtra))
+# grid.arrange(
+# 	grid.text("a)", x = unit(.05, "npc"), y = unit(.1, "npc"), just = c("left", "top")),
+# 	grid.text("b)", x = unit(.05, "npc"), y = unit(.1, "npc"), just = c("left", "top")),  p1, p3,
+# 	ncol=2, heights=c(1,10)
+# )
+
 
 grid.arrange(
-	textGrob("a)", x=unit(0.1, "npc")), textGrob("b)", x=unit(0.1, "npc")),
-	p1, p2, 
+	textGrob("a)", x=unit(0.1, "npc")), textGrob("b)", x=unit(0.1, "npc")), p1, p3, 
 	ncol=2, heights=c(1,10)
 )
 

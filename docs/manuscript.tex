@@ -173,7 +173,7 @@ is randomisation. Given the hypothesis that trait A (henceforth referred
 to as the exposure) is causally related to trait B (henceforth referred
 to as the outcome), randomisation can be employed to assess the causal
 nature of the association by randomly splitting the sample into two
-groups, subjecting one group to the exposure and leaving the other as a
+groups, subjecting one group to the exposure and treating the other as a
 control. The association between the exposure and the outcome in this
 setting provides a robust estimate of the causal relationship. This
 provides the theoretical basis behind randomised control trials, but in
@@ -266,28 +266,29 @@ of improving statistical power by allowing analysis in much larger
 sample sizes, and dramatically expands the breadth of possible
 phenotypic relationships that can be evaluated\textsuperscript{26}.
 Additionally, when MR assumptions are satisfied the method is robust to
-there being measurement error in the exposure variable. Indeed
-instrumental variable (IV) analysis was in part initially introduced as
-a correction for measurement error in the exposure\textsuperscript{29},
-whereas it has been noted that both classic mediation-based
-analyses\textsuperscript{13,14,30,31} and mediation-based methods that
-use instrumental variables\textsuperscript{32,33} are prone to be
-unreliable in its presence.
+there being measurement error in the exposure
+variable\textsuperscript{29}. Indeed instrumental variable (IV) analysis
+was in part initially introduced as a correction for measurement error
+in the exposure\textsuperscript{30}, whereas it has been noted that both
+classic mediation-based analyses\textsuperscript{13,14,31,32} and
+mediation-based methods that use instrumental
+variables\textsuperscript{33,34} are prone to be unreliable in its
+presence.
 
 Using theory and simulations we show how non-differential measurement
 error in phenotypes can lead to unreliable causal inference in the
 mediation-based CIT method. We then present an extension to MR that
 allows researchers to ascertain the causal direction of an association
 even when the biology of the instruments are not fully understood, and
-also a method to evaluate the sensitivity of the result of this
-extension to measurement error. This improves the utility of MR in cases
-where mediation based methods might have otherwise been used
-preferentially. Finally, we apply this new method to infer the direction
-of causation between DNA methylation levels and gene expression levels.
-Our analyses highlight that because these different causal inference
-techniques have varying strengths and weaknesses, triangulation of
-evidence from as many sources as possible should be practiced in causal
-inference\textsuperscript{34}.
+also a matric to evaluate the sensitivity of the result of this
+extension to measurement error. Together these extensions improve the
+utility of MR in cases where mediation based methods might have
+otherwise been used preferentially. Finally, we apply this new method to
+infer the direction of causation between DNA methylation levels and gene
+expression levels. Our analyses highlight that because these different
+causal inference techniques have varying strengths and weaknesses,
+triangulation of evidence from as many sources as possible should be
+practiced in causal inference\textsuperscript{35}.
 
 \subsection{Model}\label{model}
 
@@ -323,12 +324,12 @@ y & = \beta_{MR}\hat{x} + \epsilon_{MR}
 \end{aligned}
 \]
 
-where \(\beta_{MR} \neq 0\) denotes the existence of causality, and the
+where \(\beta_{MR} \neq 0\) denotes the existence of causality, and
 \(\beta_{MR}\) is an estimate of the causal effect.
 
 Measurement error of an exposure can be modeled as a transformation of
 the true value that leads to the observed value, \(x_o = f(x)\). For
-example, following Pierce and VanderWeele\textsuperscript{35} we can
+example, following Pierce and VanderWeele\textsuperscript{29} we can
 define
 
 \[
@@ -339,7 +340,8 @@ where \(\alpha_{mx}\) and \(\beta_{mx}\) influence the error in the
 measurement of \(x\) by altering its scale, and \(\epsilon_{mx}\)
 represents the imprecision (or noise) in the measurement of \(x\). The
 same model of measurement error can be applied to the outcome variable
-\(y\). In this study we assume there is no measurement error in the SNP.
+\(y\). In this study we assume there is no measurement error in the SNP
+and measurement error in the exposure and the outcome are uncorrelated.
 
 \subsection{Methods}\label{methods}
 
@@ -436,8 +438,8 @@ relationship is inferred if the null hypothesis that \(\beta_{MR} = 0\)
 is rejected. A p-value for this test, \(p_{MR}\), was obtained using the
 R package \(R/systemfit\)\textsuperscript{37}.
 
-The method that we will now describe is able to distinguish between two
-models, \(x \rightarrow y\) or \(y \rightarrow x\). Unlike the CIT
+The method that we will now describe is designed to distinguish between
+two models, \(x \rightarrow y\) or \(y \rightarrow x\). Unlike the CIT
 framework, this approach cannot infer if the true model is
 \(x \leftarrow g \rightarrow y\). We also assume all genetic effects are
 additive.
@@ -544,7 +546,7 @@ of the measurement error space supports the inferred causal direction. A
 ratio \(R=1\) indicates that the Steiger test is highly sensitive to
 measurement error, with equal weight of the measurement error parameter
 space supporting both directions of causality. Full details are provided
-in Appendix 2 and Figure 3a.
+in Appendix 2.
 
 \subsubsection{Simulations}\label{simulations}
 
@@ -633,13 +635,11 @@ language\textsuperscript{41} and code is made available at
 \subsubsection{Mediation-based causal inference under measurement
 error}\label{mediation-based-causal-inference-under-measurement-error}
 
-In the causal inference test (CIT), an omnibus p-value is generated from
-four hypothesis tests: 1) \(g\) is associated with \(x\); 2) \(g\) is
-associated with \(y\); 3) \(x\) is associated with \(y\); and 4) \(g\)
-is independent of \(y|x\). The 4th condition employs mediation for
-causal inference, and can be expressed as \(cov(g, y - \hat{y}) = 0\),
-where \(\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_o\). When measurement
-error in scale and imprecision is introduced, such that \(y_o\) is the
+In the causal inference test (CIT), the 4th condition (see Methods)
+employs mediation for causal inference, and can be expressed as
+\(cov(g, y - \hat{y}) = 0\), where
+\(\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_o\). When measurement error
+in scale and imprecision is introduced, such that \(y_o\) is the
 measured value of \(y\), it can be shown using basic covariance
 properties (Appendix 1) that
 
@@ -678,7 +678,7 @@ the incorrect inference.
 
 We performed simulations to compare the performance of MR against CIT in
 detecting a causal association between simulated variables under
-different levels of imprecision simulated in the exposure. Figure 4
+different levels of imprecision simulated in the exposure. Figure 3
 shows the true positive rates between the CIT and MR for detecting a
 causal association. We observe that the CIT has lower power in all
 cases, with performance declining as measurement imprecision increases
@@ -694,29 +694,35 @@ causality}\label{using-mr-steiger-to-infer-the-direction-of-causality}
 
 If we do not know whether the SNP \(g\) has a primary influence on \(x\)
 or \(y\) then CIT can attempt to infer the causal direction. Here we
-introduce the MR Steiger approach to also orient the direction of
-causality in an MR analysis when the underlying biology of the SNP is
-not fully understood.
+introduce the MR Steiger approach to similarly orient the direction of
+causality but in an MR analysis when the underlying biology of the SNP
+is not fully understood.
+
+For a particular association, it is of interest to identify the range of
+possible measurement error values agree and disagree with the
+empirically inferred causal direction (Figure 4a, Appendix 2). This
+metric can be used to evaluate the reliability of MR Steiger.
 
 We show that in the presence of measurement imprecision,
-\(d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}\) (Appendix 2), where \(d\)
-is a metric of the degree to which the Steiger test is liable to provide
-the wrong estimate (\emph{i.e.} if \(d>0\) then the Steiger test is
-likely to be correct about the causal direction). Thus it is important
-to note that under certain conditions when measurement imprecision is
-present the Steiger test could make erroneous inference about the causal
-direction because the value of \(d\) is not restricted to being greater
-than 0. However Figure 7 shows that when there is no measurement error
-in \(x\), the Steiger test is unlikely to infer the wrong direction of
-causality even if there is measurement error in \(y\). It also shows
-that in most cases where \(x\) is measured with error, especially when
-the causal effect between \(x\) and \(y\) is not very large, the
-sensitivity of the Steiger test to measurement error is relatively low.
+\(d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}\) (Appendix 2) determines
+the range of parameters around which the Steiger test is liable to
+provide the wrong direction of causality (\emph{i.e.} if \(d>0\) then
+the Steiger test is likely to be correct about the causal direction).
+Figure 4b shows that when there is no measurement error in \(x\), the
+Steiger test is unlikely to infer the wrong direction of causality even
+if there is measurement error in \(y\). It also shows that in most cases
+where \(x\) is measured with error, especially when the causal effect
+between \(x\) and \(y\) is not very large, the sensitivity of the
+Steiger test to measurement error is relatively low.
 
-We performed simulations to explore the performance of this approach in
-comparison to CIT in terms of the rate at which a strong causal
-relationship is obtained for the correct direction of causality, and the
-rate at which a strong causal relationship is obtained where the
+\subsubsection{Comparison of CIT and MR Steiger for obtaining the
+correct direction of
+causality}\label{comparison-of-cit-and-mr-steiger-for-obtaining-the-correct-direction-of-causality}
+
+We used simulations to explore the performance of the MR Steiger
+approach in comparison to CIT in terms of the rate at which a strong
+causal relationship is obtained for the correct direction of causality,
+and the rate at which a strong causal relationship is obtained where the
 reported direction of causality is incorrect. Simulations were performed
 for two models, one for a ``causal model'' where there was a causal
 relationship between \(x\) and \(y\); and one for a ``non-causal model''
@@ -734,8 +740,8 @@ greater power to obtain evidence for causality than CIT, and always
 obtains the correct direction of causality. The CIT, unlike the Steiger
 test for MR, is able to distinguish the ``non-causal model'' from the
 ``causal model'' (Methods, Figure 5b), but it is evident that
-measurement error will often lead the CIT to evaluate this confounding
-model as being causal.
+measurement error will often lead the CIT to evaluate erroneously this
+confounding model as being causal.
 
 \subsubsection{The causal relationship between gene expression and DNA
 methylation
@@ -744,7 +750,7 @@ levels}\label{the-causal-relationship-between-gene-expression-and-dna-methylatio
 We used the Steiger test to infer the direction of causality between DNA
 methylation levels and gene expression levels and found that the causal
 direction commonly goes in both directions (Figure 6a), but assuming no
-or equal measurement error DNA methylation levels were the predominant
+or equal measurement error, DNA methylation levels were the predominant
 causal factor (\(p = 1.3\times 10^{-5}\)). We then went on to predict
 the causal directions of the associations for varying levels of possible
 measurement error. Figure 6a shows that the qualitative result of which
@@ -851,7 +857,7 @@ imprecision (noise) and linear transformations of the true variable on
 causal inference.
 
 Mediation based network approaches, that go beyond analyses of two
-variables, are very well established\textsuperscript{33} and have a
+variables, are very well established\textsuperscript{34} and have a
 number of extensions that make them valuable tools, including for
 example network construction. But because they are predicated on the
 basic underlying principles of mediation they are liable to suffer from
@@ -909,9 +915,19 @@ model gets weaker.
 
 \newpage
 
+\includegraphics{manuscript_files/figure-latex/causality_exists_tpr-1.pdf}
+
+Figure 3: Outcomes were simulated to be causally influenced by exposures
+with varying degrees of measurement imprecision applied to the exposure
+variable (x axis). True positive rates (y axis) for MR and CIT were
+compared for varying levels of measurement imprecision in the outcome
+variable (rows of boxes) and sample sizes (columns of boxes).
+
+\newpage
+
 \includegraphics{manuscript_files/figure-latex/steiger_sensitivity_plot-1.pdf}
 
-Figure 3: a) We can predict the values the Steiger test would take
+Figure 4: a) We can predict the values the Steiger test would take
 (z-axis) for different potential values of measurement error (x and y
 axes), drawn here as the blue surface. When \(\rho_{g,y} > \rho_{g,x}\),
 as denoted by range of values where the blue surface is above the red
@@ -924,21 +940,14 @@ the blue and red surfaces, \(R = \frac{V_{z \geq 0}}{ - V_{z < 0} }\).
 In this case, where \(\rho_{g,x}^2 = 0.01\) and \(\rho_{x,y}^2 = 0.1\),
 the \(R = 4.40\), which means that 4.40 times as much of the possible
 measurement error values are in support of the \(x \rightarrow y\)
-direction of causality than \(y \rightarrow x\). b) The influence of
-\(\rho_{x,y}\) (x-axis) on the Steiger reliability values (y-axis) for
-different values of \(\rho_{g,x}^2\). Inferring the direction of
-causality is more sensitive to measurement error when there are stronger
-causal associations between X and Y.
-
-\newpage
-
-\includegraphics{manuscript_files/figure-latex/causality_exists_tpr-1.pdf}
-
-Figure 4: Outcomes were simulated to be causally influenced by exposures
-with varying degrees of measurement imprecision applied to the exposure
-variable (x axis). True positive rates (y axis) for MR and CIT were
-compared for varying levels of measurement imprecision in the outcome
-variable (rows of boxes) and sample sizes (columns of boxes).
+direction of causality than \(y \rightarrow x\). b) Plots depicting the
+parameter space in which the function
+\(d = cor(x, x_O) - cor(x,y)cor(y, y_O)\) is negative. When \(d\) is
+negative the Steiger test is liable to infer the wrong direction of
+causality. Shaded regions show the parameter space where \(d\) is
+negative. The graph shows that for the majority of the parameter space
+of the function, \(d\) is positive, especially where causal
+relationships are relatively weak.
 
 \newpage
 
@@ -1136,7 +1145,7 @@ If \(R=1\) then the direction of causality is equally probable across
 the range of possible measurement error values. If \(R > 1\) then \(R\)
 times as much of the weighted parameter space favours the inferred
 direction of causality. \(V_{z}\), the total volume of the function
-(Figure 3), can be obtained analytically by solving:
+(Figure 4), can be obtained analytically by solving:
 
 \[
 \begin{aligned}
@@ -1315,41 +1324,41 @@ randomization studies: subsample and 2-sample instrumental variable
 estimators. \emph{American journal of epidemiology} \textbf{178,}
 1177--84 (2013).
 
+\hypertarget{ref-Pierce2012}{}
+29. Pierce, B. L. \& VanderWeele, T. J. The effect of non-differential
+measurement error on bias, precision and power in Mendelian
+randomization studies. \emph{International Journal of Epidemiology}
+\textbf{41,} 1383--1393 (2012).
+
 \hypertarget{ref-Ashenfelter1994}{}
-29. Ashenfelter, O. \& Krueger, A. B. Estimates of the Economic Return
+30. Ashenfelter, O. \& Krueger, A. B. Estimates of the Economic Return
 to Schooling from a New Sample of Twins. \emph{The American Economic
 Review} \textbf{84,} 1157--1173 (1994).
 
 \hypertarget{ref-Nagarajan2013}{}
-30. Nagarajan, R. \& Scutari, M. Impact of noise on molecular network
+31. Nagarajan, R. \& Scutari, M. Impact of noise on molecular network
 inference. \emph{PloS one} \textbf{8,} e80735 (2013).
 
 \hypertarget{ref-Shpitser2010}{}
-31. Shpitser, I., VanderWeele, T. \& Robins, J. On the validity of
+32. Shpitser, I., VanderWeele, T. \& Robins, J. On the validity of
 covariate adjustment for estimating causal effects. \emph{Proceedings of
 the Twenty Sixth Conference on Uncertainty in Artificial Intelligence
 (UAI-10)} 527--536 (2010).
 
 \hypertarget{ref-Wang2015}{}
-32. Wang, L. \& Michoel, T. Detection of regulator genes and eQTLs in
+33. Wang, L. \& Michoel, T. Detection of regulator genes and eQTLs in
 gene networks. \emph{arXiv} \textbf{arXiv:1512,} (2015).
 
 \hypertarget{ref-Lagani2015}{}
-33. Lagani, V., Triantafillou, S., Ball, G., Tegner, J. \& Tsamardinos,
+34. Lagani, V., Triantafillou, S., Ball, G., Tegner, J. \& Tsamardinos,
 I. in \emph{Uncertainty in biology: A computational modeling approach}
 47 (Springer, 2015). at
 \textless{}\href{https://books.google.com/books?id=8SLUCgAAQBAJ\%7B/\&\%7Dpgis=1}{https://books.google.com/books?id=8SLUCgAAQBAJ\{\textbackslash{}\&\}pgis=1}\textgreater{}
 
 \hypertarget{ref-Lawlor2017}{}
-34. Lawlor, D. A., Tilling, K. \& Davey Smith, G. Triangulation in
+35. Lawlor, D. A., Tilling, K. \& Davey Smith, G. Triangulation in
 aetiological epidemiology. \emph{International Journal of Epidemiology}
 \textbf{19,} dyw314 (2017).
-
-\hypertarget{ref-Pierce2012}{}
-35. Pierce, B. L. \& VanderWeele, T. J. The effect of non-differential
-measurement error on bias, precision and power in Mendelian
-randomization studies. \emph{International Journal of Epidemiology}
-\textbf{41,} 1383--1393 (2012).
 
 \hypertarget{ref-Sterne2001}{}
 36. Sterne, J. A. C., Cox, D. R. \& Smith, G. D. Sifting the
