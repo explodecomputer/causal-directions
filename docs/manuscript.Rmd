@@ -71,7 +71,7 @@ cfig <- function(x) fig_nums(x, display="c")
 
 fig_nums(
 	"dag_figure",
-	caption="Gene expression levels (blue blocks) and DNA methylation levels (green triangles) may be correlated but the causal structure is unknown. If a SNP (yellow circle) is associated with both DNA methylation and gene expression levels then it can be used as an instrument, but there are three basic competing models for these variables. The causal inference test (CIT) attempts to delineate between them. a) Methylation causes gene expression. The left figure shows that the SNP influences methylation levels that in turn influence gene expression levels. The right figure shows the directed acyclic graph that represents this model. Faded symbols represent the measured values whereas solid symbols represent the true values. b) The same as in A, except the causal direction is from gene expression to DNA methylation. c) A model of confounding, where gene expression and DNA methylation are not causally related, but the SNP influences them each through separate pathways or a confounder.",
+	caption="Gene expression levels (blue blocks) and DNA methylation levels (green triangles) may be correlated but the causal structure is unknown. If a SNP (yellow circle) is associated with both DNA methylation and gene expression levels then it can be used as an instrument, but there are three basic competing models for these variables. The causal inference test (CIT) attempts to distinguish between them. a) Methylation causes gene expression. The left figure shows that the SNP influences methylation levels that in turn influence gene expression levels. The right figure shows the directed acyclic graph that represents this model. Faded symbols represent the measured values whereas solid symbols represent the true values. b) The same as in A, except the causal direction is from gene expression to DNA methylation. c) A model of confounding, where gene expression and DNA methylation are not causally related, but the SNP influences them each through separate pathways or a confounder.",
 	display=FALSE
 )
 
@@ -89,14 +89,14 @@ fig_nums(
 
 fig_nums(
 	"steiger_sensitivity_plot", 
-	caption="a) We can predict the values the Steiger test would take (z-axis) for different potential values of measurement error (x and y axes), drawn here as the blue surface. When $\\rho_{g,y} > \\rho_{g,x}$, as denoted by range of values where the blue surface is above the red plane, those values of measurement error lead to our observed Steiger test inferring the wrong causal direction. Where the blue surface lies below the red plane, these measurement error values support the inferred causal direction of X to Y. A measure of reliability, therefore, is the ratio of the negative and positive volumes of the total space bound by the blue and red surfaces, $R = \\frac{V_{z \\geq 0}}{ - V_{z < 0} }$. In this case, where $\\rho_{g,x}^2 = 0.01$ and $\\rho_{x,y}^2 = 0.1$, the $R = 4.40$, which means that 4.40 times as much of the possible measurement error values are in support of the $x \\rightarrow y$ direction of causality than $y \\rightarrow x$. b) Plots depicting the parameter space in which the function $d = cor(x, x_O) - cor(x,y)cor(y, y_O)$ is negative. When $d$ is negative the Steiger test is liable to infer the wrong direction of causality. Shaded regions show the parameter space where $d$ is negative. The graph shows that for the majority of the parameter space of the function, $d$ is positive, especially where causal relationships are relatively weak.
+	caption="a) We can predict the values the Steiger test would take (z-axis) for different potential values of measurement error (x and y axes), drawn here as the blue surface. When $\\rho_{g,y} > \\rho_{g,x}$, as denoted by the range of values where the blue surface is above the red plane, those values of measurement error lead to our observed Steiger test inferring the wrong causal direction. Where the blue surface lies below the red plane, these measurement error values support the inferred causal direction of X to Y. A measure of reliability, therefore, is the ratio of the negative and positive volumes of the total space bound by the blue and red surfaces, $R = \\frac{V_{z \\geq 0}}{ - V_{z < 0} }$. In this case, where $\\rho_{g,x}^2 = 0.01$ and $\\rho_{x,y}^2 = 0.1$, the $R = 4.40$, which means that 4.40 times as much of the possible measurement error values are in support of the $x \\rightarrow y$ direction of causality than $y \\rightarrow x$. b) Plots depicting the parameter space in which the function $d = cor(x, x_O) - cor(x,y)cor(y, y_O)$ is negative. When $d$ is negative the Steiger test is liable to infer the wrong direction of causality. Shaded regions show the parameter space where $d$ is negative. The graph shows that for the majority of the parameter space of the function, $d$ is positive, especially where causal relationships are relatively weak.
 	",
 	display=FALSE
 )
 
 fig_nums(
 	"cit_mr_comparison_figure", 
-	caption="a) Outcomes were simulated to be causally influenced by exposures as shown in the graph, with varying degrees of measurement error applied to both. CIT and MR were used to infer evidence for causality between the exposure and outcome, and to infer the direction of causality. The value of $d = \\rho_{x, x_o} - \\rho_{x,y}\\rho_{y,y_o}$, such that when $d$ is negative we expect the Steiger test to be more likely to be wrong about the direction of causality. Rows of graphs represent the sample size used in the simulations. For the CIT method, outcome 1 denoted evidence for causality with correct model, outcomes 2 or 3 denoted evidence for causality with incorrect model, and outcome 4 denoted no evidence for causality. b) As in (a) except the simulated model was non-causal, and a genetic confounder induces an association between $x$ and $y$. MR is unable to identify this model, so any significant associations are deemed to be incorrect. Outcome 3 denotes evidence for the correct model for the CIT method.",
+	caption="a) Outcome $y$ was simulated to be caused by exposure $x$ as shown in the graph, with varying degrees of measurement error applied to both. CIT and MR were used to infer evidence for causality between the exposure and outcome, and to infer the direction of causality. The value of $d = \\rho_{x, x_o} - \\rho_{x,y}\\rho_{y,y_o}$, such that when $d$ is negative we expect the Steiger test to be more likely to be wrong about the direction of causality. Rows of graphs represent the sample size used in the simulations. For the CIT method, outcome 1 denoted evidence for causality with correct model, outcomes 2 or 3 denoted evidence for causality with incorrect model, and outcome 4 denoted no evidence for causality. b) As in (a) except the simulated model was non-causal, and a genetic confounder induces an association between $x$ and $y$. MR is unable to identify this model, so any significant associations are deemed to be incorrect. Outcome 3 denotes evidence for the correct model for the CIT method.",
 	display=FALSE
 )
 
@@ -170,13 +170,13 @@ $$
 y = \alpha_x + \beta_x x + \epsilon_x
 $$
 
-In addition, the exposure is influenced by a SNP $g$ such that
+In addition, the exposure is influenced by a SNP $g$ with an effect of $\beta_g$ such that
 
 $$
 x = \alpha_g + \beta_g g + \epsilon_g
 $$
 
-Mediation-based analyses that test whether $x$ causally relates to $y$ impinge on evaluating if the influence of $g$ on $y$ can be accounted for by conditioning on $x$, such that 
+The $\alpha_*$ terms represent intercepts, and the $\epsilon_*$ denote random error. Mediation-based analyses that test whether $x$ causally relates to $y$ impinge on evaluating if the influence of $g$ on $y$ can be accounted for by conditioning on $x$, such that 
 
 $$
 cov(g, y - \hat{y}) = 0
@@ -206,30 +206,20 @@ where $\alpha_{mx}$ and $\beta_{mx}$ influence the error in the measurement of $
 
 ### CIT test
 
-The CIT method [@Millstein2009] is implemented in the R package *R/cit* [@Millstein2016]. The methodology of the CIT is as follows. Assume an exposure $x$ is instrumented by a SNP $g$, and the exposure $x$ is causally related to an outcome $y$. Thus,
-
-$$
-\begin{aligned}
-g & \sim Binom(2, 0.5) \\
-x & = \alpha_g + \beta_g g + \epsilon_g \\
-y & = \alpha_x + \beta_x x + \epsilon_x \\
-\end{aligned}
-$$
-
-The following tests are then performed:
+The CIT method [@Millstein2009] is implemented in the R package *R/cit* [@Millstein2016]. The methodology of the CIT is as follows. Assume an exposure $x$ is instrumented by a SNP $g$, and the exposure $x$ causes an outcome $y$, as described above. The following tests are then performed:
 
 1. $H_0: cov(g, x) = 0; H_1: cov(g, x) \neq 0$; *the SNP associates with the exposure*
 2. $H_0: cov(g, y) = 0; H_1: cov(g, y) \neq 0$; *the SNP associates with the outcome*
 3. $H_0: cov(x, y) = 0; H_1: cov(x, y) \neq 0$; *the exposure associates with the outcome*
 4. $H_0: cov(g, y - \hat{y}) \neq 0; H_1: cov(g, y - \hat{y}) = 0$; *the SNP is independent of the outcome when the outcome is adjusted for the exposure*
 
-where $y - \hat{y} = y - \hat{\alpha}_g + \hat{\beta}_g x$ is the residual of $y$ after adjusting for $x$, where $x$ is assumed to mediate the association between the SNP and the outcome. If all four tests reject the null hypothesis then it is inferred that $x$ is causally related to $y$. The CIT measures the strength of causality by generating an omnibus p-value, $p_{CIT}$, which is simply the largest (least extreme) p-value of the four tests, the intuition being that causal inference is only as strong as the weakest link in the chain of tests.
+where $y - \hat{y} = y - \hat{\alpha}_g + \hat{\beta}_g x$ is the residual of $y$ after adjusting for $x$, where $x$ is assumed to mediate the association between the SNP and the outcome. If all four tests reject the null hypothesis then it is inferred that $x$ causes $y$. The CIT measures the strength of causality by generating an omnibus p-value, $p_{CIT}$, which is simply the largest (least extreme) p-value of the four tests, the intuition being that causal inference is only as strong as the weakest link in the chain of tests.
 
-In these analyses the *cit.cp* function was used to obtain an omnibus p-value. To infer the direction of causality using the CIT method, an omnibus p-value generated by CIT, $p_{CIT}$, was estimated for the direction of $x$ causing $y$, and for the direction model of $y$ causing $x$. For some significance threshold $\alpha$, the existence of causality and its direction was inferred based on the following scenarios:
+In these analyses the *cit.cp* function was used to obtain an omnibus p-value. To infer the direction of causality using the CIT method, an omnibus p-value generated by CIT, $p_{CIT}$, was estimated for the direction of $x$ causing $y$ (Model 1), and for the direction of $y$ causing $x$ (Model 2). For some significance threshold $\alpha$, the existence of causality and its direction was inferred based on the following scenarios:
 
-- If $p_{CIT, x \rightarrow y} < \alpha$ and $p_{CIT, y \rightarrow x} > \alpha$ then the $x \rightarrow y$ model is accepted
-- If $p_{CIT, x \rightarrow y} > \alpha$ and $p_{CIT, y \rightarrow x} < \alpha$ then the $y \rightarrow x$ model is accepted
-- If $p_{CIT, x \rightarrow y} > \alpha$ and $p_{CIT, y \rightarrow x} > \alpha$ then no inference is made
+- If $p_{CIT, x \rightarrow y} < \alpha$ and $p_{CIT, y \rightarrow x} > \alpha$ then model 1 is accepted
+- If $p_{CIT, x \rightarrow y} > \alpha$ and $p_{CIT, y \rightarrow x} < \alpha$ then model 2 is accepted
+- If $p_{CIT, x \rightarrow y} > \alpha$ and $p_{CIT, y \rightarrow x} > \alpha$ then no evidence for a causal relationship
 - If $p_{CIT, x \rightarrow y} < \alpha$ and $p_{CIT, y \rightarrow x} < \alpha$ then the confounding model is accepted ($x \leftarrow g \rightarrow y$).
 
 For the purposes of compiling simulation results we use an arbitrary $\alpha = 0.05$ value, though we stress that for real analyses it is not good practice to rely on p-values for making causal inference, nor is it reliable to depend on arbitrary significance thresholds [@Sterne2001].
@@ -237,13 +227,7 @@ For the purposes of compiling simulation results we use an arbitrary $\alpha = 0
 
 ### MR causal test
 
-Two stage least squares (2SLS) is a commonly used technique for performing MR when the exposure, outcome and instrument data are all available in the same sample. Assuming the following model
-
-$$
-y = \alpha_{MR} + \beta_{MR} \hat{x} + \epsilon_{MR}
-$$
-
-where $\hat{x} = \hat{\alpha}_g + \hat{\beta}_g g$, a causal relationship is inferred if the null hypothesis that $\beta_{MR} = 0$ is rejected. A p-value for this test, $p_{MR}$, was obtained using the R package $R/systemfit$ [@Henningsen2007].
+Two stage least squares (2SLS) is a commonly used technique for performing MR when the exposure, outcome and instrument data are all available in the same sample. A p-value for this test, $p_{MR}$, was obtained using the R package $R/systemfit$ [@Henningsen2007].
 
 The method that we will now describe is designed to distinguish between two models, $x \rightarrow y$ or $y \rightarrow	x$. Unlike the CIT framework, this approach cannot infer if the true model is $x \leftarrow g \rightarrow y$. We also assume all genetic effects are additive. 
 
@@ -286,7 +270,7 @@ and a p-value is generated from the $Z$ value to indicate the probability of obt
 
 - If $p_{Steiger} < \alpha$ and $p_{MR} < \alpha$ and $Z > 0$ then a causal association for the correct model is accepted
 - If $p_{Steiger} < \alpha$ and $p_{MR} < \alpha$ and $Z < 0$ then a causal association for the incorrect model is accepted
-- Otherwise no inference is made
+- Otherwise no evidence for a causal relationship
 
 For the purposes of compiling simulation results, we use an arbitrary $\alpha = 0.05$ value.
 
@@ -301,7 +285,11 @@ An advantage of using the Steiger test in the two sample context is that it can 
 
 ### Causal direction sensitivity analysis
 
-The Steiger test for inferring if $x \rightarrow y$ is based on evaluating $\rho_{gx} > \rho_{gy}$. However, $\rho_{gx}$ and $\rho_{gy}$ are underestimated if $x$ and $y$ are measured imprecisely. If, for example, $x$ has lower measurement precision than $y$ then we might empirically obtain $\rho_{g,x_o} > \rho_{g,y_o}$. As we show in the appendix, the maximum measurement error of $x_o$ is $\rho_{g,x_o}$ and the minimum is 0 (same applies to $y_o$). It is possible to simulate what the inferred causal direction would be for all values within these bounds. To evaluate how reliable, $R$, the inference of the causal direction is to potential measurement imprecision in $x$ and $y$ we integrate over the simulated $R$ values for the possible measurement error values which are compatible with the direction of causality obtained empirically from the Steiger test. We also do the same for the measurement error values which are not compatible. The ratio of these quantities is an indication of how much of the measurement error space supports the inferred causal direction. A ratio $R=1$ indicates that the Steiger test is highly sensitive to measurement error, with equal weight of the measurement error parameter space supporting both directions of causality. Full details are provided in Appendix 2.
+The Steiger test for inferring if $x \rightarrow y$ is based on evaluating $\rho_{gx} > \rho_{gy}$. However, $\rho_{gx}$ and $\rho_{gy}$ are underestimated if $x$ and $y$ are measured imprecisely. If, for example, $x$ has lower measurement precision than $y$ then we might empirically obtain $\rho_{g,x_o} < \rho_{g,y_o}$ because $\rho_{g,x_o}$ could be underestimated more than $\rho_{g,y_o}$. 
+
+As we show in Appendix 2 it is possible to infer the bounds of measurement error on $x_o$ or $y_o$ given known genetic associations. The maximum measurement error of $x_o$ is $\rho_{g,x_o}$, because it is known that at least that much of the variance has been explained in $x_o$ by $g$. The minimum is 0, denoting perfectly measured trait values (the same logic applies to $y_o$). It is possible to simulate what the inferred causal direction would be for all values within these bounds. 
+
+To evaluate how reliable, $R$, the inference of the causal direction is to potential measurement error in $x$ and $y$ we need to predict the values of $\rho_{gy} - \rho_{gx}$ for those values of measurement error. We integrate over the entire range of $\rho_{gy} - \rho_{gx}$ values for possible measurement error values. We find the ratio of the volume that agrees with the inferred direction of causality over the volume that disagrees with the inferred direction of causality. A ratio $R=1$ indicates that the inferred causal direction is highly sensitive to measurement error, with equal weight of the measurement error parameter space supporting both directions of causality. In general, the $R$ value denotes that the inferred direction of causality is $R$ times more likely to be the empirical result than the opposite direction. Full details are provided in Appendix 2.
 
 
 ### Simulations
@@ -350,7 +338,7 @@ giving a total of 432 combinations of parameters. Simulations using each of thes
 
 ## Two sample MR
 
-Two sample MR [@Pierce2013] was performed using the summary statistics presented in [@Shakhbazov2016] for each of `r nrow(shakhbazov)` associations between DNA methylation and gene expression levels. To do this we obtained a list of `r nrow(qtl_orig)` gene expression - DNA methylation associations as reported in Shakhbazov et al [-@Shakhbazov2016]. These were filtered to be located on the same chromosome, have robust correlations after correcting for multiple testing, and to share a SNP that had a robust cis-acting effect on both the DNA methylation probe and the gene expression probe. Because only summary statistics were available (effect, standard error, effect allele, sample size, p-values) for the instrumental SNP on the methylation and gene expression levels, the Steiger test of two independent correlations was used to infer the direction of causality for each of the associations. The Wald ratio test was then used to estimate the causal effect size for the estimated direction for each association.
+Two sample MR [@Pierce2013] was performed using the summary statistics for genetic influences on gene expression and DNA methylation. To do this we obtained a list of `r nrow(qtl_orig)` gene expression - DNA methylation associations as reported in Shakhbazov et al [-@Shakhbazov2016]. These were filtered to be located on the same chromosome, have robust correlations after correcting for multiple testing, and to share a SNP that had a robust cis-acting effect on both the DNA methylation probe and the gene expression probe. Because only summary statistics were available (effect, standard error, effect allele, sample size, p-values) for the instrumental SNP on the methylation and gene expression levels, the Steiger test of two independent correlations was used to infer the direction of causality for each of the associations. The Wald ratio test was then used to estimate the causal effect size for the estimated direction for each association.
 
 All analysis was performed using the R programming language [@RCoreTeam2015] and code is made available at [github url to go here]() and implemented in the MR-Base (http://wwww.mrbase.org) platform [@Hemani2016].
 
@@ -585,13 +573,13 @@ In order to assess how reliable the inference of the causal direction is in the 
 
 For different values of $\rho_{x,x_o}$, $\rho_{g,x} = \frac{\rho_{g, x_o}}{\rho_{x,x_o}}$ and $\rho_{g,x_o} \leq \rho_{x,x_o} \leq 1$. For different values of $\rho_{y,y_o}$, $\rho_{g,y} = \frac{\rho_{g, y_o}}{\rho_{y,y_o}}$ and $\rho_{g,y_o} \leq \rho_{y,x_o} \leq 1$.
 
-Where $z = \rho_{g,y} - \rho_{g,x} < 0$ the measurement error range in $x_o$ and $y_o$ will not change the qualitative inference of the direction of causality. To evaluate the reliability, $R$, of the Steiger test with regards to measurement error, the objective is to compare the weighted proportion of the parameter space that agrees with the inferred direction against the weighted proportion which does not:
+Call $z = \rho_{g,y} - \rho_{g,x}$ the true difference in the variance explained by the genetic variant in $y$ and $x$. If $z < 0$ then we infer that $x \rightarrow y$. There will be some values of $\rho_{x,x_o}$ and $\rho_{y,y_o}$ that do not alter whether $z < 0$. To evaluate the reliability, $R$, of the inference of the causal direction with regards to measurement error, the objective is to compare the  proportion of the parameter space that agrees with the inferred direction against the proportion which does not:
 
 $$
 R = \frac{V_{z \geq 0}}{ - V_{z < 0} }
 $$
 
-If $R=1$ then the direction of causality is equally probable across the range of possible measurement error values. If $R > 1$ then $R$ times as much of the weighted parameter space favours the inferred direction of causality. $V_{z}$, the total volume of the function (`r cfig("steiger_sensitivity_plot")`), can be obtained analytically by solving:
+If $R=1$ then the direction of causality is equally probable across the range of possible measurement error values. If $R > 1$ then $R$ times as much of the parameter space favours the inferred direction of causality. $V_{z}$, the total volume of the function (`r cfig("steiger_sensitivity_plot")`), can be obtained analytically by solving:
 
 $$
 \begin{aligned}
