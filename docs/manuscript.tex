@@ -80,7 +80,7 @@ of measurement error}
   \preauthor{}\postauthor{}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{18 February 2017}
+  \date{19 February 2017}
 
 \begin{document}
 \maketitle
@@ -747,26 +747,29 @@ confounding model as being causal.
 methylation
 levels}\label{the-causal-relationship-between-gene-expression-and-dna-methylation-levels}
 
-We used the Steiger test to infer the direction of causality between DNA
-methylation levels and gene expression levels and found that the causal
-direction commonly goes in both directions (Figure 6a), but assuming no
-or equal measurement error, DNA methylation levels were the predominant
-causal factor (\(p = 1.3\times 10^{-5}\)). We then went on to predict
-the causal directions of the associations for varying levels of possible
-measurement error. Figure 6a shows that the qualitative result of which
-of DNA methylation or gene expression is more commonly the causal factor
-is very strongly determined by measurement error.
+We used the Steiger test to infer the direction of causality between 458
+putative associations between DNA methylation levels and gene expression
+levels and found that the causal direction commonly goes in both
+directions (Figure 6a), but assuming no or equal measurement error, DNA
+methylation levels were the predominant causal factor
+(\(p = 1.3\times 10^{-5}\)). The median reliability (R) of the 458 tests
+was 3.92 (95\% CI 1.08 - 37.11). We then went on to predict the causal
+directions of the associations for varying levels of systematic
+measurement error for the different platforms. Figure 6a shows that the
+qualitative result of which of DNA methylation or gene expression is
+more commonly the causal factor is very strongly determined by
+measurement error.
 
 We performed two sample MR\textsuperscript{28} for each association in
-the direction of causality that we estimated to be the correct direction
-from the Steiger test. We observed that the sign of the MR estimate was
-generally in the same direction as the Pearson correlation coefficient
-reported by Shakhbazov et al\textsuperscript{40} (Figure 6b). There was
-a moderate correlation between the absolute magnitudes of the causal
-correlation and the observational Pearson correlation (r = 0.45).
-Together these inferences suggest that even for relatively low level
-associations it is important to use causal inference methods over
-observational associations to infer causal effect sizes.
+the direction of causality inferred by the Stieger test. We observed
+that the sign of the MR estimate was generally in the same direction as
+the Pearson correlation coefficient reported by Shakhbazov et
+al\textsuperscript{40} (Figure 6b). There was a moderate correlation
+between the absolute magnitudes of the causal correlation and the
+observational Pearson correlation (r = 0.45). Together these inferences
+suggest that even for relatively low level associations it is important
+to use causal inference methods over observational associations to infer
+causal effect sizes.
 
 We also observed that for associations where methylation caused gene
 expression the causal effect was more likely to be negative than for the
@@ -801,8 +804,8 @@ that the CIT faces. This assumption is often reasonable, for example
 SNPs are commonly used as instruments when they are found in genes with
 known biological relevance for the trait of interest. But on many
 occasions, especially in the realm of 'omic data, this is not the case,
-and methods based on mediation in have been valuable in order to be able
-to both ascertain if there is a causal association and to infer the
+and methods based on mediation have been valuable in order to be able to
+both ascertain if there is a causal association and to infer the
 direction of causality. Here we have described a simple extension to MR
 which can be used as an alternative to or in conjunction with mediation
 based methods. We show that this method is still liable to measurement
@@ -835,16 +838,22 @@ multiple instruments for the hypothesised exposure then the problems
 described here may be circumvented\textsuperscript{16}. Likewise, if
 there is at least one instrument for each trait then bi-directional MR
 can offer solutions to inferring the causal
-direction\textsuperscript{46}. In this work we assumed that pleiotropy
-(the influence of the instrument on the outcome through a mechanism
-other than the exposure) was not present. Recent method developments in
-MR\textsuperscript{24,25} have focused on accounting for the issues that
-horizontal pleiotropy can introduce, but how they perform in the
-presence of measurement error remains to be explored. An important
-advantage that MR confers over most mediation based analysis is that it
-can be performed in two samples, which can considerably improve power
-and expand the scope of analysis. However, whether there is a
-substantive difference in two sample MR versus one sample MR in how
+direction\textsuperscript{46}. We restricted the simulations to
+evaluating the causal inference between quantitative traits, but it is
+possible that the analysis could be extended to binary traits by using
+the genetic variance explained on the liability scale, taking into
+account the population prevalence\textsuperscript{47}.
+
+In this work we assumed that pleiotropy (the influence of the instrument
+on the outcome through a mechanism other than the exposure) was not
+present. Recent method developments in MR\textsuperscript{24,25} have
+focused on accounting for the issues that horizontal pleiotropy can
+introduce when multiple instruments are available, but how they perform
+in the presence of measurement error remains to be explored. An
+important advantage that MR confers over most mediation based analysis
+is that it can be performed in two samples, which can considerably
+improve power and expand the scope of analysis. However, whether there
+is a substantive difference in two sample MR versus one sample MR in how
 measurement error has an effect is not yet fully understood. We have
 also assumed no measurement error in the genetic instrument, which is
 not unreasonable given the strict QC protocols that ensure high quality
@@ -862,20 +871,20 @@ number of extensions that make them valuable tools, including for
 example network construction. But because they are predicated on the
 basic underlying principles of mediation they are liable to suffer from
 the same issues of measurement error. Recent advances in MR methodology,
-for example applying MR to genetical genomics\textsuperscript{47},
-multivariate MR\textsuperscript{48} and mediation through
-MR\textsuperscript{49--51} may offer more robust alternatives for these
+for example applying MR to genetical genomics\textsuperscript{48},
+multivariate MR\textsuperscript{49} and mediation through
+MR\textsuperscript{50--52} may offer more robust alternatives for these
 more complicated problems.
 
 The overarching result from our simulations is that, regardless of the
-method used, inferring causal direction using an instrument of unknown
-biology is highly sensitive to measurement error. With the presence of
-measurement error near ubiquitous in most observational data, and our
-ability to measure it limited, we argue that it needs to be central to
-any consideration of approaches which are used in attempt to strengthen
-causal inference, and any putative results should be accompanied with
-appropriate sensitivity analysis that assesses their robustness under
-varying levels of measurement error.
+method used, inferring the causal direction using an instrument of
+unknown biology is highly sensitive to measurement error. With the
+presence of measurement error near ubiquitous in most observational
+data, and our ability to measure it limited, we argue that it needs to
+be central to any consideration of approaches which are used in attempt
+to strengthen causal inference, and any putative results should be
+accompanied with appropriate sensitivity analysis that assesses their
+robustness under varying levels of measurement error.
 
 \newpage
 
@@ -1417,31 +1426,36 @@ between Child Adiposity and Physical Activity Levels: A Mendelian
 Randomization Analysis. \emph{PLoS Medicine} \textbf{11,} e1001618
 (2014).
 
+\hypertarget{ref-Lee2013c}{}
+47. Lee, S. H. \& Wray, N. R. Novel genetic analysis for case-control
+genome-wide association studies: quantification of power and genomic
+prediction accuracy. \emph{PLoS One} \textbf{8,} e71494 (2013).
+
 \hypertarget{ref-Relton2012}{}
-47. Relton, C. L. \& Davey Smith, G. Two-step epigenetic Mendelian
+48. Relton, C. L. \& Davey Smith, G. Two-step epigenetic Mendelian
 randomization: a strategy for establishing the causal role of epigenetic
 processes in pathways to disease. \emph{International journal of
 epidemiology} \textbf{41,} 161--76 (2012).
 
 \hypertarget{ref-Burgess2014a}{}
-48. Burgess, S., Freitag, D. F., Khan, H., Gorman, D. N. \& Thompson, S.
+49. Burgess, S., Freitag, D. F., Khan, H., Gorman, D. N. \& Thompson, S.
 G. Using multivariable Mendelian randomization to disentangle the causal
 effects of lipid fractions. \emph{PloS one} \textbf{9,} e108891 (2014).
 
 \hypertarget{ref-Varbo2015}{}
-49. Varbo, A. \emph{et al.} Remnant cholesterol, low-density lipoprotein
+50. Varbo, A. \emph{et al.} Remnant cholesterol, low-density lipoprotein
 cholesterol, and blood pressure as mediators from obesity to ischemic
 heart disease. \emph{Circulation research} \textbf{116,} 665--73 (2015).
 
 \hypertarget{ref-Burgess2015}{}
-50. Burgess, S., Daniel, R. M., Butterworth, A. S. \& Thompson, S. G.
+51. Burgess, S., Daniel, R. M., Butterworth, A. S. \& Thompson, S. G.
 Network Mendelian randomization: using genetic variants as instrumental
 variables to investigate mediation in causal pathways.
 \emph{International journal of epidemiology} \textbf{44,} 484--95
 (2015).
 
 \hypertarget{ref-Richmond2016}{}
-51. Richmond, R. C., Hemani, G., Tilling, K., Davey Smith, G. \& Relton,
+52. Richmond, R. C., Hemani, G., Tilling, K., Davey Smith, G. \& Relton,
 C. L. Challenges and novel approaches for investigating molecular
 mediation. \emph{Human molecular genetics} \textbf{25,} R149--R156
 (2016).

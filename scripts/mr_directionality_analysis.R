@@ -842,6 +842,21 @@ shakhtest4 <- binom.test(
 	0.5
 )
 
+temp <- subset(shakhbazov, rxx_o==1 & ryy_o==1)
+#table(temp$steiger < 0.05 & temp$mr_p < 0.05)
+
+#hist(temp$reliability, breaks=50)
+
+#exp(mean(log(temp$reliability)))
+
+shakh_median_reliability <- median(temp$reliability)
+
+
+shakh_r_loci <- quantile(temp$reliability, c(0.025))
+shakh_r_upci <- quantile(temp$reliability, c(0.975))
+
+
+## ---- shakhtemp ----
 
 
 ## ---- shakhplot ----
