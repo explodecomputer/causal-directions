@@ -79,15 +79,20 @@ for(i in 1:nrow(param))
 
 save(param, file="../results/cit_collider.rdata")
 
+###
+
+library(tidyverse)
+load("../results/cit_collider.rdata")
 
 res <- gather(param, key=test, value=pval, cit, mr)
 res$test <- as.factor(res$test)
 levels(res$test) <- c("CIT", "y ~ g")
 
-ggplot(subset(res, n==6000), aes(x=vu, y=-log10(pval))) +
+ggplot(subset(res), aes(x=vu, y=-log10(pval))) +
 geom_point(aes(colour=test)) +
 geom_smooth(aes(colour=test)) +
 scale_colour_brewer(type="qual", palette=2) +
+facet_grid(n ~ .) +
 labs(x="Confounder effect", colour="Test")
 
-
+ggsave("../images/cit_confounder.pdf")
