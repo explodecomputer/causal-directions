@@ -80,7 +80,7 @@ using genetic instruments}
   \preauthor{}\postauthor{}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{03 March 2017}
+  \date{05 March 2017}
 
 \begin{document}
 \maketitle
@@ -842,11 +842,11 @@ the problems described here in other ways also, for example by
 evaluating the proportionality of the SNP-exposure and SNP-outcome
 effects (16). Additionally, if there is at least one instrument for each
 trait then bi-directional MR can offer solutions to inferring the causal
-direction (47). We restricted the simulations to evaluating the causal
-inference between quantitative traits, but it is possible that the
-analysis could be extended to binary traits by using the genetic
+direction (16,47,48). We restricted the simulations to evaluating the
+causal inference between quantitative traits, but it is possible that
+the analysis could be extended to binary traits by using the genetic
 variance explained on the liability scale, taking into account the
-population prevalence (48). However, our analysis goes beyond many
+population prevalence (49). However, our analysis goes beyond many
 previous explorations of measurement error by assessing the impacts of
 both imprecision (noise) and linear transformations of the true variable
 on causal inference.
@@ -873,7 +873,7 @@ instrument-exposure specification. One such problem is exposure
 misspecification, for example an instrument could associate with several
 closely related putative outcomes, with only one of them actually having
 a causal effect on the outcome. This problem has shown to be the case
-for SNPs influencing different lipid fractions, for example (49,50).
+for SNPs influencing different lipid fractions, for example (50,51).
 
 Mediation based network approaches, that go beyond analyses of two
 variables, are very well established (35) and have a number of
@@ -881,8 +881,8 @@ extensions that make them valuable tools, including for example network
 construction. But because they are predicated on the basic underlying
 principles of mediation they are liable to suffer from the same issues
 of measurement error. Recent advances in MR methodology, for example
-applying MR to genetical genomics (51), multivariate MR (50) and
-mediation through MR (52--54) may offer more robust alternatives for
+applying MR to genetical genomics (52), multivariate MR (51) and
+mediation through MR (53--55) may offer more robust alternatives for
 these more complicated problems.
 
 The overarching result from our simulations is that, regardless of the
@@ -1303,9 +1303,9 @@ Jul;37(7):710--7. Available from:
 \href{http://dx.doi.org/10.1038/ng1589\%20http://www.nature.com/ng/journal/v37/n7/full/ng1589.html\%20http://www.nature.com/ng/journal/v37/n7/pdf/ng1589.pdf}{http://dx.doi.org/10.1038/ng1589 http://www.nature.com/ng/journal/v37/n7/full/ng1589.html http://www.nature.com/ng/journal/v37/n7/pdf/ng1589.pdf}
 
 \hypertarget{ref-Millstein2016}{}
-18. Millstein J. cit: Causal Inference Test. R package version 1.9
-{[}Internet{]}. 2016. Available from:
-\url{http://cran.r-project.org/package=cit}
+18. Millstein J, Chen GK, Breton CV. Cit : Hypothesis Testing Software
+for Mediation Analysis in Genomic Applications. Bioinformatics.
+2016;AOP(10.1093/bioinformatics/btw135):1--10.
 
 \hypertarget{ref-Koestler2014}{}
 19. Koestler DC, Chalise P, Cicek MS, Cunningham JM, Armasu S, Larson
@@ -1483,34 +1483,42 @@ Physical Activity Levels: A Mendelian Randomization Analysis. Ludwig DS,
 editor. PLoS Medicine {[}Internet{]}. 2014 Mar;11(3):e1001618. Available
 from: \url{http://dx.plos.org/10.1371/journal.pmed.1001618}
 
+\hypertarget{ref-Mancuso2017}{}
+48. Mancuso N, Shi H, Goddard P, Kichaev G, Gusev A, Pasaniuc B.
+Integrating Gene Expression with Summary Association Statistics to
+Identify Genes Associated with 30 Complex Traits. The American Journal
+of Human Genetics {[}Internet{]}. 2017 Mar;100(3):473--87. Available
+from:
+\url{http://linkinghub.elsevier.com/retrieve/pii/S0002929717300320}
+
 \hypertarget{ref-Lee2013c}{}
-48. Lee SH, Wray NR. Novel genetic analysis for case-control genome-wide
+49. Lee SH, Wray NR. Novel genetic analysis for case-control genome-wide
 association studies: quantification of power and genomic prediction
 accuracy. PLoS One. 2013;8(8):e71494.
 
 \hypertarget{ref-Do2013}{}
-49. Do R, Willer CJ, Schmidt EM, Sengupta S, Gao C, Peloso GM, et al.
+50. Do R, Willer CJ, Schmidt EM, Sengupta S, Gao C, Peloso GM, et al.
 Common variants associated with plasma triglycerides and risk for
 coronary artery disease. Nature Genetics {[}Internet{]}. 2013
 Oct;45(11):1345--52. Available from:
 \url{http://www.nature.com/doifinder/10.1038/ng.2795}
 
 \hypertarget{ref-Burgess2014a}{}
-50. Burgess S, Freitag DF, Khan H, Gorman DN, Thompson SG. Using
+51. Burgess S, Freitag DF, Khan H, Gorman DN, Thompson SG. Using
 multivariable Mendelian randomization to disentangle the causal effects
 of lipid fractions. PloS one {[}Internet{]}. 2014 Jan;9(10):e108891.
 Available from:
 \url{http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0108891}
 
 \hypertarget{ref-Relton2012}{}
-51. Relton CL, Davey Smith G. Two-step epigenetic Mendelian
+52. Relton CL, Davey Smith G. Two-step epigenetic Mendelian
 randomization: a strategy for establishing the causal role of epigenetic
 processes in pathways to disease. International journal of epidemiology
 {[}Internet{]}. 2012 Feb;41(1):161--76. Available from:
 \href{http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=3304531\%7B/\&\%7Dtool=pmcentrez\%7B/\&\%7Drendertype=abstract}{http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=3304531\{\textbackslash{}\&\}tool=pmcentrez\{\textbackslash{}\&\}rendertype=abstract}
 
 \hypertarget{ref-Varbo2015}{}
-52. Varbo A, Benn M, Smith GD, Timpson NJ, Tybjaerg-Hansen A,
+53. Varbo A, Benn M, Smith GD, Timpson NJ, Tybjaerg-Hansen A,
 Nordestgaard BG. Remnant cholesterol, low-density lipoprotein
 cholesterol, and blood pressure as mediators from obesity to ischemic
 heart disease. Circulation research {[}Internet{]}. 2015
@@ -1518,14 +1526,14 @@ Feb;116(4):665--73. Available from:
 \url{http://www.ncbi.nlm.nih.gov/pubmed/25411050}
 
 \hypertarget{ref-Burgess2015}{}
-53. Burgess S, Daniel RM, Butterworth AS, Thompson SG. Network Mendelian
+54. Burgess S, Daniel RM, Butterworth AS, Thompson SG. Network Mendelian
 randomization: using genetic variants as instrumental variables to
 investigate mediation in causal pathways. International journal of
 epidemiology {[}Internet{]}. 2015 Apr;44(2):484--95. Available from:
 \href{http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=4469795\%7B/\&\%7Dtool=pmcentrez\%7B/\&\%7Drendertype=abstract}{http://www.pubmedcentral.nih.gov/articlerender.fcgi?artid=4469795\{\textbackslash{}\&\}tool=pmcentrez\{\textbackslash{}\&\}rendertype=abstract}
 
 \hypertarget{ref-Richmond2016}{}
-54. Richmond RC, Hemani G, Tilling K, Davey Smith G, Relton CL.
+55. Richmond RC, Hemani G, Tilling K, Davey Smith G, Relton CL.
 Challenges and novel approaches for investigating molecular mediation.
 Human molecular genetics {[}Internet{]}. 2016 Oct;25(R2):R149--56.
 Available from:
