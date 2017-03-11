@@ -80,7 +80,7 @@ using genetic instruments}
   \preauthor{}\postauthor{}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{05 March 2017}
+  \date{11 March 2017}
 
 \begin{document}
 \maketitle
@@ -124,30 +124,31 @@ Observational measures of the human phenome are growing ever more
 abundant, but using these data to make causal inference is notoriously
 susceptible to many pitfalls, with basic regression-based techniques
 unable to distinguish a true causal association from reverse causation
-or confounding (1--3). In response to this, genetic instrumentation has
-emerged as a technique for improving the reliability of causal inference
-in observational data, and with the coincident rise in genome-wide
-association studies it is now a prominent tool that is applied in
-several different guises (3--6). However, potential pitfalls remain and
-one that is often neglected is the influence of non-differential
-measurement error on the reliability of causal inference.
+or confounding (1--3). In response to this, the use of genetic
+associations to instrument traits has emerged as a technique for
+improving the reliability of causal inference in observational data, and
+with the coincident rise in genome-wide association studies it is now a
+prominent tool that is applied in several different guises (3--6).
+However, potential pitfalls remain and one that is often neglected is
+the influence of non-differential measurement error on the reliability
+of causal inference.
 
 Measurement error is the difference between the measured value of a
 quantity and its true value. This study focuses specifically on
 non-differential measurement error where all strata of a measured
 variable have the same error rate, which can manifest as changes in
-scale or levels of imprecision (noise) of the measurement. Such
-variability can arise through a whole plethora of mechanisms, which are
-often unique to the study design and difficult to avoid (7,8). Array
-technology is now commonly used to obtain high throughput phenotyping at
-low cost, but comes with the problem of having imperfect resolution, for
-instance methylation levels as measured by the Illumina450k chip are
-prone to have some amount of noise around the true value due to
-imperfect sensitivity (9,10). Relatedly, if the measurement of
-biological interest is the methylation level in a T cell, then
-measurement error of this value can be introduced by using methylation
-levels from whole blood samples because the measured value will be an
-assay of many cell types (11).
+scale or measurement imprecision (noise). Such variability can arise
+through a whole plethora of mechanisms, which are often specific to the
+study design and difficult to avoid (7,8). Array technology is now
+commonly used to obtain high throughput phenotyping at low cost, but
+comes with the problem of having imperfect resolution, for instance
+methylation levels as measured by the Illumina450k chip are prone to
+have some amount of noise around the true value due to imperfect
+sensitivity (9,10). Relatedly, if the measurement of biological interest
+is the methylation level in a T cell, then measurement error of this
+value can be introduced by using methylation levels from whole blood
+samples because the measured value will be an assay of many cell types
+(11).
 
 Measurement error will of course arise in other types of data too. For
 example when measuring BMI one is typically interested in using this as
@@ -188,17 +189,17 @@ Mediation-based approaches employ genetic instruments (typically single
 nucleotide polymorphisms, SNPs) to orient the causal direction between
 the exposure and the outcome. If a SNP is associated with an exposure,
 and the exposure is associated with some outcome, then it logically
-follows that in this simple three-variable scenario the indirect
-influence of the SNP on the outcome will disappear when conditioning on
-the exposure. Here, the exposure `mediates' the association between the
-SNP and the outcome, providing information about the causal influence of
-the exposure on the outcome. This forms the basis of a number of methods
-such as genetical genomics (17), the regression-based causal inference
-test (CIT) (4,18), a structural equation modelling (SEM) implementation
-in the NEO software (5), and various other methods including Bayesian
-approaches (6). They have been employed by a number of recent
-publications that make causal inferences in large scale `omics datasets
-(6,19--23).
+follows that in this simple three-variable scenario the estimated direct
+influence of the SNP on the outcome will be zero when conditioning on
+the exposure. Here, the exposure completely mediates the association
+between the SNP and the outcome, providing information about the causal
+influence of the exposure on the outcome. This forms the basis of a
+number of methods such as genetical genomics (17), the regression-based
+causal inference test (CIT) (4,18), a structural equation modelling
+(SEM) implementation in the NEO software (5), and various other methods
+including Bayesian approaches (6). They have been employed by a number
+of recent publications that make causal inferences in large scale `omics
+datasets (6,19--23).
 
 MR can be applied to the same data - phenotypic measures of the exposure
 and the outcome variables and a genetic instrument for the exposure -
@@ -236,45 +237,44 @@ instrument? Figure 1). By definition, we expect that if the association
 is causal then a SNP for the exposure will be associated with the
 outcome, such that if the researcher erroneously uses the SNP as an
 instrument for the outcome then they are likely to see an apparently
-robust causal association of outcome on exposure. Such a situation can
-arise in many scenarios. Genome-wide association studies (GWASs) that
-identify genetic associations for complex traits are, by design,
-hypothesis free and agnostic of genomic function, and it often takes
-years of follow up studies to understand the biological nature of a
-putative GWAS hit (27). If multiple instruments are available for an
-hypothesised exposure, which is increasingly typical for complex traits
-that are analysed in large GWAS consortia, then techniques can be
-applied to mitigate these issues (16). But these techniques cannot
-always be applied in the case of determining causal directions between
-'omic measures where typically only one cis-acting SNP is known. For
-example if a DNA methylation probe is associated with expression of an
-adjacent gene, then is a cis-acting SNP an instrument for the DNA
-methylation level, or the gene expression level (Figure 1)?
+robust causal association of outcome on exposure. Genome-wide
+association studies (GWASs) that identify genetic associations for
+complex traits are, by design, hypothesis free and agnostic of genomic
+function, and it often takes years of follow up studies to understand
+the biological nature of a putative GWAS hit (27). If multiple
+instruments are available for an hypothesised exposure, which is
+increasingly typical for complex traits that are analysed in large GWAS
+consortia, then techniques can be applied to mitigate these issues (16).
+But these techniques cannot always be applied in the case of determining
+causal directions between 'omic measures where typically only one
+cis-acting SNP is known. For example if a DNA methylation probe is
+associated with expression of an adjacent gene, then is a cis-acting SNP
+an instrument for the DNA methylation level, or the gene expression
+level (Figure 1)?
 
 MR has some important advantages over the mediation-based approaches.
-The mediation-based approaches require that the exposure, outcome and
-instrumental variables are all measured in the same data, whereas recent
-extensions to MR circumvent this requirement, allowing causal inference
-to be drawn when exposure variables and outcome variables are measured
-in different samples (28). This has the crucial advantage of improving
-statistical power by allowing analysis in much larger sample sizes, and
-dramatically expands the breadth of possible phenotypic relationships
-that can be evaluated (26). It is important to note that if there are
-any confounders influencing both the exposure and outcome, the
-mediation-based approach of adjusting the outcome for the exposure to
-nullify the association between the SNP and the outcome will not work.
-This is because adjusting the outcome by the exposure induces a collider
-effect between the SNP and outcome (29), and the in order to fully
-abbrogate this association one must also adjust for all (hidden or
-otherwise) confounders. MR does not suffer from this problem because it
-does not test for association through adjustment. Additionally, when MR
-assumptions are satisfied the method is robust to there being
-measurement error in the exposure variable (30). Indeed instrumental
-variable (IV) analysis was in part initially introduced as a correction
-for measurement error in the exposure (31), whereas it has been noted
-that both classic mediation-based analyses (13,14,32,33) and
-mediation-based methods that use instrumental variables (34,35) are
-prone to be unreliable in its presence.
+First, the mediation-based approaches require that the exposure, outcome
+and instrumental variables are all measured in the same data, whereas
+recent extensions to MR circumvent this requirement, allowing causal
+inference to be drawn when exposure variables and outcome variables are
+measured in different samples (28). This has the crucial advantage of
+improving statistical power by allowing analysis in much larger sample
+sizes, and dramatically expands the breadth of possible phenotypic
+relationships that can be evaluated (26). Second, the mediation-based
+approach of adjusting the outcome for the exposure to nullify the
+association between the SNP and the outcome is affected by unmeasured
+confounding of the exposure and outcome. This is because adjusting the
+outcome by the exposure induces a collider effect between the SNP and
+outcome (29), and the in order to fully abrogate this association one
+must also adjust for all (hidden or otherwise) confounders. MR does not
+suffer from this problem because it does not test for association
+through adjustment. Third, when MR assumptions are satisfied the method
+is robust to there being measurement error in the exposure variable
+(30). Indeed instrumental variable (IV) analysis was in part initially
+introduced as a correction for measurement error in the exposure (31),
+whereas it has been noted that both classic mediation-based analyses
+(13,14,32,33) and mediation-based methods that use instrumental
+variables (34,35) are prone to be unreliable in its presence.
 
 Using theory and simulations we show how non-differential measurement
 error in phenotypes can lead to unreliable causal inference in the
@@ -293,7 +293,7 @@ practiced in causal inference (36).
 
 \subsection{Model}\label{model}
 
-We can model a system whereby some exposure \(x\) has a causal influence
+We model a system whereby some exposure \(x\) has a causal influence
 \(\beta_x\) on an outcome \(y\) such that
 
 \[
@@ -307,18 +307,20 @@ In addition, the exposure is influenced by a SNP \(g\) with an effect of
 x = \alpha_g + \beta_g g + \epsilon_g
 \]
 
-The \(\alpha_*\) terms represent intercepts, and the \(\epsilon_*\)
-denote random error. Mediation-based analyses that test whether \(x\)
-causally relates to \(y\) impinge on evaluating if the influence of
-\(g\) on \(y\) can be accounted for by conditioning on \(x\), such that
+The \(\alpha_*\) terms represent intercepts, and henceforth can be
+ignored. The \(\epsilon_*\) terms denote random error, assumed
+independently and normally distributed with mean zero. Mediation-based
+analyses that test whether \(x\) causally relates to \(y\) rely on
+evaluating whether the influence of \(g\) on \(y\) can be accounted for
+by conditioning on \(x\), such that
 
 \[
 cov(g, y - \hat{y}) = 0
 \]
 
-where \(\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_o\). MR analysis
-estimates the causal influence of \(x\) on \(y\) by using the instrument
-as a proxy for \(x\), such that
+where \(\hat{y} = \hat{\beta}_x x\). MR analysis estimates the causal
+influence of \(x\) on \(y\) by using the instrument as a proxy for
+\(x\), such that
 
 \[
 \begin{aligned}
@@ -331,8 +333,8 @@ where \(\beta_{MR} \neq 0\) denotes the existence of causality, and
 \(\beta_{MR}\) is an estimate of the causal effect.
 
 Measurement error of an exposure can be modeled as a transformation of
-the true value that leads to the observed value, \(x_o = f(x)\). For
-example, following Pierce and VanderWeele (30) we can define
+the true value (\(x\)) that leads to the observed value, \(x_o = f(x)\).
+For example, following Pierce and VanderWeele (30) we can define
 
 \[
 f(x) = \alpha_{mx} + \beta_{mx} x + \epsilon_{mx}
@@ -342,17 +344,19 @@ where \(\alpha_{mx}\) and \(\beta_{mx}\) influence the error in the
 measurement of \(x\) by altering its scale, and \(\epsilon_{mx}\)
 represents the imprecision (or noise) in the measurement of \(x\). The
 same model of measurement error can be applied to the outcome variable
-\(y\). In this study we assume there is no measurement error in the SNP
-and measurement error in the exposure and the outcome are uncorrelated.
+\(y\). In this study we assume there is no measurement error in the SNP,
+and that measurement error in the exposure and the outcome are
+uncorrelated.
 
 \subsection{Methods}\label{methods}
 
 \subsubsection{CIT test}\label{cit-test}
 
-The CIT method (4) is implemented in the R package \emph{R/cit} (18).
-The methodology of the CIT is as follows. Assume an exposure \(x\) is
-instrumented by a SNP \(g\), and the exposure \(x\) causes an outcome
-\(y\), as described above. The following tests are then performed:
+First we describe how the CIT method (4) is implemented in the R package
+\emph{R/cit} (18). The methodology of the CIT is as follows. Assume an
+exposure \(x\) is instrumented by a SNP \(g\), and the exposure \(x\)
+causes an outcome \(y\), as described above. The following tests are
+then performed:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -380,8 +384,8 @@ estimated using simulations, comparing the estimate against from the
 data against empirically obtained estimates for simulated variables
 where the independence model is true (full details are given in (4)). We
 note here that this approach is liable to fail, even when there is a
-true causal relationship, when confounders are present due to inducing
-collider effects.
+true causal relationship, when confounders of the exposure and outcome
+are present, as these will induce collider bias.
 
 If all four tests reject the null hypothesis then it is inferred that
 \(x\) causes \(y\). The CIT measures the strength of causality by
@@ -390,16 +394,16 @@ generating an omnibus p-value, \(p_{CIT}\), which is simply the largest
 causal inference is only as strong as the weakest link in the chain of
 tests.
 
-In these analyses the \emph{cit.cp} function was used to obtain an
-omnibus p-value. To infer the direction of causality using the CIT
-method, an omnibus p-value generated by CIT for each of two tests -
-\(p_{CIT, x \rightarrow y}\), was estimated for the direction of \(x\)
-causing \(y\) (Model 1), and for the direction of \(y\) causing \(x\),
-\(p_{CIT, y \rightarrow x}\) (Model 2). The results from each of these
-methods can then be used in combination to infer the existance and
-direction of causality. For some significance threshold \(\alpha\) there
-are four possible outcomes from these two tests, and their
-interpretations are as follows:
+Now we describe how we used the CIT method in our simulations. The
+\emph{cit.cp} function was used to obtain an omnibus p-value. To infer
+the direction of causality using the CIT method, an omnibus p-value
+generated by CIT for each of two tests - \(p_{CIT, x \rightarrow y}\),
+was estimated for the direction of \(x\) causing \(y\) (Model 1), and
+for the direction of \(y\) causing \(x\), \(p_{CIT, y \rightarrow x}\)
+(Model 2). The results from each of these methods can then be used in
+combination to infer the existance and direction of causality. For some
+significance threshold \(\alpha\) there are four possible outcomes from
+these two tests, and their interpretations are as follows:
 
 \begin{itemize}
 \tightlist
@@ -429,7 +433,11 @@ is it reliable to depend on arbitrary significance thresholds (37).
 Two stage least squares (2SLS) is a commonly used technique for
 performing MR when the exposure, outcome and instrument data are all
 available in the same sample. A p-value for this test, \(p_{MR}\), was
-obtained using the R package \(R/systemfit\) (38).
+obtained using the \(systemfit\) function in the R package
+\(R/systemfit\) (38). Note that the value of \(p_{MR}\) is identical
+when using the same genetic variant to instrument the influence of the
+exposure \(x\) on the outcome \(y\), or erroneously, instrumenting the
+outcome \(y\) on the exposure \(x\).
 
 The method that we will now describe is designed to distinguish between
 two models, \(x \rightarrow y\) or \(y \rightarrow x\). Unlike the CIT
@@ -480,28 +488,31 @@ Z \left\{
 \]
 
 and a p-value, \(p_{Steiger}\) is generated from the \(Z\) value to
-indicate the probability of obtaining the observed difference in
-correlations \(\rho_{gx}\) and \(\rho_{gy}\) under the null hypothesis
-that both correlations are identical.
+indicate the probability of obtaining a difference between correlations
+\(\rho_{gx}\) and \(\rho_{gy}\) at least as large as the one observed,
+under the null hypothesis that both correlations are identical.
 
 The existence of causality and its direction is inferred based on
 combining information from the MR analysis and the Steiger test. The MR
 analysis indicates whether there is a potential causal relationship
 (\(p_{MR}\)), and the Steiger test indicates the direction (\(sign(Z)\))
 of the causal relationship and the confidence of the direction
-(\$p\_\{Steiger\}). For the purposes of compiling simulation results,
+(\(p_{Steiger}\)). For the purposes of compiling simulation results,
 these can be combined using an arbitrary \(\alpha = 0.05\) value:
 
 \begin{itemize}
 \tightlist
 \item
   If \(p_{Steiger} < \alpha\) and \(p_{MR} < \alpha\) and \(Z > 0\) then
-  a causal association for the correct model is accepted
+  a causal association for the correct model is accepted,
+  \(x \rightarrow y\)
 \item
   If \(p_{Steiger} < \alpha\) and \(p_{MR} < \alpha\) and \(Z < 0\) then
-  a causal association for the incorrect model is accepted
+  a causal association for the incorrect model is accepted,
+  \(y \rightarrow x\)
 \item
-  Otherwise no evidence for a causal relationship
+  Otherwise if \(p_{Steiger} > \alpha\) or \(p_{MR} > \alpha\), neither
+  model is accepted
 \end{itemize}
 
 Note that the same correlation test approach can be applied to a
@@ -524,8 +535,8 @@ are different. Steiger test statistics were calculated using the
 analysis}\label{causal-direction-sensitivity-analysis}
 
 The Steiger test for inferring if \(x \rightarrow y\) is based on
-evaluating \(\rho_{gx} > \rho_{gy}\). However, \(\rho_{gx}\) and
-\(\rho_{gy}\) are underestimated if \(x\) and \(y\) are measured
+evaluating \(\rho_{gx} > \rho_{gy}\). However, \(\rho_{gx}\) (or
+\(\rho_{gy}\)) are underestimated if \(x\) (or \(y\)) are measured
 imprecisely. If, for example, \(x\) has lower measurement precision than
 \(y\) then we might empirically obtain \(\rho_{g,x_o} < \rho_{g,y_o}\)
 because \(\rho_{g,x_o}\) could be underestimated more than
@@ -533,7 +544,7 @@ because \(\rho_{g,x_o}\) could be underestimated more than
 
 As we show in Appendix 2 it is possible to infer the bounds of
 measurement error on \(x_o\) or \(y_o\) given known genetic
-associations. The maximum measurement error of \(x_o\) is
+associations. The maximum measurement imprecision of \(x_o\) is
 \(\rho_{g,x_o}\), because it is known that at least that much of the
 variance has been explained in \(x_o\) by \(g\). The minimum is 0,
 denoting perfectly measured trait values (the same logic applies to
@@ -613,7 +624,8 @@ methods were applied to each in order to evaluate the causal association
 of the simulated variables. Similar patterns of results were obtained
 for different values of \(cor(g, x)\) and \(cor(g, u)\).
 
-\subsection{Two sample MR}\label{two-sample-mr}
+\subsection{Applied example using two sample
+MR}\label{applied-example-using-two-sample-mr}
 
 Two sample MR (28) was performed using the summary statistics for
 genetic influences on gene expression and DNA methylation. To do this we
@@ -631,8 +643,9 @@ estimate the causal effect size for the estimated direction for each
 association.
 
 All analysis was performed using the R programming language (42) and
-code is made available at \href{}{github url to go here} and implemented
-in the MR-Base (\url{http://wwww.mrbase.org}) platform (26).
+code is made available at
+\url{https://github.com/explodecomputer/causal-directions} and
+implemented in the MR-Base (\url{http://wwww.mrbase.org}) platform (26).
 
 \subsection{Results}\label{results}
 
@@ -662,9 +675,9 @@ D = \frac{\beta^2_{mx} var(x)} {\beta^2_{mx} var(x) + var(\epsilon_{mx})}
 
 Thus an observational study will find \(cov(g, y_o - \hat{y_o}) = 0\)
 when the true model is causal only when \(D = 1\). Therefore, if there
-is any measurement error that incurs imprecision (i.e.
+is any measurement error that incurs imprecision in \(x\) (i.e.
 \(var(\epsilon_{mx}) \neq 0\)) then there will remain an association
-between \(g\) and \(y_o | x\), which is in violation of the the 4th
+between \(g\) and \(y_o | x_o\), which is in violation of the the 4th
 condition of the CIT. Note that scale transformation of \(x\) or \(y\)
 without any incurred imprecision is insufficient to lead to a violation
 of the test statistic assumptions, and henceforth mention of measurement
@@ -680,8 +693,8 @@ direction. Also of concern here is that increasing sample size does not
 solve the issue, indeed it only strengthens the apparent evidence for
 the incorrect inference.
 
-We performed simulations to compare the performance of MR against CIT in
-detecting a causal association between simulated variables under
+We also performed simulations to compare the performance of MR against
+CIT in detecting a causal association between simulated variables under
 different levels of imprecision simulated in the exposure. Figure 3
 shows the true positive rates between the CIT and MR for detecting a
 causal association. We observe that the CIT has lower power in all
@@ -724,45 +737,44 @@ correct direction of
 causality}\label{comparison-of-cit-and-mr-steiger-for-obtaining-the-correct-direction-of-causality}
 
 We used simulations to explore the performance of the MR Steiger
-approach in comparison to CIT in terms of the rate at which a strong
-causal relationship is obtained for the correct direction of causality,
-and the rate at which a strong causal relationship is obtained where the
-reported direction of causality is incorrect. Simulations were performed
-for two models, one for a ``causal model'' where there was a causal
-relationship between \(x\) and \(y\); and one for a ``non-causal model''
-where \(x\) and \(y\) were not causally related, but had a confounded
-association induced by the SNP \(g\) influencing a confounder variable
-\(u\).
+approach in comparison to CIT in terms of the rate at which evidence of
+a causal relationship is obtained for the correct direction of
+causality, and the rate at which evidence of a causal relationship is
+obtained where the reported direction of causality is incorrect.
+Simulations were performed for two models, one for a ``causal model''
+where there was a causal relationship between \(x\) and \(y\); and one
+for a ``non-causal model'' where \(x\) and \(y\) were not causally
+related, but had a confounded association induced by the SNP \(g\)
+influencing a confounder variable \(u\).
 
-Figure 5a shows that, for the ``causal model'', when \(d < 0\) the MR
-analysis is indeed liable to infer the wrong direction of causality, and
-that this erroneous result is more likely to occur with increasing
+Figure 5a shows that, for the ``causal model'', the MR analysis is
+indeed liable to infer the wrong direction of causality when \(d < 0\),
+and that this erroneous result is more likely to occur with increasing
 sample size. However, the CIT is in general more fallable to reporting a
 robust causal association for the wrong direction of causality. When
-\(d > 0\) is satisfied we observe that in most cases the MR method has
-greater power to obtain evidence for causality than CIT, and always
-obtains the correct direction of causality. The CIT, unlike the Steiger
-test for MR, is able to distinguish the ``non-causal model'' from the
-``causal model'' (Methods, Figure 5b), but it is evident that
-measurement error will often lead the CIT to evaluate erroneously this
-confounding model as being causal.
+\(d > 0\) we find that in most cases the MR method has greater power to
+obtain evidence for causality than CIT, and always obtains the correct
+direction of causality. The CIT, unlike the Steiger test for MR, is able
+to distinguish the ``non-causal model'' from the ``causal model''
+(Methods, Figure 5b), but it is evident that measurement error will
+often lead the CIT to identify the causal model as true, when in fact
+the underlying model is this non-causal model.
 
 \subsubsection{The causal relationship between gene expression and DNA
 methylation
 levels}\label{the-causal-relationship-between-gene-expression-and-dna-methylation-levels}
 
-We used the Steiger test to infer the direction of causality between 458
-putative associations between DNA methylation levels and gene expression
-levels and found that the causal direction commonly goes in both
+We used the Steiger test to infer the direction of causality between DNA
+methylation and gene expression levels between 458 putative
+associations. We found that the causal direction commonly goes in both
 directions (Figure 6a), but assuming no or equal measurement error, DNA
 methylation levels were the predominant causal factor
 (\(p = 1.3\times 10^{-5}\)). The median reliability (R) of the 458 tests
-was 3.92 (95\% CI 1.08 - 37.11). We then went on to predict the causal
-directions of the associations for varying levels of systematic
-measurement error for the different platforms. Figure 6a shows that the
-qualitative result of which of DNA methylation or gene expression is
-more commonly the causal factor is very strongly determined by
-measurement error.
+was 3.92 (5\%-95\% quantiles 1.08 - 37.11). We then went on to predict
+the causal directions of the associations for varying levels of
+systematic measurement error for the different platforms. Figure 6a
+shows that the conclusions about the direction of causality between DNA
+methylation and gene expression are very sensitive to measurement error.
 
 We performed two sample MR (28) for each association in the direction of
 causality inferred by the Stieger test. We observed that the sign of the
@@ -770,8 +782,9 @@ MR estimate was generally in the same direction as the Pearson
 correlation coefficient reported by Shakhbazov et al (41) (Figure 6b).
 There was a moderate correlation between the absolute magnitudes of the
 causal correlation and the observational Pearson correlation (r = 0.45).
-Together these inferences suggest that even for relatively low level
-associations it is important to use causal inference methods over
+Together these inferences suggest that even in estimating associations
+between `omic' variables, which are considered to be low level
+phenotypes, it is important to use causal inference methods over
 observational associations to infer causal effect sizes.
 
 We also observed that for associations where methylation caused gene
@@ -786,15 +799,16 @@ levels, consistent with expectation (43).
 Researchers are often confronted with the problem of making causal
 inferences using a statistical framework on observational data. In the
 epidemiological literature issues of measurement error in mediation
-analysis is relatively well explored (44). Our analysis extends this to
+analysis are relatively well explored (44). Our analysis extends this to
 related methods such as CIT that are widely used in predominantly 'omic
-data. These methods are indeed liable to the same issues as standard
-mediation based analysis, and specifically we show that as measurement
-error in the exposure variable increases, CIT is likely to have reduced
-statistical power, and liable to infer the wrong direction of causality.
-We also demonstrate that, though unintuitive, increasing sample size
-does not resolve the issue, rather it leads to more extreme p-values for
-the model that predicts the wrong direction of causality.
+data. These methods are indeed susceptible to the same problem as
+standard mediation based analysis, and specifically we show that as
+measurement error in the (true) exposure variable increases, CIT is
+likely to have reduced statistical power, and liable to infer the wrong
+direction of causality. We also demonstrate that, though unintuitive,
+increasing sample size does not resolve the issue, rather it leads to
+more extreme p-values for the model that predicts the wrong direction of
+causality.
 
 Under many circumstances a practical solution to this problem is to use
 Mendelian randomisation instead of methods such as the CIT or similar
