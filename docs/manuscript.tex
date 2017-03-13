@@ -80,7 +80,7 @@ using genetic instruments}
   \preauthor{}\postauthor{}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{11 March 2017}
+  \date{13 March 2017}
 
 \begin{document}
 \maketitle
@@ -318,9 +318,10 @@ by conditioning on \(x\), such that
 cov(g, y - \hat{y}) = 0
 \]
 
-where \(\hat{y} = \hat{\beta}_x x\). MR analysis estimates the causal
-influence of \(x\) on \(y\) by using the instrument as a proxy for
-\(x\), such that
+where \(\hat{y} = \hat{\beta}_x x\) and assuming no intercept
+\(y - \hat{y} = \epsilon_x\). MR analysis estimates the causal influence
+of \(x\) on \(y\) by using the instrument as a proxy for \(x\), such
+that
 
 \[
 \begin{aligned}
@@ -843,7 +844,11 @@ analysis suggests that DNA methylation levels would be more often the
 causal factor in the association. Indeed, previous studies which have
 evaluated measurement error in these platforms do support this position
 (45,46), though making strong conclusions for this analysis is difficult
-because measurement error is likely to be study specific.
+because measurement error is likely to be study specific. We also
+haven't accounted for the influence of winner's curse, which can inflate
+estimates of the variance explained by SNPs, with higher inflation
+expected amongst lower powered studies. Using p-values for genetic
+associations from replication studies will mitigate this problem.
 
 In our simulations we focused on the simple case of a single instrument
 in a single sample setting with a view to making a fair comparison
