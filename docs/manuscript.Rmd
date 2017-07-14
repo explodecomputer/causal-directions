@@ -191,7 +191,7 @@ where $\hat{y} = \hat{\beta}_x x$ and assuming no intercept $y - \hat{y} = \epsi
 $$
 \begin{aligned}
 \hat{x} & = \hat{\beta}_g g \\
-y & = \beta_{MR}\hat{x} + \epsilon_{MR}
+y       & = \beta_{MR}\hat{x} + \epsilon_{MR}
 \end{aligned}
 $$
 
@@ -410,7 +410,7 @@ We demonstrate this new method by evaluating the causal relationships of `r nrow
 
 In our simulations we focused on the simple case of a single instrument in a single sample setting with a view to making a fair comparison between MR and the various mediation-based methods available. However, if there is only a single instrument it is difficult to separate between the two competing models of $g$ instrumenting a trait which causes another trait, and $g$ having pleiotropic effects on both traits independently [@Zhu2016]. Under certain conditions of measurement error the CIT test can distinguish these models. We also note that it is straightforward to extend the MR Steiger approach to multiple instruments, requiring only that the total variance explained by all instruments be calculated under the assumption that they are independent. Multiple instruments can indeed help to distinguish between the causal and pleiotropic models, for example by evaluating the proportionality of the SNP-exposure and SNP-outcome effects [@DaveySmithHemani2014]. Additionally, if there is at least one instrument for each trait then bi-directional MR can offer solutions to inferring the causal direction [@Richmond2014; @DaveySmithHemani2014; @Mancuso2017]. We restricted the simulations to evaluating the causal inference between quantitative traits, but it is possible that the analysis could be extended to binary traits by using the genetic variance explained on the liability scale, taking into account the population prevalence [@Lee2013c]. However, our analysis goes beyond many previous explorations of measurement error by assessing the impacts of both imprecision (noise) and linear transformations of the true variable on causal inference. 
 
-In this work we assumed that pleiotropy (the influence of the instrument on the outcome through a mechanism other than the exposure) was not present. Recent method developments in MR [@Bowden2015; @Bowden2016b] have focused on accounting for the issues that horizontal pleiotropy can introduce when multiple instruments are available, but how they perform in the presence of measurement error remains to be explored. An important advantage that MR confers over most mediation based analysis is that it can be performed in two samples, which can considerably improve power and expand the scope of analysis. However, whether there is a substantive difference in two sample MR versus one sample MR in how measurement error has an effect is not yet fully understood. We have also assumed no measurement error in the genetic instrument, which is not unreasonable given the strict QC protocols that ensure high quality genotype data is available to most studies. We have restricted the scope to only exploring non-differential measurement error and avoided the complications incurred if measurement error in the exposure and outcome is correlated. We have also not addressed other issues pertaining to instrumental variables which are relevant to the question of instrument-exposure specification. One such problem is exposure misspecification, for example an instrument could associate with several closely related putative outcomes, with only one of them actually having a causal effect on the outcome. This problem has shown to be the case for SNPs influencing different lipid fractions, for example [@Do2013; @Burgess2014a].
+Our new method attempts to infer causal directions under the assumption that horizontal pleiotropy (the influence of the instrument on the outcome through a mechanism other than the exposure) is not present. Recent method developments in MR [@Bowden2015; @Bowden2016b] have focused on accounting for the issues that horizontal pleiotropy can introduce when multiple instruments are available, but how they perform in the presence of measurement error remains to be explored. An important advantage that MR confers over most mediation based analysis is that it can be performed in two samples, which can considerably improve power and expand the scope of analysis. However, whether there is a substantive difference in two sample MR versus one sample MR in how measurement error has an effect is not yet fully understood. We have also assumed no measurement error in the genetic instrument, which is not unreasonable given the strict QC protocols that ensure high quality genotype data is available to most studies. We have restricted the scope to only exploring non-differential measurement error and avoided the complications incurred if measurement error in the exposure and outcome is correlated. We have also not addressed other issues pertaining to instrumental variables which are relevant to the question of instrument-exposure specification. One such problem is exposure misspecification, for example an instrument could associate with several closely related putative outcomes, with only one of them actually having a causal effect on the outcome. This problem has shown to be the case for SNPs influencing different lipid fractions, for example [@Do2013; @Burgess2014a].
 
 Mediation based network approaches, that go beyond analyses of two variables, are very well established [@Lagani2015] and have a number of extensions that make them valuable tools, including for example network construction. But because they are predicated on the basic underlying principles of mediation they are liable to suffer from the same issues of measurement error. Recent advances in MR methodology, for example applying MR to genetical genomics [@Relton2012], multivariate MR [@Burgess2014a] and mediation through MR [@Varbo2015; @Burgess2015; @Richmond2016] may offer more robust alternatives for these more complicated problems.
 
@@ -612,6 +612,68 @@ Thus $V_{z < 0} = V_{z} - V_{z \geq 0}$.
 
 \newpage
 
+## Appendix 3
+
+We have assumed no unmeasured confounding in these simulations. Unmeasured confounding will however have potentially large influences on mediation-based methods for inferring causal directions, and can also adversely influence the estimate of the causal direction for the Steiger test.
+
+### Unmeasured confounding in mediation
+
+Including an unmeasured confounder, $u$, after ignoring intercept terms the exposure $x$ and outcome $y$ variables can be modelled as
+
+$$
+\begin{aligned}
+
+y & = \beta_x x + \beta_{uy} u + \epsilon_x \\
+x & = \beta_g g + \beta_{ux} u + \epsilon_g
+\end{aligned}
+$$
+
+The observational estimate of the causal effect of $x$ on $y$, $\hat{\beta}_x$ is obtained from
+
+$$
+\begin{aligned}
+\hat{\beta}_x & = cov(x, y) / var(x) \\
+& = cov(\beta_g g + \beta_{ux} u + \epsilon_g, \beta_x x + \beta_{uy} u + \epsilon_x) / var(x) \\
+& = cov(\beta_g g + \beta_{ux} u + \epsilon_g, \beta_x x + \beta_{uy} u + \epsilon_x) / var(x) \\
+& = cov(\beta_g g + \beta_{ux} u + \epsilon_g, \beta_x \beta_g g + \beta_x \beta_{ux} u + \beta_x \epsilon_g + \beta_{uy} u + \epsilon_x) / var(x) \\
+& = \frac{\beta_g^2 \beta_x var(g) + \beta_{ux}^2 \beta_x var(u) + \beta_x var(\epsilon_g)} {\beta_g^2 var(g) + \beta_{ux}^2 var(u) + var(\epsilon_g)}
+\end{aligned}
+$$
+
+From this it is clear that $\beta_x$ and $\hat{\beta}_x$ will differ when both $\beta_{uy}$ and $\beta_{ux}$ are both non-zero. In terms of mediation, where we attempt to test if $g$ associates with $y$ after adjusting $y$ for $x$, such that
+
+$$
+\hat{y}* = \hat{\beta}_x x
+$$
+
+and
+
+$$
+\begin{aligned}
+cov(g, y - \hat{y}*) & = cov(g, \beta_x x + \beta_{uy} u + \epsilon_x - \hat{\beta}_x x) \\
+& = cov(g, (\beta_x - \hat{\beta}_x)(\beta_g g + \beta_ux u + \epsilon_x)) \\
+& = (\beta_x - \hat{\beta}_x) var(g)
+\end{aligned}
+$$
+
+Should any amount of unmeasured confounding exist, therefore, there will remain an association between $g$ and the $y|x$, which will introduce errors in inferring causal directions.
+
+### Unmeasured confounding in the Steiger test
+
+Similarly, we can investigate the extent to which unmeasured confounding will lead to the wrong causal direction between $x$ and $y$ using the Steiger test, evaluating the liability for the inequality $cor(g,x)^2 > cor(g,y)^2$ being incorrect.
+
+$$
+cor(g,x)^2 = \frac{\beta_g^2}{\beta_g^2var(g) + \beta_{ux}^2 var(u) + var(\epsilon_x)}
+$$
+
+$$
+\begin{aligned}
+cor(g,y)^2 & = cov()
+\end{aligned}
+$$
+
+\end{aligned}
+$$
 
 ## References
 
