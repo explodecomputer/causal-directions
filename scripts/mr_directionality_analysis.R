@@ -151,10 +151,10 @@ mr_wald_ratio <- function(b_exp, b_out, se_exp, se_out, parameters)
 
 ## ---- read_data ----
 
-load("~/repo/cit_measurement_error/results/mr_directionality_20170126.RData")
+load("~/repo/causal-directions/results/mr_directionality_20170126.RData")
 parametersc <- parameters
 parametersc$model <- "Non-causal"
-load("~/repo/cit_measurement_error/results/mr_directionality_20160211.RData")
+load("~/repo/causal-directions/results/mr_directionality_20160211.RData")
 parameters$model <- "Causal"
 parameters$cit_AB1 <- parameters$cit_AB2 <- parameters$cit_AB3 <- parameters$cit_AB4 <- NA
 parameters$cit_BA1 <- parameters$cit_BA2 <- parameters$cit_BA3 <- parameters$cit_BA4 <- NA
@@ -273,7 +273,7 @@ psum1$rhs_lhs_diff_bin <- cut(psum1$rhs_lhs_diff, breaks=seq(-0.2, 1.1, by=0.1))
 ## ---- cit_measurement_error_figure ----
 
 
-load("~/repo/cit_measurement_error/results/20141114.RData")
+load("~/repo/causal-directions/results/20141114.RData")
 dat <- gather(dat, eval, pval, GT, TG, factor_key=TRUE)
 levels(dat$eval) <- c("Correct causal model", "Incorrect causal model")
 
@@ -623,13 +623,13 @@ pl$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp2[,1]))
 pl$rhs_lhs_diff_bin_lab <- as.factor(paste0("d = ", pl$rhs_lhs_diff_bin_numeric))
 pl$rhs_lhs_diff_bin_lab <- factor(pl$rhs_lhs_diff_bin_lab, levels=levels(pl$rhs_lhs_diff_bin_lab)[order(as.numeric(as.character(levels(pl$rhs_lhs_diff_bin_numeric))))])
 
-temp <- dplyr::group_by(pl, test, r_ab, r_za, n, noisea, noiseb) %>%
+temp <- dplyr::group_by(pl, test, r_ab, r_za, n, noiseb) %>%
 	dplyr::summarise(prop_causality_exists = sum(causality_exists) / n())
 temp$r_za <- paste0("cor(x,g) = ", temp$r_za)
 temp$n <- paste0("n = ", temp$n)
-temp$noiseb <- paste0("cor(Y,Yo) = ", temp$noiseb)
+temp$noiseb <- paste0("cor(Y,Yo) = ", 1-temp$noiseb)
 
-ggplot(subset(temp, r_ab == 0.6 & r_za == "cor(x,g) = 0.01" & noiseb %in% c("cor(Y,Yo) = 0", "cor(Y,Yo) = 0.6")), aes(x=noisea, y = prop_causality_exists)) +
+ggplot(subset(temp, r_za == "cor(x,g) = 0.01" & noiseb %in% c("cor(Y,Yo) = 1", "cor(Y,Yo) = 0.4")), aes(x=r_ab, y = prop_causality_exists)) +
 geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
 facet_grid(noiseb ~ n) +
 labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")

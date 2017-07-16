@@ -80,7 +80,7 @@ using genetic instruments}
   \preauthor{}\postauthor{}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{20 March 2017}
+  \date{16 July 2017}
 
 \begin{document}
 \maketitle
@@ -343,7 +343,7 @@ that
 \[
 \begin{aligned}
 \hat{x} & = \hat{\beta}_g g \\
-y & = \beta_{MR}\hat{x} + \epsilon_{MR}
+y       & = \beta_{MR}\hat{x} + \epsilon_{MR}
 \end{aligned}
 \]
 
@@ -893,29 +893,30 @@ previous explorations of measurement error by assessing the impacts of
 both imprecision (noise) and linear transformations of the true variable
 on causal inference.
 
-In this work we assumed that pleiotropy (the influence of the instrument
-on the outcome through a mechanism other than the exposure) was not
-present. Recent method developments in MR (24,25) have focused on
-accounting for the issues that horizontal pleiotropy can introduce when
-multiple instruments are available, but how they perform in the presence
-of measurement error remains to be explored. An important advantage that
-MR confers over most mediation based analysis is that it can be
-performed in two samples, which can considerably improve power and
-expand the scope of analysis. However, whether there is a substantive
-difference in two sample MR versus one sample MR in how measurement
-error has an effect is not yet fully understood. We have also assumed no
-measurement error in the genetic instrument, which is not unreasonable
-given the strict QC protocols that ensure high quality genotype data is
-available to most studies. We have restricted the scope to only
-exploring non-differential measurement error and avoided the
-complications incurred if measurement error in the exposure and outcome
-is correlated. We have also not addressed other issues pertaining to
-instrumental variables which are relevant to the question of
-instrument-exposure specification. One such problem is exposure
-misspecification, for example an instrument could associate with several
-closely related putative outcomes, with only one of them actually having
-a causal effect on the outcome. This problem has shown to be the case
-for SNPs influencing different lipid fractions, for example (51,52).
+Our new method attempts to infer causal directions under the assumption
+that horizontal pleiotropy (the influence of the instrument on the
+outcome through a mechanism other than the exposure) is not present.
+Recent method developments in MR (24,25) have focused on accounting for
+the issues that horizontal pleiotropy can introduce when multiple
+instruments are available, but how they perform in the presence of
+measurement error remains to be explored. An important advantage that MR
+confers over most mediation based analysis is that it can be performed
+in two samples, which can considerably improve power and expand the
+scope of analysis. However, whether there is a substantive difference in
+two sample MR versus one sample MR in how measurement error has an
+effect is not yet fully understood. We have also assumed no measurement
+error in the genetic instrument, which is not unreasonable given the
+strict QC protocols that ensure high quality genotype data is available
+to most studies. We have restricted the scope to only exploring
+non-differential measurement error and avoided the complications
+incurred if measurement error in the exposure and outcome is correlated.
+We have also not addressed other issues pertaining to instrumental
+variables which are relevant to the question of instrument-exposure
+specification. One such problem is exposure misspecification, for
+example an instrument could associate with several closely related
+putative outcomes, with only one of them actually having a causal effect
+on the outcome. This problem has shown to be the case for SNPs
+influencing different lipid fractions, for example (51,52).
 
 Mediation based network approaches, that go beyond analyses of two
 variables, are very well established (35) and have a number of
@@ -1234,6 +1235,93 @@ V_{z \ge 0} & = \int^1_{\rho_{g,x_o}} \int^{\frac{\rho_{g,y_o}\rho_{x,x_o}}{\rho
 \]
 
 Thus \(V_{z < 0} = V_{z} - V_{z \geq 0}\).
+
+\newpage
+
+\subsection{Appendix 3}\label{appendix-3}
+
+We have assumed no unmeasured confounding in these simulations.
+Unmeasured confounding will however have potentially large influences on
+mediation-based methods for inferring causal directions, and can also
+adversely influence the estimate of the causal direction for the Steiger
+test.
+
+\subsubsection{Unmeasured confounding in
+mediation}\label{unmeasured-confounding-in-mediation}
+
+Including an unmeasured confounder, \(u\), after ignoring intercept
+terms the exposure \(x\) and outcome \(y\) variables can be modelled as
+
+\[
+\begin{aligned}
+y & = \beta_x x + \beta_{uy} u + \epsilon_x \\
+x & = \beta_g g + \beta_{ux} u + \epsilon_g
+\end{aligned}
+\]
+
+The observational estimate of the causal effect of \(x\) on \(y\),
+\(\hat{\beta}_x\) is obtained from
+
+\[
+\begin{aligned}
+\hat{\beta}_x & = cov(x, y) / var(x) \\
+& = \frac{\beta_g^2 \beta_x var(g) + \beta_{ux}^2 \beta_x var(u) + \beta_x var(\epsilon_g)} {\beta_g^2 var(g) + \beta_{ux}^2 var(u) + var(\epsilon_g)}
+\end{aligned}
+\]
+
+From this it is clear that \(\beta_x\) and \(\hat{\beta}_x\) will differ
+when both \(\beta_{uy}\) and \(\beta_{ux}\) are non-zero. Relating to
+mediation, where we attempt to test if \(g\) associates with \(y\) after
+adjusting \(y\) for \(x\), such that
+
+\[
+\hat{y}* = \hat{\beta}_x x
+\]
+
+and
+
+\[
+\begin{aligned}
+cov(g, y - \hat{y}*) & = cov(g, \beta_x x + \beta_{uy} u + \epsilon_x - \hat{\beta}_x x) \\
+& = cov(g, (\beta_x - \hat{\beta}_x)(\beta_g g + \beta_ux u + \epsilon_x)) \\
+& = (\beta_x - \hat{\beta}_x) var(g)
+\end{aligned}
+\]
+
+should any amount of unmeasured confounding exist, therefore, there will
+remain an association between \(g\) and \(y|x\), which will introduce
+errors in inferring causal directions.
+
+\subsubsection{Unmeasured confounding in the Steiger
+test}\label{unmeasured-confounding-in-the-steiger-test}
+
+Similarly, we can investigate the extent to which unmeasured confounding
+will lead to the wrong causal direction between \(x\) and \(y\) using
+the Steiger test, evaluating the liability for the inequality
+\(cor(g,x)^2 > cor(g,y)^2\) being incorrect. After some algebra
+
+\[
+cor(g,x)^2 = \frac{\beta_g^2}{\beta_g^2var(g) + \beta_{ux}^2 var(u) + var(\epsilon_x)}
+\]
+
+and
+
+\[
+cor(g,y)^2 = \frac{\beta_x^2 \beta_g^2 var(g)^2} {\hat{\beta}_x^2 \beta_g^2 var(g) + \hat{\beta}_x^2 \beta_{ux}^2 var(u) + \beta_{uy}^2 var(u) + var(\epsilon_y)}
+\]
+
+Supplementary Figure 1 shows the relationship between the magnitude of
+the correlations between \(x\), \(y\) and the confounder \(u\). We note
+that in most cases where the observational absolute \(R^2_{xy}\) is less
+than 0.2, unmeasured confounding will not incur the wrong causal
+direction in the Steiger test.
+
+\includegraphics{../images/unmeasured_conf_steiger.png}
+
+Supplementary Figure 1: Graph representing the unmeasured confounding
+parameters that will lead to the Steiger test returning the wrong causal
+direction. Columns of boxes represent different signed values of the
+observational variance explained between \(x\) and \(y\) (\(R^2_{xy}\)).
 
 \newpage
 

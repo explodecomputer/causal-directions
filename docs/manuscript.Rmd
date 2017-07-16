@@ -1,5 +1,5 @@
 ---
-title: "Orienting the causal relationship between imprecisely measured traits using genetic instruments"
+title: "Orienting the causal relationship between imprecisely measured traits using GWAS summary data"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   pdf_document:
@@ -106,6 +106,11 @@ fig_nums(
 	display=FALSE
 )
 
+sfig_nums(
+	"unmeasured",
+	caption=paste0("Graph representing the unmeasured confounding parameters that will lead to the Steiger test returning the wrong causal direction. Columns of boxes represent different signed values of the observational variance explained between $x$ and $y$ ($R^2_{xy}$)."),
+	display=FALSE
+)
 
 ```
 
@@ -135,7 +140,7 @@ sfig_nums("",
 
 ### Abstract
 
-Inference of the causal structure that induces correlations between two traits can be achieved by combining genetic associations with a mediation-based approach, as is done in the causal inference test (CIT) and others. However, we show that measurement error in the phenotypes can lead to mediation-based approaches inferring the wrong causal direction, and that increasing sample sizes has the adverse effect of increasing confidence in the wrong answer. Here we introduce an extension to Mendelian randomisation, a method that uses genetic associations in an instrumentation framework, that enables inference of the causal direction between traits, with some advantages. First, it is less susceptible to bias in the presence of measurement error; second, it is more statistically efficient; third, it can be performed using only summary level data from genome-wide association studies; and fourth, its sensitivity to measurement error can be evaluated. We apply the method to infer the causal direction between DNA methylation and gene expression levels. Our results demonstrate that, in general, DNA methylation is more likely to be the causal factor, but this result is highly susceptible to bias induced by systematic differences in measurement error between the platforms. We emphasise that, where possible, implementing MR and appropriate sensitivity analyses alongside other approaches such as CIT is important to triangulate reliable conclusions about causality.
+Inference of the causal structure that induces correlations between two traits can be achieved by combining genetic associations with a mediation-based approach, as is done in the causal inference test (CIT) and others. However, we show that measurement error in the phenotypes can lead to mediation-based approaches inferring the wrong causal direction, and that increasing sample sizes has the adverse effect of increasing confidence in the wrong answer. Here we introduce an extension to Mendelian randomisation, a method that uses genetic associations in an instrumentation framework, that enables inference of the causal direction between traits, with some advantages. First, it can be performed using only summary level data from genome-wide association studies; second, it is less susceptible to bias in the presence of measurement error or unmeasured confounding. We apply the method to infer the causal direction between DNA methylation and gene expression levels. Our results demonstrate that, in general, DNA methylation is more likely to be the causal factor, but this result is highly susceptible to bias induced by systematic differences in measurement error between the platforms, and by horizontal pleiotropy. We emphasise that, where possible, implementing MR and appropriate sensitivity analyses alongside other approaches such as CIT is important to triangulate reliable conclusions about causality.
 
 
 ### Author summary
@@ -280,7 +285,7 @@ The existence of causality and its direction is inferred based on combining info
 - If $p_{Steiger} < \alpha$ and $p_{MR} < \alpha$ and $Z < 0$ then a causal association for the incorrect model is accepted, $y \rightarrow x$
 - Otherwise if $p_{Steiger} > \alpha$ or $p_{MR} > \alpha$, neither model is accepted
 
-Note that the same correlation test approach can be applied to a two-sample MR [@Pierce2013] setting. Two-sample MR refers to the case where the SNP-exposure association and SNP-outcome association are calculated in different samples (e.g. from publicly available summary statistics). Here the Steiger test of two independent correlations can be applied where. 
+Note that the same correlation test approach can be applied to a two-sample MR setting. Two-sample MR refers to the case where the SNP-exposure association and SNP-outcome association are calculated in different samples (e.g. from publicly available summary statistics [@Pierce2013; @Hemani2016]). Here the Steiger test of two independent correlations can be applied where. 
 
 $$
 Z = \frac{Z_{gx} - Z_{gy}} { \sqrt{ 1 / (N_{1} - 3) + 1 / (N_{2} - 3) } }
@@ -288,14 +293,15 @@ $$
 
 An advantage of using the Steiger test in the two sample context is that it can compare correlations in independent samples where sample sizes are different. Steiger test statistics were calculated using the *r.test* function in the R package *R/psych* [@Revelle2015].
 
+The Steiger test assumes that there is a causal relationship between the two variables, and that the SNP is a valid instrument for one of them. However it is liable to give incorrect causal directions under some other circumstances also. First, some levels of horizontal pleiotropy, where the SNP influences the outcome through some pathway other than the exposure, could induce problems because this is a means by which the instrument is invalid. Second, some differential values of measurement error between the exposure and the outcome could induce incorrect causal directions, and this is explored in Appendix 2. Third, some levels of unmeasured confounding between the exposure and the outcome could induce the wrong causal direction, and this is explored in Appendix 3.
 
-### Causal direction sensitivity analysis
+### Causal direction sensitivity analysis for measurement error
 
 The Steiger test for inferring if $x \rightarrow y$ is based on evaluating $\rho_{gx} > \rho_{gy}$. However, $\rho_{gx}$ (or $\rho_{gy}$) are underestimated if $x$ (or $y$) are measured imprecisely. If, for example, $x$ has lower measurement precision than $y$ then we might empirically obtain $\rho_{g,x_o} < \rho_{g,y_o}$ because $\rho_{g,x_o}$ could be underestimated more than $\rho_{g,y_o}$. 
 
 As we show in Appendix 2 it is possible to infer the bounds of measurement error on $x_o$ or $y_o$ given known genetic associations. The maximum measurement imprecision of $x_o$ is $\rho_{g,x_o}$, because it is known that at least that much of the variance has been explained in $x_o$ by $g$. The minimum is 0, denoting perfectly measured trait values (the same logic applies to $y_o$). It is possible to simulate what the inferred causal direction would be for all values within these bounds. 
 
-To evaluate how reliable, $R$, the inference of the causal direction is to potential measurement error in $x$ and $y$ we need to predict the values of $\rho_{gy} - \rho_{gx}$ for those values of measurement error. We integrate over the entire range of $\rho_{gy} - \rho_{gx}$ values for possible measurement error values. We find the ratio of the volume that agrees with the inferred direction of causality over the volume that disagrees with the inferred direction of causality. A ratio $R=1$ indicates that the inferred causal direction is highly sensitive to measurement error, with equal weight of the measurement error parameter space supporting both directions of causality. In general, the $R$ value denotes that the inferred direction of causality is $R$ times more likely to be the empirical result than the opposite direction. Full details are provided in Appendix 2.
+To evaluate how reliable, $R$, the inference of the causal direction is to potential measurement error in $x$ and $y$ we need to predict the values of $\rho_{gy} - \rho_{gx}$ for those values of measurement error. We offer two tools in which to do this. First, the user can provide values of measurement error for $x$ and $y$ and obtain a revised inference of the causal direction. Second, we integrate over the entire range of $\rho_{gy} - \rho_{gx}$ values for possible measurement error values, assuming that any measurement error value is equally likely. We find the ratio of the volume that agrees with the inferred direction of causality over the volume that disagrees with the inferred direction of causality. A ratio $R=1$ indicates that the inferred causal direction is highly sensitive to measurement error, with equal weight of the measurement error parameter space supporting both directions of causality. In general, the $R$ value denotes that the inferred direction of causality is $R$ times more likely to be the empirical result than the opposite direction. Full details are provided in Appendix 2.
 
 
 ### Simulations
@@ -622,7 +628,6 @@ Including an unmeasured confounder, $u$, after ignoring intercept terms the expo
 
 $$
 \begin{aligned}
-
 y & = \beta_x x + \beta_{uy} u + \epsilon_x \\
 x & = \beta_g g + \beta_{ux} u + \epsilon_g
 \end{aligned}
@@ -633,14 +638,11 @@ The observational estimate of the causal effect of $x$ on $y$, $\hat{\beta}_x$ i
 $$
 \begin{aligned}
 \hat{\beta}_x & = cov(x, y) / var(x) \\
-& = cov(\beta_g g + \beta_{ux} u + \epsilon_g, \beta_x x + \beta_{uy} u + \epsilon_x) / var(x) \\
-& = cov(\beta_g g + \beta_{ux} u + \epsilon_g, \beta_x x + \beta_{uy} u + \epsilon_x) / var(x) \\
-& = cov(\beta_g g + \beta_{ux} u + \epsilon_g, \beta_x \beta_g g + \beta_x \beta_{ux} u + \beta_x \epsilon_g + \beta_{uy} u + \epsilon_x) / var(x) \\
 & = \frac{\beta_g^2 \beta_x var(g) + \beta_{ux}^2 \beta_x var(u) + \beta_x var(\epsilon_g)} {\beta_g^2 var(g) + \beta_{ux}^2 var(u) + var(\epsilon_g)}
 \end{aligned}
 $$
 
-From this it is clear that $\beta_x$ and $\hat{\beta}_x$ will differ when both $\beta_{uy}$ and $\beta_{ux}$ are both non-zero. In terms of mediation, where we attempt to test if $g$ associates with $y$ after adjusting $y$ for $x$, such that
+From this it is clear that $\beta_x$ and $\hat{\beta}_x$ will differ when both $\beta_{uy}$ and $\beta_{ux}$ are non-zero. Relating to mediation, where we attempt to test if $g$ associates with $y$ after adjusting $y$ for $x$, such that
 
 $$
 \hat{y}* = \hat{\beta}_x x
@@ -656,24 +658,29 @@ cov(g, y - \hat{y}*) & = cov(g, \beta_x x + \beta_{uy} u + \epsilon_x - \hat{\be
 \end{aligned}
 $$
 
-Should any amount of unmeasured confounding exist, therefore, there will remain an association between $g$ and the $y|x$, which will introduce errors in inferring causal directions.
+should any amount of unmeasured confounding exist, therefore, there will remain an association between $g$ and $y|x$, which will introduce errors in inferring causal directions.
 
 ### Unmeasured confounding in the Steiger test
 
-Similarly, we can investigate the extent to which unmeasured confounding will lead to the wrong causal direction between $x$ and $y$ using the Steiger test, evaluating the liability for the inequality $cor(g,x)^2 > cor(g,y)^2$ being incorrect.
+Similarly, we can investigate the extent to which unmeasured confounding will lead to the wrong causal direction between $x$ and $y$ using the Steiger test, evaluating the liability for the inequality $cor(g,x)^2 > cor(g,y)^2$ being incorrect. After some algebra
 
 $$
 cor(g,x)^2 = \frac{\beta_g^2}{\beta_g^2var(g) + \beta_{ux}^2 var(u) + var(\epsilon_x)}
 $$
 
+and
+
 $$
-\begin{aligned}
-cor(g,y)^2 & = cov()
-\end{aligned}
+cor(g,y)^2 = \frac{\beta_x^2 \beta_g^2 var(g)^2} {\hat{\beta}_x^2 \beta_g^2 var(g) + \hat{\beta}_x^2 \beta_{ux}^2 var(u) + \beta_{uy}^2 var(u) + var(\epsilon_y)}
 $$
 
-\end{aligned}
-$$
+`r csfig("unmeasured")` shows the relationship between the magnitude of the correlations between $x$, $y$ and the confounder $u$. We note that in most cases where the observational absolute $R^2_{xy}$ is less than 0.2, unmeasured confounding will not incur the wrong causal direction in the Steiger test.
+
+![](../images/unmeasured_conf_steiger.png)
+
+`r sfig_nums("unmeasured")`
+
+\newpage
 
 ## References
 
