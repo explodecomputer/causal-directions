@@ -100,7 +100,7 @@ ggplot(dat, aes(x=rsquxs, y=rsquys)) +
 geom_point(aes(colour=as.factor((rsqgx-rsqgy)>0))) +
 facet_grid(. ~ rsqxysog) +
 labs(x=expression(Signed~R[ux]^2), y=expression(Signed~R[uy]^2), colour="Correct Steiger\ntest result")
-ggsave("../images/unmeasured_conf_steiger.pdf", width=10, height=6)
+ggsave("../images/unmeasured_conf_steiger.pdf", width=12, height=8)
 
 
 ggplot(dat, aes(x=bux, y=buy)) +
