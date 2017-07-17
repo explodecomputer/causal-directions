@@ -81,11 +81,19 @@ fig_nums(
 	display=FALSE
 )
 
+# fig_nums(
+# 	"causality_exists_tpr",
+# 	caption="Outcomes were simulated to be causally influenced by exposures with varying degrees of measurement imprecision applied to the exposure variable (x axis). True positive rates (y axis) for MR and CIT were compared for varying levels of measurement imprecision in the outcome variable (rows of boxes) and sample sizes (columns of boxes).",
+# 	display=FALSE
+# )
+
 fig_nums(
-	"causality_exists_tpr",
-	caption="Outcomes were simulated to be causally influenced by exposures with varying degrees of measurement imprecision applied to the exposure variable (x axis). True positive rates (y axis) for MR and CIT were compared for varying levels of measurement imprecision in the outcome variable (rows of boxes) and sample sizes (columns of boxes).",
+	"bdmr", 
+	caption="Using the same simulations as in Figure 2, but allowing an instrument for both the exposure and the outcome, bi-direcitonal MR was performed under different levels of measurement error in the exposure. The y-axis shows the probability for each of the three possible outcomes - obtaining the correct causal direction, obtaining the incorrect causal direction, or having insufficient power to detect a causal relationship. As measurement imprecision increases (decreasing values on x-axis) the power decreases but bi-directional MR is not liable to giving the wrong causal direction.",
 	display=FALSE
 )
+
+
 
 fig_nums(
 	"steiger_sensitivity_plot", 
@@ -318,7 +326,10 @@ y_o & = \alpha_{my} + \beta_{my} y + \epsilon_{my} \\
 \end{aligned}
 $$
 
-where $\epsilon_{m*} \sim N(0, \sigma^2_{m*})$, $\alpha_{mx}$ and $\beta_{mx}$ are parameters that represent non-differential measurement error into the exposure variable $x$, and $\alpha_{my}$ and $\beta_{my}$ are parameters for non-differential measurement error in the outcome $y$. Similarly in the non-causal model:
+where $\epsilon_{m*} \sim N(0, \sigma^2_{m*})$, $\alpha_{mx}$ and $\beta_{mx}$ are parameters that represent non-differential measurement error into the exposure variable $x$, and $\alpha_{my}$ and $\beta_{my}$ are parameters for non-differential measurement error in the outcome $y$. The simulations in `r cfig("bdmr")` are similar except we also simulate a second SNP which has a direct influence on $y$. MR can therefore be performed using the first SNP for estimating the effect of $x$ on $y$, and using the second SNP for estimating the effect of $y$ on $x$.
+
+
+We have formulated the the non-causal model as:
 
 $$
 \begin{aligned}
@@ -332,7 +343,7 @@ y_o & = \alpha_{my} + \beta_{my} y + \epsilon_{my} \\
 $$
 
 
-All $\alpha$ values were set to 0, and $\beta$ values set to 1. Normally distribted values of $\epsilon_*$ were generated such that 
+Here the $u$ variable mediates the influence of $g$ on $x$ and $g$ on $y$. The effects of $u$ on $x$ and $y$ are identical, therefore this simply attenuates the variance explained by $g$ on $x$ and $y$. All $\alpha$ values were set to 0, and $\beta$ values set to 1. Normally distribted values of $\epsilon_*$ were generated such that 
 
 $$
 \begin{aligned}
@@ -378,8 +389,7 @@ Thus an observational study will find $cov(g, y_o - \hat{y_o}) = 0$ when the tru
 
 We performed simulations to verify that this problem does arise using the CIT method. `r cfig("cit_measurement_error_figure")` shows that when there is no measurement error in the exposure or outcome variables ($\rho_{x, x_o}=1$) the CIT is reliable in identifying the correct causal direction. However, as measurement error increases in the exposure variable, eventually the CIT is more likely to infer a robust causal association in the wrong direction. Also of concern here is that increasing sample size does not solve the issue, indeed it only strengthens the apparent evidence for the incorrect inference.
 
-We also performed simulations to compare the performance of MR against CIT in detecting a causal association between simulated variables under different levels of imprecision simulated in the exposure. `r cfig("causality_exists_tpr")` shows the true positive rates between the CIT and MR for detecting a causal association. We observe that the CIT has lower power in all cases, with performance declining as measurement imprecision increases in the exposure. When MR assumptions are satisfied, notably that it is known on which of $x$ and $y$ the SNP $g$ has a primary influence, the performance of MR in detecting an association is unrelated to measurement error in the exposure. Measurement error in the outcome does reduce power, but does not induce a substantive difference in performance between CIT and MR.
-
+The bi-directional MR approach does offer a solution to this problem (`r cfig("bdmr")`)
 
 ### Using MR Steiger to infer the direction of causality
 
@@ -449,7 +459,7 @@ This work was funded by the UK Medical Research Council (MC_UU_12013/1 and MC_UU
 \newpage
 
 
-```{r causality_exists_tpr, fig.width=10, fig.height=10 }
+<!-- ```{r causality_exists_tpr, fig.width=10, fig.height=10 }
 
 ```
 
@@ -457,6 +467,7 @@ This work was funded by the UK Medical Research Council (MC_UU_12013/1 and MC_UU
 
 \newpage
 
+ -->
 
 ```{r steiger_sensitivity_plot, fig.width=12, fig.height=6 }
 

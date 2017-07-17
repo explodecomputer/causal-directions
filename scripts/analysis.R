@@ -73,3 +73,15 @@ labs(y="Frequency", x=expression(cor(X, X[p])), colour="")
 ggsave("~/repo/MethylationIV/cit/images/proxy_bdmr.pdf")
 
 
+
+
+
+
+dat$steiger <- psych::r.test(n=dat$n, n2=dat$n, r12=sqrt(dat$rsqG), r34=sqrt(dat$rsqT))$p
+
+a <- r.test(n=dat$n, n2=dat$n, r12=sqrt(dat$rsqG), r34=sqrt(dat$rsqT))
+
+dat$steiger_d <- dat$rsqG > dat$rsqT
+
+table(dat$steiger < 0.05 & dat$steiger_d)
+table(dat$steiger < 0.05 & !dat$steiger_d)

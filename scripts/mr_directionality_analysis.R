@@ -202,7 +202,7 @@ get_cit_direction <- function(p1, p2, thresh)
 	return(res)
 }
 
-parameters$cit_res <- get_cit_direction(parameters$cit_AB, parameters$cit_BA, 0.05)
+parameters$cit_res <- get_cit_direction(parameters$cit_AB, parameters$cit_BA, 0.25)
 parameters$cit_correct_direction[index_causal] <- parameters$cit_res[index_causal] == 1
 parameters$cit_correct_direction[index_ncausal] <- parameters$cit_res[index_ncausal] == 3
 
@@ -268,6 +268,33 @@ psum1 <- pl %>%
 		prop_nonsig=sum(direction_p_value <= -log10(0.05) | test_p_value <= -log10(0.05), na.rm=T)/n()
 	)
 psum1$rhs_lhs_diff_bin <- cut(psum1$rhs_lhs_diff, breaks=seq(-0.2, 1.1, by=0.1))
+
+
+
+## ---- causality_exists_tpr ----
+
+
+pl$causality_exists <- TRUE
+pl$causality_exists[pl$test == "MR"] <- pl$p_bz[pl$test == "MR"] > -log10(0.05)
+pl$causality_exists[pl$test == "CIT"] <- pl$cit_res[pl$test == "CIT"] <= 3
+pl$rhs_lhs_diff_bin <- cut(pl$rhs_lhs_diff, breaks=10)
+temp2 <- do.call(rbind, strsplit(as.character(pl$rhs_lhs_diff_bin), split=","))
+pl$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp2[,1]))
+pl$rhs_lhs_diff_bin_lab <- as.factor(paste0("d = ", pl$rhs_lhs_diff_bin_numeric))
+pl$rhs_lhs_diff_bin_lab <- factor(pl$rhs_lhs_diff_bin_lab, levels=levels(pl$rhs_lhs_diff_bin_lab)[order(as.numeric(as.character(levels(pl$rhs_lhs_diff_bin_numeric))))])
+
+temp <- dplyr::group_by(pl, test, r_ab, r_za, n, noiseb) %>%
+	dplyr::summarise(prop_causality_exists = sum(causality_exists) / n())
+temp$r_za <- paste0("cor(x,g) = ", temp$r_za)
+temp$n <- paste0("n = ", temp$n)
+temp$noiseb <- paste0("cor(Y,Yo) = ", 1-temp$noiseb)
+
+ggplot(subset(temp, r_za == "cor(x,g) = 0.01" & noiseb %in% c("cor(Y,Yo) = 1", "cor(Y,Yo) = 0.4")), aes(x=r_ab, y = prop_causality_exists)) +
+geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
+facet_grid(noiseb ~ n) +
+labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
+
+
 
 
 ## ---- cit_measurement_error_figure ----
@@ -610,29 +637,6 @@ scale_fill_brewer(type="qual") +
 facet_grid(noisea ~ noiseb)
 
 
-
-## ---- causality_exists_tpr ----
-
-
-pl$causality_exists <- TRUE
-pl$causality_exists[pl$test == "MR"] <- pl$p_bz[pl$test == "MR"] > -log10(0.05)
-pl$causality_exists[pl$test == "CIT"] <- pl$cit_res[pl$test == "CIT"] <= 3
-pl$rhs_lhs_diff_bin <- cut(pl$rhs_lhs_diff, breaks=10)
-temp2 <- do.call(rbind, strsplit(as.character(pl$rhs_lhs_diff_bin), split=","))
-pl$rhs_lhs_diff_bin_numeric <- as.factor(gsub("\\(", "", temp2[,1]))
-pl$rhs_lhs_diff_bin_lab <- as.factor(paste0("d = ", pl$rhs_lhs_diff_bin_numeric))
-pl$rhs_lhs_diff_bin_lab <- factor(pl$rhs_lhs_diff_bin_lab, levels=levels(pl$rhs_lhs_diff_bin_lab)[order(as.numeric(as.character(levels(pl$rhs_lhs_diff_bin_numeric))))])
-
-temp <- dplyr::group_by(pl, test, r_ab, r_za, n, noiseb) %>%
-	dplyr::summarise(prop_causality_exists = sum(causality_exists) / n())
-temp$r_za <- paste0("cor(x,g) = ", temp$r_za)
-temp$n <- paste0("n = ", temp$n)
-temp$noiseb <- paste0("cor(Y,Yo) = ", 1-temp$noiseb)
-
-ggplot(subset(temp, r_za == "cor(x,g) = 0.01" & noiseb %in% c("cor(Y,Yo) = 1", "cor(Y,Yo) = 0.4")), aes(x=r_ab, y = prop_causality_exists)) +
-geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
-facet_grid(noiseb ~ n) +
-labs(y="True positive rate", x = expression(cor(X, X[O])), fill="Test")
 
 
 ## ----causality_exists_other ----

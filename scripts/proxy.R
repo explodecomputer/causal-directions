@@ -146,6 +146,8 @@ inferCausality <- function(dat, threshold = 0.01)
 }
 
 
+
+
 makeProxy <- function(x, noise, bias)
 {
 	y <- x*bias + rnorm(length(x), 0, sd=noise)
@@ -188,6 +190,9 @@ runSim <- function(N, NoiseT=seq(0.1, 1, by=0.1), BiasT=seq(0.1, 1, by=0.1), Noi
 			dat$bdmr_p[i] <- inferCausality(twoStageLS(G1, T1, L1, L2, FALSE))
 			dat$rsqG[i] <- cor(G1, G)^2
 			dat$rsqT[i] <- cor(T1, T)^2
+			dat$rL1G[i] <- cor(L1, G1)
+			dat$rL1T[i] <- cor(L1, T1)
+
 		}
 		dat$n <- n
 		d[[j]] <- dat
@@ -195,9 +200,32 @@ runSim <- function(N, NoiseT=seq(0.1, 1, by=0.1), BiasT=seq(0.1, 1, by=0.1), Noi
 	dat <- rbind.fill(d)
 	return(dat)
 }
-
 arguments <- commandArgs(T)
 n <- as.numeric(arguments[1])
 dat <- runSim(n)
 filename <- paste0("~/repo/cit_measurement_error/results/20160504_", n, ".RData")
 save(dat, file=filename)
+
+
+# n <- 100
+# dat1 <- runSim(n)
+
+# n <- 1000
+# dat2 <- runSim(n)
+
+# n <- 10000
+# dat3 <- runSim(n)
+
+
+# dat <- rbind(dat1, dat2, dat3)
+
+
+# dat$steiger <- psych::r.test(n=dat$n, n2=dat$n, r12=dat$rL1G, r34=dat$rL1T)$p
+# dat$steiger_d <- dat$rL1G^2 > dat$rL1T^2
+
+# ggplot(dat, aes(x=noiseG, y=-log10(steiger))) +
+# geom_point(aes(colour=steiger_d)) +
+# facet_grid(n ~ .)
+
+
+# save(dat, file="../re")
