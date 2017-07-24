@@ -148,12 +148,12 @@ sfig_nums("",
 
 ### Abstract
 
-Inference of the causal structure that induces correlations between two traits can be achieved by combining genetic associations with a mediation-based approach, as is done in the causal inference test (CIT). However, we show that measurement error in the phenotypes can lead to the CIT inferring the wrong causal direction, and that increasing sample sizes has the adverse effect of increasing confidence in the wrong answer. This problem is likely to be general to other mediation-based approaches. Here we introduce an extension to Mendelian randomisation, a method that uses genetic associations in an instrumentation framework, that enables inference of the causal direction between traits, with some advantages. First, it can be performed using only summary level data from genome-wide association studies; second, it is less susceptible to bias in the presence of measurement error or unmeasured confounding. We apply the method to infer the causal direction between DNA methylation and gene expression levels. Our results demonstrate that, in general, DNA methylation is more likely to be the causal factor, but this result is highly susceptible to bias induced by systematic differences in measurement error between the platforms, and by horizontal pleiotropy. We emphasise that, where possible, implementing MR and appropriate sensitivity analyses alongside other approaches such as CIT is important to triangulate reliable conclusions about causality.
+Inference about the causal structure that induces correlations between two traits can be achieved by combining genetic associations with a mediation-based approach, as is done in the causal inference test (CIT). However, we show that measurement error in the phenotypes can lead to the CIT inferring the wrong causal direction, and that increasing sample sizes has the adverse effect of increasing confidence in the wrong answer. This problem is likely to be general to other mediation-based approaches. Here we introduce an extension to Mendelian randomisation, a method that uses genetic associations in an instrumentation framework, that enables inference of the causal direction between traits, with some advantages. First, it can be performed using only summary level data from genome-wide association studies; second, it is less susceptible to bias in the presence of measurement error or unmeasured confounding. We apply the method to infer the causal direction between DNA methylation and gene expression levels. Our results demonstrate that, in general, DNA methylation is more likely to be the causal factor, but this result is highly susceptible to bias induced by systematic differences in measurement error between the platforms, and by horizontal pleiotropy. We emphasise that, where possible, implementing MR and appropriate sensitivity analyses alongside other approaches such as CIT is important to triangulate reliable conclusions about causality.
 
 
 ### Author summary
 
-Understanding the causal relationships between pairs of traits is crucial for unravelling the causes of disease. To this end, results from genome-wide association studies are valuable because if a trait is known to be influenced by a genetic variant then this knowledge can be used to test the trait's causal influences on other traits and diseases. Here we demonstrate that when there is uncertainty about the nature of the genetic association existing methods that are used for causal inference can be liable to give the wrong direction of causality. We introduce a new method that is more flexible and robust to problems such as measurement error, and apply it to evaluate the causal relationships between DNA methylation levels and gene expression. Our results show that DNA methylation is more likely to be the causal factor, but that systematic differences in measurement error between the platforms could influence such conclusions.
+Understanding the causal relationships between pairs of traits is crucial for unravelling the causes of disease. To this end, results from genome-wide association studies are valuable because if a trait is known to be influenced by a genetic variant then this knowledge can be used to test the trait's causal influences on other traits and diseases. Here we discuss scenarios where the nature of the genetic association with the causal trait can pose lead existing causal inference methods to give the wrong direction of causality. We introduce a new method that can be applied to summary level data and is potentially less susceptible to problems such as measurement error, and apply it to evaluate the causal relationships between DNA methylation levels and gene expression. While our results show that DNA methylation is more likely to be the causal factor, we point out that is it crucial to acknowledge that systematic differences in measurement error between the platforms could influence such conclusions.
 
 
 ## Introduction
@@ -176,7 +176,7 @@ Assuming biological knowledge of genetic associations can be problematic because
 
 MR has some important advantages over the mediation-based approaches. First, the mediation-based approaches require that the exposure, outcome and instrumental variables are all measured in the same data, whereas recent extensions to MR circumvent this requirement, allowing causal inference to be drawn when exposure variables and outcome variables are measured in different samples [@Pierce2013]. This has the crucial advantage of improving statistical power by allowing analysis in much larger sample sizes, and dramatically expands the breadth of possible phenotypic relationships that can be evaluated [@Hemani2016]. Second, the mediation-based approach of adjusting the outcome for the exposure to nullify the association between the SNP and the outcome is affected by unmeasured confounding of the exposure and outcome. This is because adjusting the outcome by the exposure induces a collider effect between the SNP and outcome [@Hernan2004], and in order to fully abrogate this association one must also adjust for all (hidden or otherwise) confounders. MR does not suffer from this problem because it does not test for association through adjustment. Third, when MR assumptions are satisfied the method is robust to there being measurement error in the exposure variable [@Pierce2012]. Indeed instrumental variable (IV) analysis was in part initially introduced as a correction for measurement error in the exposure [@Ashenfelter1994], whereas it has been noted that both classic mediation-based analyses [@LeCessie2012; @Nagarajan2013; @Shpitser2010; @Blakely2013] and mediation-based methods that use instrumental variables [@Wang2015; @Lagani2015] are prone to be unreliable in its presence.
 
-Using theory and simulations we show how non-differential measurement error in phenotypes can lead to unreliable causal inference in the mediation-based CIT method. Though we only examine the CIT method in detail, we show that attempting to adjust for mediating variables to make causal inference is susceptible to problems, which can be generalised to other mediation-based methods. We then present an extension to MR that allows researchers to ascertain the causal direction of an association even when the biology of the instruments are not fully understood, and also a metric to evaluate the sensitivity of the result of this extension to measurement error. Finally, to demonstrate the potential impact of measurement error we apply this method to infer the direction of causation between DNA methylation levels and gene expression levels. Our analyses highlight that because these different causal inference techniques have varying strengths and weaknesses, triangulation of evidence from as many sources as possible should be practiced in causal inference [@Lawlor2017].
+Using theory and simulations we show how non-differential measurement error in phenotypes can lead to unreliable causal inference in the mediation-based CIT method. Though we only examine the CIT method in detail, we believe that attempting to adjust for mediating variables to make causal inference is susceptible to problems, which can be generalised to other mediation-based methods. We then present an extension to MR that allows researchers to ascertain the causal direction of an association even when the biology of the instruments are not fully understood, and also a metric to evaluate the sensitivity of the result of this extension to measurement error. Finally, to demonstrate the potential impact of measurement error we apply this method to infer the direction of causation between DNA methylation levels and gene expression levels. Our analyses highlight that because these different causal inference techniques have varying strengths and weaknesses, triangulation of evidence from as many sources as possible should be practiced in causal inference [@Lawlor2017].
 
 
 ## Model
@@ -216,7 +216,7 @@ $$
 f(x) = \alpha_{mx} + \beta_{mx} x + \epsilon_{mx}
 $$
 
-where $\alpha_{mx}$ and $\beta_{mx}$ influence the error in the measurement of $x$ by altering its scale, and $\epsilon_{mx}$ represents the imprecision (or noise) in the measurement of $x$. Measurement imprecision can represent imprecise measurement due to limits on sensitivity of measuring equipment, or due to phenotypes being imprecisely defined. The same model of measurement error can be applied to the outcome variable $y$. 
+where $\alpha_{mx}$ and $\beta_{mx}$ influence the error in the measurement of $x$ by altering its scale, and $\epsilon_{mx}$ represents the imprecision (or noise) in the measurement of $x$. Measurement imprecision can represent imprecise measurement due to limits on sensitivity of measuring equipment, or arise because of phenotypes being imprecisely defined. The same model of measurement error can be applied to the outcome variable $y$. 
 
 In this study we assume there is no measurement error in the SNP. Common genetic variants are typically less susceptible to measurement error due to strict quality control procedures prior to genome wide association studies. Any non-differential measurement error that might be present (either because the SNP is poorly typed or because the SNP is not in complete linkage disequilibrium with the causal variant) will reduce power in MR but will not incur bias [@DaveySmith2004; @Pierce2012; @LeCessie2012]. We also assume that measurement error in the exposure and the outcome are uncorrelated. 
 
@@ -303,7 +303,7 @@ $$
 
 An advantage of using the Steiger test in the two sample context is that it can compare correlations in independent samples where sample sizes are different. Steiger test statistics were calculated using the *r.test* function in the R package *R/psych* [@Revelle2015].
 
-The Steiger test assumes that there is a causal relationship between the two variables, and that the SNP is a valid instrument for one of them. However it is liable to give incorrect causal directions under some other circumstances also. First, some levels of horizontal pleiotropy, where the SNP influences the outcome through some pathway other than the exposure, could induce problems because this is a means by which the instrument is invalid. Second, some differential values of measurement error between the exposure and the outcome could induce incorrect causal directions, and this is explored in Appendix 2. Third, some levels of unmeasured confounding between the exposure and the outcome could induce the wrong causal direction, and this is explored in Appendix 3.
+The Steiger test assumes that there is a causal relationship between the two variables, and that the SNP is a valid instrument for one of them. However it is liable to give incorrect causal directions under some other circumstances. First, some levels of horizontal pleiotropy, where the SNP influences the outcome through some pathway other than the exposure, could induce problems because this is a means by which the instrument is invalid. Second, some differential values of measurement error between the exposure and the outcome could induce incorrect causal directions, and this is explored in Appendix 2. Third, some levels of unmeasured confounding between the exposure and the outcome could induce the wrong causal direction, and this is explored in Appendix 3.
 
 ### Causal direction sensitivity analysis for measurement error
 
@@ -332,11 +332,7 @@ where non-differential measurement error is represented by a noise (measurement 
 
 $$
 \begin{aligned}
-g & \sim Binom(2, 0.5) \\
-x & = \alpha_{gx} + \beta_{gx} g + \epsilon_{gx} \\
-x_o & = \alpha_{mx} + \beta_{mx} x + \epsilon_{mx} \\
 y & = \alpha_{gy} + \beta_{gy} g + \epsilon_{gy} \\
-y_o & = \alpha_{my} + \beta_{my} y + \epsilon_{my} \\
 \end{aligned}
 $$
 
@@ -396,14 +392,14 @@ For a particular association, it is of interest to identify the range of possibl
 
 We show that in the presence of measurement imprecision, $d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}$ (Appendix 2) determines the range of parameters around which the MR Steiger test is liable to provide the wrong direction of causality (*i.e.* if $d>0$ then the MR Steiger test is likely to be correct about the causal direction). `r cfig("steiger_sensitivity_plot")`b shows that when there is no measurement error in $x$, the MR Steiger test is unlikely to infer the wrong direction of causality even if there is measurement error in $y$. It also shows that in most cases where $x$ is measured with error, especially when the causal effect between $x$ and $y$ is not very large, the sensitivity of the MR Steiger test to measurement error is relatively low.
 
-Unmeasured confounding between the exposure and outcome can also give rise to problems with the MR Steiger approach (Appendix 3). Though the relationship between unmeasured confounding and causal orientation is complex (`r sfig_nums("unmeasured")`), we note that when the magnitude of the observational variance explained between the exposure and the outcome is below 0.2 the MR Steiger method is unlikely to return the incorrect causal direction.
+Unmeasured confounding between the exposure and outcome can also give rise to problems with the MR Steiger approach (Appendix 3). The relationship between unmeasured confounding and causal orientation is complex across the parameter space of possible confounding values (`r sfig_nums("unmeasured")`). Based on the range of parameter values that we explored, when the magnitude of the observational variance explained between the exposure and the outcome is below 0.2 the MR Steiger method is unlikely to return the incorrect causal direction due to unmeasured confounding.
 
 
 ### Comparison of CIT and MR Steiger for obtaining the correct direction of causality
 
 We used simulations to explore the performance of the MR Steiger approach in comparison to CIT for different levels of measurement error. The performance was compared in terms of the rate at which evidence of a causal relationship is obtained for the correct direction of causality, and the rate at which evidence of a causal relationship is obtained where the reported direction of causality is incorrect. Simulations were performed for two models, one for a "causal model" where there was a causal relationship between $x$ and $y$; and one for a "non-causal model" where $x$ and $y$ were not causally related, but had a confounded association induced by the SNP $g$ influencing a confounder variable $u$.
 
-`r cfig("cit_mr_comparison_figure")`a shows that, for the "causal model", the MR analysis is indeed liable to infer the wrong direction of causality when $d < 0$, and that this erroneous result is more likely to occur with increasing sample size. However, the CIT is in general more fallable to reporting a robust causal association for the wrong direction of causality. When $d > 0$ we find that in most cases the MR Steiger method has greater power to obtain evidence for causality than CIT, and always obtains the correct direction of causality. The CIT, unlike the MR Steiger test, is able to distinguish the "non-causal model" from the "causal model" (Methods, `r cfig("cit_mr_comparison_figure")`b), but it is evident that measurement error will often lead the CIT to identify the causal model as true, when in fact the underlying model is this non-causal model.
+`r cfig("cit_mr_comparison_figure")`a shows that, for the "causal model", the MR analysis is indeed liable to infer the wrong direction of causality when $d < 0$, and that this erroneous result is more likely to occur with increasing sample size. However, the CIT is in general more fallible to reporting a robust causal association for the wrong direction of causality. When $d > 0$ we find that in most cases the MR Steiger method has greater power to obtain evidence for causality than CIT, and always obtains the correct direction of causality. The CIT, unlike the MR Steiger test, is able to distinguish the "non-causal model" from the "causal model" (Methods, `r cfig("cit_mr_comparison_figure")`b), but it is evident that measurement error will often lead the CIT to identify the causal model as true, when in fact the underlying model is this non-causal model.
 
 
 ### The causal relationship between gene expression and DNA methylation levels
@@ -653,14 +649,14 @@ $$
 From this it is clear that $\beta_x$ and $\hat{\beta}_x$ will differ when both $\beta_{uy}$ and $\beta_{ux}$ are non-zero. Relating to mediation, where we attempt to test if $g$ associates with $y$ after adjusting $y$ for $x$, such that
 
 $$
-\hat{y}* = \hat{\beta}_x x
+\hat{y}^* = \hat{\beta}_x x
 $$
 
 and
 
 $$
 \begin{aligned}
-cov(g, y - \hat{y}*) & = cov(g, \beta_x x + \beta_{uy} u + \epsilon_x - \hat{\beta}_x x) \\
+cov(g, y - \hat{y}^*) & = cov(g, \beta_x x + \beta_{uy} u + \epsilon_x - \hat{\beta}_x x) \\
 & = cov(g, (\beta_x - \hat{\beta}_x)(\beta_g g + \beta_ux u + \epsilon_x)) \\
 & = (\beta_x - \hat{\beta}_x) var(g)
 \end{aligned}
@@ -682,7 +678,7 @@ $$
 cor(g,y)^2 = \frac{\beta_x^2 \beta_g^2 var(g)^2} {\hat{\beta}_x^2 \beta_g^2 var(g) + \hat{\beta}_x^2 \beta_{ux}^2 var(u) + \beta_{uy}^2 var(u) + var(\epsilon_y)}
 $$
 
-`r csfig("unmeasured")` shows the relationship between the magnitude of the correlations between $x$, $y$ and the confounder $u$. We note that in most cases where the observational absolute $R^2_{xy}$ is less than 0.2, unmeasured confounding will not incur the wrong causal direction in the MR Steiger test.
+`r csfig("unmeasured")` shows the relationship between the magnitude of the correlations between $x$, $y$ and the confounder $u$ for a range of $\beta_{xy} = (-2,2)$, $\beta_{gx} = 0.1$ and a range of confounder effects. The pattern of results were similar for different values of $\beta_{gx}$. We note that in most cases for the parameter values explored, where the observational $\hat{R}^2_{xy}$ is less than 0.2, unmeasured confounding will not incur the wrong causal direction in the MR Steiger test.
 
 ![](../images/unmeasured_conf_steiger.png)
 
