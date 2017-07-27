@@ -21,6 +21,6 @@ i=${PBS_ARRAYID}
 splits=1944
 
 Rscript \
-	~/repo/cit_measurement_error/scripts/mr_directionality_with_confounding.R \
+	~/repo/causal-directions/scripts/mr_directionality_with_confounding.R \
 	${i} \
 	${splits}

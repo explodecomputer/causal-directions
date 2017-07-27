@@ -127,10 +127,10 @@ make_phen <- function(effs, indep, vy=1, vx=rep(1, length(effs)))
 make_system <- function(n, p, r_ab, r_za, noisea, noiseb)
 {
 	Z <- make_geno(n, p)
-	U <- make_phen(r_za, Z)
-	eff <- sqrt(r_ab)
-	A <- make_phen(eff, U)
-	B <- make_phen(eff, U)
+	# U <- make_phen(r_za, Z)
+	eff <- sqrt(r_za)
+	A <- make_phen(eff, Z)
+	B <- make_phen(eff, Z)
 	Ap <- makeProxy(A, noisea, 1)
 	Bp <- makeProxy(B, noiseb, 1)
 	return(data.frame(Z, A, B, Ap, Bp))
@@ -167,7 +167,7 @@ parameters <- expand.grid(
 
 arguments <- commandArgs(T)
 jid <- "all"
-outdir <- "~/repo/cit_measurement_error/scratch/"
+outdir <- "~/repo/causal-directions/scratch/"
 if(length(arguments) > 0)
 {
 	jid <- as.numeric(arguments[1])
