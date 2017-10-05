@@ -114,12 +114,6 @@ fig_nums(
 	display=FALSE
 )
 
-sfig_nums(
-	"unmeasured",
-	caption=paste0("Graph representing the unmeasured confounding parameters that will lead to the MR Steiger test returning the wrong causal direction. Columns of boxes represent different signed values of the observational variance explained between $x$ and $y$ ($R^2_{xy}$)."),
-	display=FALSE
-)
-
 ```
 
 ```{r stablelist, cache=FALSE}
@@ -252,7 +246,7 @@ Two stage least squares (2SLS) is a commonly used technique for performing MR wh
 
 The method that we will now describe is designed to distinguish between two models, $x \rightarrow y$ or $y \rightarrow	x$. Unlike the CIT framework, this approach cannot infer if the true model is $x \leftarrow g \rightarrow y$. We also assume all genetic effects are additive. 
 
-To infer the direction of causality it is desirable to know which of the variables, $x$ or $y$, is being directly influenced by the instrument $g$. This can be achieved by assessing which of the two variables has the biggest absolute correlation with $g$ (Appendix 2), formalised by testing for a difference in the correlations $\rho_{gx}$ and $\rho_{gy}$ using Steiger's Z-test for correlated correlations within a population [@Steiger1980]. It is calculated as
+To infer the direction of causality it is desirable to know which of the variables, $x$ or $y$, is being directly influenced by the instrument $g$. This can be achieved by assessing which of the two variables has the biggest absolute correlation with $g$ (Supplementary text 2), formalised by testing for a difference in the correlations $\rho_{gx}$ and $\rho_{gy}$ using Steiger's Z-test for correlated correlations within a population [@Steiger1980]. It is calculated as
 
 $$
 Z = (Z_{gx} - Z_{gy}) \frac{\sqrt{N-3}}{\sqrt{2(1-\rho_{xy})h}}
@@ -303,15 +297,15 @@ $$
 
 An advantage of using the Steiger test in the two sample context is that it can compare correlations in independent samples where sample sizes are different. Steiger test statistics were calculated using the *r.test* function in the R package *R/psych* [@Revelle2015].
 
-The Steiger test assumes that there is a causal relationship between the two variables, and that the SNP is a valid instrument for one of them. However it is liable to give incorrect causal directions under some other circumstances. First, some levels of horizontal pleiotropy, where the SNP influences the outcome through some pathway other than the exposure, could induce problems because this is a means by which the instrument is invalid. Second, some differential values of measurement error between the exposure and the outcome could induce incorrect causal directions, and this is explored in Appendix 2. Third, some levels of unmeasured confounding between the exposure and the outcome could induce the wrong causal direction, and this is explored in Appendix 3.
+The Steiger test assumes that there is a causal relationship between the two variables, and that the SNP is a valid instrument for one of them. However it is liable to give incorrect causal directions under some other circumstances. First, some levels of horizontal pleiotropy, where the SNP influences the outcome through some pathway other than the exposure, could induce problems because this is a means by which the instrument is invalid. Second, some differential values of measurement error between the exposure and the outcome could induce incorrect causal directions, and this is explored in Supplementary text 2. Third, some levels of unmeasured confounding between the exposure and the outcome could induce the wrong causal direction, and this is explored in Supplementary text 3.
 
 ### Causal direction sensitivity analysis for measurement error
 
 The Steiger test for inferring if $x \rightarrow y$ is based on evaluating $\rho_{gx} > \rho_{gy}$. However, $\rho_{gx}$ (or $\rho_{gy}$) are underestimated if $x$ (or $y$) are measured imprecisely. If, for example, $x$ has lower measurement precision than $y$ then we might empirically obtain $\rho_{g,x_o} < \rho_{g,y_o}$ because $\rho_{g,x_o}$ could be underestimated more than $\rho_{g,y_o}$. 
 
-As we show in Appendix 2 it is possible to infer the bounds of measurement error on $x_o$ or $y_o$ given known genetic associations. The maximum measurement imprecision of $x_o$ is $\rho_{g,x_o}$, because it is known that at least that much of the variance has been explained in $x_o$ by $g$. The minimum is 0, denoting perfectly measured trait values (the same logic applies to $y_o$). It is possible to simulate what the inferred causal direction would be for all values within these bounds. 
+As we show in Supplementary text 2 it is possible to infer the bounds of measurement error on $x_o$ or $y_o$ given known genetic associations. The maximum measurement imprecision of $x_o$ is $\rho_{g,x_o}$, because it is known that at least that much of the variance has been explained in $x_o$ by $g$. The minimum is 0, denoting perfectly measured trait values (the same logic applies to $y_o$). It is possible to simulate what the inferred causal direction would be for all values within these bounds. 
 
-To evaluate how reliable, $R$, the inference of the causal direction is to potential measurement error in $x$ and $y$ we need to predict the values of $\rho_{gy} - \rho_{gx}$ for those values of measurement error. We offer two tools in which to do this. First, the user can provide values of measurement error for $x$ and $y$ and obtain a revised inference of the causal direction. Second, we integrate over the entire range of $\rho_{gy} - \rho_{gx}$ values for possible measurement error values, assuming that any measurement error value is equally likely. Across all possible values of measurement error in $x$ and $y$ we find the volume that agrees with the inferred direction of causality and the volume that disagrees with the inferred direction of causality, and take the ratio of these two values. A ratio $R=1$ indicates that the inferred causal direction is highly sensitive to measurement error, because equal weight of the measurement error parameter space supporting both directions of causality. In general, the $R$ value denotes that the inferred direction of causality is $R$ times more likely to be the empirical result than the opposite direction. Full details are provided in Appendix 2.
+To evaluate how reliable, $R$, the inference of the causal direction is to potential measurement error in $x$ and $y$ we need to predict the values of $\rho_{gy} - \rho_{gx}$ for those values of measurement error. We offer two tools in which to do this. First, the user can provide values of measurement error for $x$ and $y$ and obtain a revised inference of the causal direction. Second, we integrate over the entire range of $\rho_{gy} - \rho_{gx}$ values for possible measurement error values, assuming that any measurement error value is equally likely. Across all possible values of measurement error in $x$ and $y$ we find the volume that agrees with the inferred direction of causality and the volume that disagrees with the inferred direction of causality, and take the ratio of these two values. A ratio $R=1$ indicates that the inferred causal direction is highly sensitive to measurement error, because equal weight of the measurement error parameter space supporting both directions of causality. In general, the $R$ value denotes that the inferred direction of causality is $R$ times more likely to be the empirical result than the opposite direction. Full details are provided in Supplementary text 2.
 
 
 ### Simulations
@@ -363,7 +357,7 @@ All analysis was performed using the R programming language [@RCoreTeam2015] and
 
 ### Mediation-based causal inference under measurement error
 
-In the causal inference test (CIT), the 4th condition (see Methods) employs mediation for causal inference, and can be expressed as $cov(g, y - \hat{y}) = 0$, where $\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_o$. When measurement error in scale and imprecision is introduced, such that $y_o$ is the measured value of $y$, it can be shown using basic covariance properties (Appendix 1) that
+In the causal inference test (CIT), the 4th condition (see Methods) employs mediation for causal inference, and can be expressed as $cov(g, y - \hat{y}) = 0$, where $\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_o$. When measurement error in scale and imprecision is introduced, such that $y_o$ is the measured value of $y$, it can be shown using basic covariance properties (Supplementary text 1) that
 
 $$
 \begin{aligned}
@@ -388,11 +382,11 @@ If we do not know whether the SNP $g$ has a primary influence on $x$ or $y$ then
 
 We performed simulations to compare the power and type 1 error rates of MR and CIT in detecting a causal association between simulated variables under different levels of imprecision simulated in the exposure. Comparing the performance of methods with different sets of assumptions can be difficult, but a basic comparison is shown in `r cfig("causality_exists_tpr")`. We observe that the CIT is more conservative under the null model of no association owing to the omnibus test statistic comprising several statistical tests. The FDR using a p-value threshold of 0.05 appears to be close to 0, whereas for the MR Steiger method the FDR is around 0.05. Using the same p-value thresholds to declare significance in the non-null simulations, the general trend appears to be that the CIT power reduces as measurement error in the exposure increases more steeply than that of the MR Steiger method. 
 
-For a particular association, it is of interest to identify the range of possible measurement error values for which the method will give results that agree or disagree with the empirically inferred causal direction (`r cfig("steiger_sensitivity_plot")`a, Appendix 2). This metric can be used to evaluate the reliability of MR Steiger test.
+For a particular association, it is of interest to identify the range of possible measurement error values for which the method will give results that agree or disagree with the empirically inferred causal direction (`r cfig("steiger_sensitivity_plot")`a, Supplementary text 2). This metric can be used to evaluate the reliability of MR Steiger test.
 
-We show that in the presence of measurement imprecision, $d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}$ (Appendix 2) determines the range of parameters around which the MR Steiger test is liable to provide the wrong direction of causality (*i.e.* if $d>0$ then the MR Steiger test is likely to be correct about the causal direction). `r cfig("steiger_sensitivity_plot")`b shows that when there is no measurement error in $x$, the MR Steiger test is unlikely to infer the wrong direction of causality even if there is measurement error in $y$. It also shows that in most cases where $x$ is measured with error, especially when the causal effect between $x$ and $y$ is not very large, the sensitivity of the MR Steiger test to measurement error is relatively low.
+We show that in the presence of measurement imprecision, $d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}$ (Supplementary text 2) determines the range of parameters around which the MR Steiger test is liable to provide the wrong direction of causality (*i.e.* if $d>0$ then the MR Steiger test is likely to be correct about the causal direction). `r cfig("steiger_sensitivity_plot")`b shows that when there is no measurement error in $x$, the MR Steiger test is unlikely to infer the wrong direction of causality even if there is measurement error in $y$. It also shows that in most cases where $x$ is measured with error, especially when the causal effect between $x$ and $y$ is not very large, the sensitivity of the MR Steiger test to measurement error is relatively low.
 
-Unmeasured confounding between the exposure and outcome can also give rise to problems with the MR Steiger approach (Appendix 3). The relationship between unmeasured confounding and causal orientation is complex across the parameter space of possible confounding values (`r csfig("unmeasured")`). Based on the range of parameter values that we explored, when the magnitude of the observational variance explained between the exposure and the outcome is below 0.2 the MR Steiger method is unlikely to return the incorrect causal direction due to unmeasured confounding.
+Unmeasured confounding between the exposure and outcome can also give rise to problems with the MR Steiger approach (Supplementary text 3). The relationship between unmeasured confounding and causal orientation is complex across the parameter space of possible confounding values (Supplementary figure 1). Based on the range of parameter values that we explored, when the magnitude of the observational variance explained between the exposure and the outcome is below 0.2 the MR Steiger method is unlikely to return the incorrect causal direction due to unmeasured confounding.
 
 
 ### Comparison of CIT and MR Steiger for obtaining the correct direction of causality
@@ -428,13 +422,7 @@ Mediation based network approaches, that go beyond analyses of two variables, ar
 The overarching result from our simulations is that, regardless of the method used, inferring the causal direction using an instrument of unknown biology is highly sensitive to measurement error. With the presence of measurement error near ubiquitous in most observational data, and our ability to measure it limited, we argue that it needs to be central to any consideration of approaches which are used in attempt to strengthen causal inference, and any putative results should be accompanied with appropriate sensitivity analysis that assesses their robustness under varying levels of measurement error.
 
 
-## Acknowledgements
-
-This work was funded by the UK Medical Research Council (MC_UU_12013/1 and MC_UU_12013/9).
-
-
 \newpage
-
 
 ## Figures
 
@@ -489,200 +477,17 @@ This work was funded by the UK Medical Research Council (MC_UU_12013/1 and MC_UU
 \newpage
 
 
-
-## Appendix 1
-
-We assume the following model
-
-$$
-\begin{aligned}
-x   & = \alpha_g + \beta_g g + \epsilon_g \\
-x_o & = \alpha_{mx} + \beta_{mx} x + \epsilon_{mx} \\
-y   & = \alpha_x + \beta_x x + \epsilon_x \\
-y_o & = \alpha_{my} + \beta_{my} y + \epsilon_{my}
-\end{aligned}
-$$
-
-where $x$ is the exposure on the outcome $y$, $g$ is an instrument that has a direct effect on $x$, $x_o$ is the measured quantity of $x$, where measurement error is incurred from linear transformation in $\alpha_{mx}$ and $\beta_{mx}$ and imprecision from $\epsilon_{mx}$, and $y_o$ is the measured quantity of $y$, where measurement error is incurred from linear transformation in $\alpha_{my}$ and $\beta_{my}$ and imprecision from $\epsilon_{my}$. Our objective is to estimate the expected magnitude of association between $g$ and $y$ after conditioning on $x$. Under the CIT, this is expected to be $cov(g, y_o - \hat{y}_o) = 0$ when $x$ causes $y$, where $\hat{y}_o = \hat{a}_{x_o} + \hat{\beta}_{x_o} x_o$ is the predicted value of $y_o$ using the measured value of $x_o$.
-
-We can split $cov(g, y_o - \hat{y}_o)$ into two parts, $cov(g, y_o)$ and $cov(g, \hat{y}_o)$.
-
-**Part 1**
-
-$$
-\begin{aligned}
-cov(g, y_o) & = cov(g, \beta_{my} y) \\
-            & = cov(g, \beta_{my} \beta_x x) \\
-            & = cov(g, \beta_{my} \beta_x \beta_g g) \\
-            & = \beta_{my} \beta_x \beta_g var(g)
-\end{aligned}
-$$
-
-**Part 2**
-
-$$
-\begin{aligned}
-cov(g, \hat{y}_o) & = cov(g, \hat{\beta}_{x_o} x_o) \\
-                  & = cov(g, \hat{\beta}_{x_o} \beta_{mx} x) \\
-                  & = cov(g, \hat{\beta}_{x_o} \beta_{mx} \beta_g g) \\
-                  & = \hat{\beta}_{x_o} \beta_{mx} \beta_g var(g)
-\end{aligned}
-$$
-
-Simpifying further
-
-$$
-\begin{aligned}
-\hat{\beta}_{x_o} & = \frac{cov(y_o, x_o)} {var(x_o)} \\
-                  & = \frac{cov(\beta_{my} y, \beta_{mx} x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \\
-                  & = \frac{\beta_{mx} \beta_{my} cov(y, x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \\
-                  & = \frac{\beta_{mx} \beta_{my} \beta_x var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})}
-\end{aligned}
-$$
-
-which can be substituted back to give
-
-$$
-\begin{aligned}
-cov(g, \hat{y}_o) & = \frac{\beta_{my} \beta_x \beta_g var(g) \beta_{mx}^2 var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \\
-                  & = \frac{\beta_{mx}^2 var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \times \beta_{my} \beta_x \beta_g var(g)
-\end{aligned}
-$$
-
-Finally
-
-$$
-\begin{aligned}
-cov(g, y_o - \hat{y}_o) & = \beta_{my} \beta_x \beta_g var(g) - \frac{\beta_{mx}^2 var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_m)} \times \beta_{my} \beta_x \beta_g var(g)
-\end{aligned}
-$$
-
-thus $cov(g, y_o - \hat{y}_o) = 0$ if the measurement imprecision in $x_o$ is $var(\epsilon_m) = 0$. However if there is any imprecision then the condition $cov(g, y_o - \hat{y}_o) = 0$ will not hold.
-
-
-## Appendix 2
-
-Assuming that either $x \rightarrow y$ or $y \rightarrow x$, the causal direction can be inferred by evaluating which of $\rho_{g, x}$ and $\rho_{g, y}$ is larger in magnitude. The Steiger test is a hypothesis test that provides a p-value for observing the difference in these correlations under the null hypothesis that they are equal.
-
-Assuming the causal direction is $x \to y$, two stage MR is formulated using the following regression models:
-
-$$
-x = \alpha_1 + \beta_1 g + e_1
-$$
-
-for the first stage and
-
-$$
-y = \alpha_2 + \beta_2 \hat{x} + e_2
-$$
-
-where $\hat{x} = \hat{\alpha}_1 + \hat{\beta}_1 g$. Writing in scale free terms, $\rho_{g, x}$ denotes the correlation between $g$ and the exposure variable $x$, and it is expected that $\rho_{g, x} > \rho_{g, y}$ because $\rho_{g, y} = \rho_{g, x}\rho_{x, y}$, where $\rho_{x, y}$ is the causal association between $x$ and $y$ (which is likely to be less than 1). 
-
-In the presence of measurement error in $x$ and $y$, however, the empirical inference of the causal direction will instead be based on evaluating $\rho_{g, x_o} > \rho_{g, y_o}$, which can be simplified:
-
-$$
-\begin{aligned}
-\rho_{g, x_O} & > \rho_{g, y_O} \\
-\rho_{g, x} \rho_{x, x_O} & > \rho_{g,y}\rho_{y,y_O}\\
-\rho_{g, x} \rho_{x, x_O} & > \rho_{g,x}\rho_{x,y}\rho_{y,y_O}\\
-\rho_{x, x_O} & > \rho_{x,y}\rho_{y,y_O}
-\end{aligned}
-$$
-
-In order to assess how reliable the inference of the causal direction is in the presence of measurement imprecision, we can evaluate the range of potential values of measurement error in $x$ and $y$ over which the empirical difference in $\rho_{g, x_o}$ and $\rho_{g, y_o}$ would return the wrong causal direction.
-
-For different values of $\rho_{x,x_o}$, $\rho_{g,x} = \frac{\rho_{g, x_o}}{\rho_{x,x_o}}$ and $\rho_{g,x_o} \leq \rho_{x,x_o} \leq 1$. For different values of $\rho_{y,y_o}$, $\rho_{g,y} = \frac{\rho_{g, y_o}}{\rho_{y,y_o}}$ and $\rho_{g,y_o} \leq \rho_{y,x_o} \leq 1$.
-
-Call $z = \rho_{g,y} - \rho_{g,x}$ the true difference in the variance explained by the genetic variant in $y$ and $x$. If $z < 0$ then we infer that $x \rightarrow y$. There will be some values of $\rho_{x,x_o}$ and $\rho_{y,y_o}$ that do not alter whether $z < 0$. To evaluate the reliability, $R$, of the inference of the causal direction with regards to measurement error, the objective is to compare the  proportion of the parameter space that agrees with the inferred direction against the proportion which does not:
-
-$$
-R = \frac{V_{z \geq 0}}{ - V_{z < 0} }
-$$
-
-If $R=1$ then the direction of causality is equally probable across the range of possible measurement error values. If $R > 1$ then $R$ times as much of the parameter space favours the inferred direction of causality. $V_{z}$, the total volume of the function (`r cfig("steiger_sensitivity_plot")`), can be obtained analytically by solving:
-
-$$
-\begin{aligned}
-V_z & = \int^1_{\rho_{g,x_o}} \int^1_{\rho_{g,y_o}} \frac{\rho_{g,y_o}}{\rho_{y,y_o}} - \frac{\rho_{g,x_o}}{\rho_{x,x_o}}\,\,\,\, d\rho_{y,y_o}d\rho_{x,x_o} \\
-& = \rho_{g,x_o}log(\rho_{g,x_o}) - \rho_{g,y_o}log(\rho_{g,y_o}) + \rho_{g,x_o}\rho_{g,y_o}(log(\rho_{g,y_o})-log(\rho_{g,x_o}))
-\end{aligned}
-$$
-
-$V_{z \ge 0}$, the proportion of the volume that lies above the $z=0$ plane, can also be obtained analytically. The region of this volume is bound by the values of $\rho_{x,x_o}$ and $\rho_{y,y_o}$ where $0 = \rho_{g,y} - \rho_{g,x}$, which can be expanded to $\rho_{y,y_o} = \rho_{g,y_o}\rho_{x,x_o} / \rho_{g,x_o}$. Hence,
-
-$$
-\begin{aligned}
-V_{z \ge 0} & = \int^1_{\rho_{g,x_o}} \int^{\frac{\rho_{g,y_o}\rho_{x,x_o}}{\rho_{g,x_o}}}_{\rho_{g,y_o}} \frac{\rho_{g,y_o}}{\rho_{y,y_o}} - \frac{\rho_{g,x_o}}{\rho_{x,x_o}}\,\,\,\, d\rho_{y,y_o}d\rho_{x,x_o} \\
-& = 2\rho_{g,x_o}\rho_{g,y_o} - 2\rho_{g,y_o} - \rho_{g,y_o}log(\rho_{g,x_o}) - \rho_{g,x_o}\rho_{g,y_o}log(\rho_{g,x_o})
-\end{aligned}
-$$
-
-Thus $V_{z < 0} = V_{z} - V_{z \geq 0}$.
-
-
 \newpage
 
-## Appendix 3
+## Supplementary information
 
-We have assumed no unmeasured confounding in these simulations. Unmeasured confounding will however have potentially large influences on mediation-based methods for inferring causal directions, and can also adversely influence the estimate of the causal direction for the Steiger test.
+**Supplementary text 1** The influence of measurement error in the exposure on mediation-based estimated
 
-### Unmeasured confounding in mediation
+**Supplementary text 2** Sensitivity analysis for measurement error on the MR Steiger test
 
-Including an unmeasured confounder, $u$, after ignoring intercept terms the exposure $x$ and outcome $y$ variables can be modelled as
+**Supplementary text 3** The influence of unmeasured confounding on the inference of causal directions
 
-$$
-\begin{aligned}
-y & = \beta_x x + \beta_{uy} u + \epsilon_x \\
-x & = \beta_g g + \beta_{ux} u + \epsilon_g
-\end{aligned}
-$$
-
-The observational estimate of the causal effect of $x$ on $y$, $\hat{\beta}_x$ is obtained from
-
-$$
-\begin{aligned}
-\hat{\beta}_x & = cov(x, y) / var(x) \\
-& = \frac{\beta_g^2 \beta_x var(g) + \beta_{ux}^2 \beta_x var(u) + \beta_x var(\epsilon_g)} {\beta_g^2 var(g) + \beta_{ux}^2 var(u) + var(\epsilon_g)}
-\end{aligned}
-$$
-
-From this it is clear that $\beta_x$ and $\hat{\beta}_x$ will differ when both $\beta_{uy}$ and $\beta_{ux}$ are non-zero. Relating to mediation, where we attempt to test if $g$ associates with $y$ after adjusting $y$ for $x$, such that
-
-$$
-\hat{y}^* = \hat{\beta}_x x
-$$
-
-and
-
-$$
-\begin{aligned}
-cov(g, y - \hat{y}^*) & = cov(g, \beta_x x + \beta_{uy} u + \epsilon_x - \hat{\beta}_x x) \\
-& = cov(g, (\beta_x - \hat{\beta}_x)(\beta_g g + \beta_ux u + \epsilon_x)) \\
-& = (\beta_x - \hat{\beta}_x) var(g)
-\end{aligned}
-$$
-
-should any amount of unmeasured confounding exist, therefore, there will remain an association between $g$ and $y|x$, which will introduce errors in inferring causal directions.
-
-### Unmeasured confounding in the MR Steiger test
-
-Similarly, we can investigate the extent to which unmeasured confounding will lead to the wrong causal direction between $x$ and $y$ using the MR Steiger test, evaluating the liability for the inequality $cor(g,x)^2 > cor(g,y)^2$ being incorrect. After some algebra
-
-$$
-cor(g,x)^2 = \frac{\beta_g^2}{\beta_g^2var(g) + \beta_{ux}^2 var(u) + var(\epsilon_x)}
-$$
-
-and
-
-$$
-cor(g,y)^2 = \frac{\beta_x^2 \beta_g^2 var(g)^2} {\hat{\beta}_x^2 \beta_g^2 var(g) + \hat{\beta}_x^2 \beta_{ux}^2 var(u) + \beta_{uy}^2 var(u) + var(\epsilon_y)}
-$$
-
-`r csfig("unmeasured")` shows the relationship between the magnitude of the correlations between $x$, $y$ and the confounder $u$ for a range of $\beta_{xy} = (-2,2)$, $\beta_{gx} = 0.1$ and a range of confounder effects. The pattern of results were similar for different values of $\beta_{gx}$. We note that in most cases for the parameter values explored, where the observational absolute $\hat{R}^2_{xy}$ is less than 0.2, unmeasured confounding will not incur the wrong causal direction in the MR Steiger test.
-
-![](../images/unmeasured_conf_steiger.png)
-
-`r sfig_nums("unmeasured")`
+**Supplementary figure 1** Graph representing the unmeasured confounding parameters that will lead to the MR Steiger test returning the wrong causal direction. Columns of boxes represent different signed values of the observational variance explained between $x$ and $y$ ($R^2_{xy}$).
 
 \newpage
 
