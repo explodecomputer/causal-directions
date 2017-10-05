@@ -96,3 +96,58 @@ facet_grid(n ~ .) +
 labs(x="Confounder effect", colour="Test")
 
 ggsave("../images/cit_confounder.pdf")
+
+
+
+#####
+
+library(cit)
+library(dplyr)
+library(ggplot2)
+
+nid <- 5000
+
+eff <- c(0.1, 0.25, 0.5, 1, 1.5, 2, 3, 4, 5)
+eff <- expand.grid(conf=c(eff, -eff, 0), geff=c(eff, -eff, 0))
+dim(eff)
+l <- list()
+for(i in 1:nrow(eff))
+{
+	message(i)
+	g <- rnorm(nid)
+	u <- rnorm(nid)
+	a <- g * eff$geff[i] + u * eff$conf[i] + rnorm(nid)
+	b <- g * eff$geff[i] + u * eff$conf[i] + rnorm(nid)
+	x <- as.data.frame(rbind(
+		cit.cp(L=g, G=a, T=b),
+		cit.cp(L=g, G=b, T=a)
+	))
+	x$sim <- i
+	x$dir <- c("AB", "BA")
+	l[[i]] <- x
+}
+
+
+
+l1 <- bind_rows(l)
+l1$conf <- rep(eff$conf, each=2)
+l1$geff <- rep(eff$geff, each=2)
+
+l2 <- group_by(l1, sim) %>%
+	summarise(nsig = sum(p_cit < 0.05), conf=conf[1], geff=geff[1])
+
+save(l1, l2, file="../results/cit_confounder.rdata")
+
+ggplot(l1, aes(x=conf, y=geff)) +
+geom_point(aes(colour=p_cit < 0.05)) +
+facet_grid(. ~ dir)
+
+
+l2$nsig <- as.factor(l2$nsig)
+levels(l2$nsig) <- c("None", "One direction", "Both directions")
+
+ggplot(l2, aes(x=conf, y=geff)) +
+geom_point(aes(colour=as.factor(nsig)), size=4) +
+scale_colour_brewer(type="qual") +
+labs(x="Confounder effect", y="Genetic effect", colour="CIT significance")
+
