@@ -221,12 +221,13 @@ In this study we assume there is no measurement error in the SNP. Common genetic
 
 First we describe how the CIT method [@Millstein2009] is implemented in the R package *R/cit* [@Millstein2016]. The methodology of the CIT is as follows. Assume an exposure $x$ is instrumented by a SNP $g$, and the exposure $x$ causes an outcome $y$, as described above. The following tests are then performed:
 
-1. $H_0: cov(g, x) = 0; H_1: cov(g, x) \neq 0$; *the SNP associates with the exposure*
-2. $H_0: cov(g, y) = 0; H_1: cov(g, y) \neq 0$; *the SNP associates with the outcome*
-3. $H_0: cov(x, y) = 0; H_1: cov(x, y) \neq 0$; *the exposure associates with the outcome*
-4. $H_0: cov(g, y - \hat{y}) \neq 0; H_1: cov(g, y - \hat{y}) = 0$; *the SNP is independent of the outcome when the outcome is adjusted for the exposure*
 
-where $y - \hat{y} = y - \hat{\alpha}_g + \hat{\beta}_g x$ is the residual of $y$ after adjusting for $x$, where $x$ is assumed to mediate the association between the SNP and the outcome. The 4th condition is formulated as an equivalence testing problem that is estimated using simulations, comparing the estimate against from the data against empirically obtained estimates for simulated variables where the independence model is true (full details are given in [@Millstein2009]). We note here that this approach is liable to fail, even when there is a true causal relationship, when confounders of the exposure and outcome are present, as these will induce collider bias.
+1. $H_0: cov(g, y) = 0; H_1: cov(g, y) \neq 0$; *the SNP associates with the outcome*
+2. $H_0: cov(g, x|y) = 0; H_1: cov(g, x|y) \neq 0$; *the SNP associates with the exposure conditional on the outcome*
+3. $H_0: cov(x, y|g) = 0; H_1: cov(x, y|g) \neq 0$; *the exposure associates with the outcome conditional on the SNP*
+4. $H_0: cov(g, y|x) \neq 0; H_1: cov(g, y|x) = 0$; *the SNP is independent of the outcome conditional on the exposure*
+
+The term in the 4th test can be rewritten as a $cov(g, y|x) = cov(g, y - \hat{y})$ where $y - \hat{y} = y - \hat{\alpha}_g + \hat{\beta}_g x$ is the residual of $y$ after adjusting for $x$, and $x$ is assumed to mediate the association between the SNP and the outcome. The condition in the 4th test is formulated as an equivalence testing problem that is estimated using simulations, comparing the estimate from the data against empirically obtained estimates for simulated variables where the independence model is true (full details are given in [@Millstein2009]). We note here that this approach is liable to fail, even when there is a true causal relationship, when confounders of the exposure and outcome are present, as these will induce collider bias.
 
 If all four tests reject the null hypothesis then it is inferred that $x$ causes $y$. The CIT measures the strength of causality by generating an omnibus p-value, $p_{CIT}$, which is simply the largest (least extreme) p-value of the four tests, the intuition being that causal inference is only as strong as the weakest link in the chain of tests.
 
@@ -235,7 +236,7 @@ Now we describe how we used the CIT method in our simulations. The *cit.cp* func
 - If $p_{CIT, x \rightarrow y} < \alpha$ and $p_{CIT, y \rightarrow x} > \alpha$ then model 1 is accepted
 - If $p_{CIT, x \rightarrow y} > \alpha$ and $p_{CIT, y \rightarrow x} < \alpha$ then model 2 is accepted
 - If $p_{CIT, x \rightarrow y} > \alpha$ and $p_{CIT, y \rightarrow x} > \alpha$ then no evidence for a causal relationship
-- If $p_{CIT, x \rightarrow y} < \alpha$ and $p_{CIT, y \rightarrow x} < \alpha$ then there is likely confounding and no call is made ($x \leftarrow u \rightarrow y$).
+- If $p_{CIT, x \rightarrow y} < \alpha$ and $p_{CIT, y \rightarrow x} < \alpha$ then there is potentially confounding (Supplementary figure 1) and no call is made.
 
 For the purposes of compiling simulation results we use an arbitrary $\alpha = 0.05$ value, though we stress that for real analyses it is not good practice to rely on p-values for making causal inference, nor is it reliable to depend on arbitrary significance thresholds [@Sterne2001].
 
@@ -386,7 +387,7 @@ For a particular association, it is of interest to identify the range of possibl
 
 We show that in the presence of measurement imprecision, $d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}$ (Supplementary text 2) determines the range of parameters around which the MR Steiger test is liable to provide the wrong direction of causality (*i.e.* if $d>0$ then the MR Steiger test is likely to be correct about the causal direction). `r cfig("steiger_sensitivity_plot")`b shows that when there is no measurement error in $x$, the MR Steiger test is unlikely to infer the wrong direction of causality even if there is measurement error in $y$. It also shows that in most cases where $x$ is measured with error, especially when the causal effect between $x$ and $y$ is not very large, the sensitivity of the MR Steiger test to measurement error is relatively low.
 
-Unmeasured confounding between the exposure and outcome can also give rise to problems with the MR Steiger approach (Supplementary text 3). The relationship between unmeasured confounding and causal orientation is complex across the parameter space of possible confounding values (Supplementary figure 1). Based on the range of parameter values that we explored, when the magnitude of the observational variance explained between the exposure and the outcome is below 0.2 the MR Steiger method is unlikely to return the incorrect causal direction due to unmeasured confounding.
+Unmeasured confounding between the exposure and outcome can also give rise to problems with the MR Steiger approach (Supplementary text 3). The relationship between unmeasured confounding and causal orientation is complex across the parameter space of possible confounding values (Supplementary figure 2). Based on the range of parameter values that we explored, when the magnitude of the observational variance explained between the exposure and the outcome is below 0.2 the MR Steiger method is unlikely to return the incorrect causal direction due to unmeasured confounding.
 
 
 ### Comparison of CIT and MR Steiger for obtaining the correct direction of causality
@@ -487,7 +488,10 @@ The overarching result from our simulations is that, regardless of the method us
 
 **Supplementary text 3** The influence of unmeasured confounding on the inference of causal directions
 
-**Supplementary figure 1** Graph representing the unmeasured confounding parameters that will lead to the MR Steiger test returning the wrong causal direction. Columns of boxes represent different signed values of the observational variance explained between $x$ and $y$ ($R^2_{xy}$).
+**Supplementary figure 1** Illustrative simulations ($n = 5000$) showing the results from CIT analysis under a model of confounding. Here, the phenotypes $x$ and $y$ are not causally related, but there is a genetic effect and a confounder both influencing each phenotype. Each point represents a single simulation. Where power is high (when the absolute values of the $x$ and $y$ axes are large) the CIT returns a significant result ($p < 0.01$) when testing the causal effect of $x$ on $y$, and when testing the causal effect of $y$ on $x$. 
+
+
+**Supplementary figure 2** Graph representing the unmeasured confounding parameters that will lead to the MR Steiger test returning the wrong causal direction. Columns of boxes represent different signed values of the observational variance explained between $x$ and $y$ ($R^2_{xy}$).
 
 \newpage
 

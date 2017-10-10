@@ -138,6 +138,8 @@ l2 <- group_by(l1, sim) %>%
 
 save(l1, l2, file="../results/cit_confounder.rdata")
 
+
+load("../results/cit_confounder.rdata")
 ggplot(l1, aes(x=conf, y=geff)) +
 geom_point(aes(colour=p_cit < 0.05)) +
 facet_grid(. ~ dir)
@@ -150,4 +152,4 @@ ggplot(l2, aes(x=conf, y=geff)) +
 geom_point(aes(colour=as.factor(nsig)), size=4) +
 scale_colour_brewer(type="qual") +
 labs(x="Confounder effect", y="Genetic effect", colour="CIT significance")
-
+ggsave("../images/cit_confounder2.pdf")

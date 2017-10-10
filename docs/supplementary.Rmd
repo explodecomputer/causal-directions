@@ -119,7 +119,7 @@ $$
 R = \frac{V_{z \geq 0}}{ - V_{z < 0} }
 $$
 
-If $R=1$ then the direction of causality is equally probable across the range of possible measurement error values. If $R > 1$ then $R$ times as much of the parameter space favours the inferred direction of causality. $V_{z}$, the total volume of the function (Supplementary figure 4), can be obtained analytically by solving:
+If $R=1$ then the direction of causality is equally probable across the range of possible measurement error values. If $R > 1$ then $R$ times as much of the parameter space favours the inferred direction of causality. $V_{z}$, the total volume of the function (Figure 4), can be obtained analytically by solving:
 
 $$
 \begin{aligned}
@@ -198,10 +198,17 @@ $$
 cor(g,y)^2 = \frac{\beta_x^2 \beta_g^2 var(g)^2} {\hat{\beta}_x^2 \beta_g^2 var(g) + \hat{\beta}_x^2 \beta_{ux}^2 var(u) + \beta_{uy}^2 var(u) + var(\epsilon_y)}
 $$
 
-Supplementary figure 1 shows the relationship between the magnitude of the correlations between $x$, $y$ and the confounder $u$ for a range of $\beta_{xy} = (-2,2)$, $\beta_{gx} = 0.1$ and a range of confounder effects. The pattern of results were similar for different values of $\beta_{gx}$. We note that in most cases for the parameter values explored, where the observational absolute $\hat{R}^2_{xy}$ is less than 0.2, unmeasured confounding will not incur the wrong causal direction in the MR Steiger test.
+Supplementary figure 2 shows the relationship between the magnitude of the correlations between $x$, $y$ and the confounder $u$ for a range of $\beta_{xy} = (-2,2)$, $\beta_{gx} = 0.1$ and a range of confounder effects. The pattern of results were similar for different values of $\beta_{gx}$. We note that in most cases for the parameter values explored, where the observational absolute $\hat{R}^2_{xy}$ is less than 0.2, unmeasured confounding will not incur the wrong causal direction in the MR Steiger test.
+
+\newpage
+
+![](../images/cit_confounder2.pdf)
+
+Supplementary figure 1: Illustrative simulations ($n = 5000$) showing the results from CIT analysis under a model of confounding. Here, the phenotypes $x$ and $y$ are not causally related, but there is a genetic effect and a confounder both influencing each phenotype. Each point represents a single simulation. Where power is high (when the absolute values of the $x$ and $y$ axes are large) the CIT returns a significant result ($p < 0.01$) when testing the causal effect of $x$ on $y$, and when testing the causal effect of $y$ on $x$. 
 
 \newpage
 
 ![](../images/unmeasured_conf_steiger.png)
 
-Supplementary figure 1: Graph representing the unmeasured confounding parameters that will lead to the MR Steiger test returning the wrong causal direction. Columns of boxes represent different signed values of the observational variance explained between $x$ and $y$ ($R^2_{xy}$).
+Supplementary figure 2: Graph representing the unmeasured confounding parameters that will lead to the MR Steiger test returning the wrong causal direction. Columns of boxes represent different signed values of the observational variance explained between $x$ and $y$ ($R^2_{xy}$).
+
