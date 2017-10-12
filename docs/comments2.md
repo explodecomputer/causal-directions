@@ -4,6 +4,17 @@ output:
   pdf_document
 ---
 
+Dear Editor
+
+We are very grateful for the attention you have given to our manuscript. The reviewer comments have helped us make it a much clearer paper and we have found them to be very constructive and valuable. We have now revised the manuscript to address the specific comments below (our comments in **bold**).
+
+Best wishes
+
+Gibran Hemani, Kate Tilling, George Davey Smith
+
+---
+
+
 ## Reviewer #1:
 
 Methods
