@@ -7,7 +7,7 @@ output:
     keep_tex: true
   word_document: default
 bibliography: manuscript.bib
-csl: vancouver.csl
+csl: plos.csl
 ---
 
 Gibran Hemani*, Kate Tilling and George Davey Smith
@@ -236,7 +236,7 @@ Now we describe how we used the CIT method in our simulations. The *cit.cp* func
 - If $p_{CIT, x \rightarrow y} < \alpha$ and $p_{CIT, y \rightarrow x} > \alpha$ then model 1 is accepted
 - If $p_{CIT, x \rightarrow y} > \alpha$ and $p_{CIT, y \rightarrow x} < \alpha$ then model 2 is accepted
 - If $p_{CIT, x \rightarrow y} > \alpha$ and $p_{CIT, y \rightarrow x} > \alpha$ then no evidence for a causal relationship
-- If $p_{CIT, x \rightarrow y} < \alpha$ and $p_{CIT, y \rightarrow x} < \alpha$ then there is potentially confounding (Supplementary figure 1) and no call is made.
+- If $p_{CIT, x \rightarrow y} < \alpha$ and $p_{CIT, y \rightarrow x} < \alpha$ then there is potentially confounding (S1 fig) and no call is made.
 
 For the purposes of compiling simulation results we use an arbitrary $\alpha = 0.05$ value, though we stress that for real analyses it is not good practice to rely on p-values for making causal inference, nor is it reliable to depend on arbitrary significance thresholds [@Sterne2001].
 
@@ -247,7 +247,7 @@ Two stage least squares (2SLS) is a commonly used technique for performing MR wh
 
 The method that we will now describe is designed to distinguish between two models, $x \rightarrow y$ or $y \rightarrow	x$. Unlike the CIT framework, this approach cannot infer if the true model is $x \leftarrow g \rightarrow y$. We also assume all genetic effects are additive. 
 
-To infer the direction of causality it is desirable to know which of the variables, $x$ or $y$, is being directly influenced by the instrument $g$. This can be achieved by assessing which of the two variables has the biggest absolute correlation with $g$ (Supplementary text 2), formalised by testing for a difference in the correlations $\rho_{gx}$ and $\rho_{gy}$ using Steiger's Z-test for correlated correlations within a population [@Steiger1980]. It is calculated as
+To infer the direction of causality it is desirable to know which of the variables, $x$ or $y$, is being directly influenced by the instrument $g$. This can be achieved by assessing which of the two variables has the biggest absolute correlation with $g$ (S2 Text), formalised by testing for a difference in the correlations $\rho_{gx}$ and $\rho_{gy}$ using Steiger's Z-test for correlated correlations within a population [@Steiger1980]. It is calculated as
 
 $$
 Z = (Z_{gx} - Z_{gy}) \frac{\sqrt{N-3}}{\sqrt{2(1-\rho_{xy})h}}
@@ -298,15 +298,15 @@ $$
 
 An advantage of using the Steiger test in the two sample context is that it can compare correlations in independent samples where sample sizes are different. Steiger test statistics were calculated using the *r.test* function in the R package *R/psych* [@Revelle2015].
 
-The Steiger test assumes that there is a causal relationship between the two variables, and that the SNP is a valid instrument for one of them. However it is liable to give incorrect causal directions under some other circumstances. First, some levels of horizontal pleiotropy, where the SNP influences the outcome through some pathway other than the exposure, could induce problems because this is a means by which the instrument is invalid. Second, some differential values of measurement error between the exposure and the outcome could induce incorrect causal directions, and this is explored in Supplementary text 2. Third, some levels of unmeasured confounding between the exposure and the outcome could induce the wrong causal direction, and this is explored in Supplementary text 3.
+The Steiger test assumes that there is a causal relationship between the two variables, and that the SNP is a valid instrument for one of them. However it is liable to give incorrect causal directions under some other circumstances. First, some levels of horizontal pleiotropy, where the SNP influences the outcome through some pathway other than the exposure, could induce problems because this is a means by which the instrument is invalid. Second, some differential values of measurement error between the exposure and the outcome could lead to incorrect inference of the causal direction (S2 Text). Third, some levels of unmeasured confounding between the exposure and the outcome could lead to inference of the wrong causal direction (S3 Text).
 
 ### Causal direction sensitivity analysis for measurement error
 
 The Steiger test for inferring if $x \rightarrow y$ is based on evaluating $\rho_{gx} > \rho_{gy}$. However, $\rho_{gx}$ (or $\rho_{gy}$) are underestimated if $x$ (or $y$) are measured imprecisely. If, for example, $x$ has lower measurement precision than $y$ then we might empirically obtain $\rho_{g,x_o} < \rho_{g,y_o}$ because $\rho_{g,x_o}$ could be underestimated more than $\rho_{g,y_o}$. 
 
-As we show in Supplementary text 2 it is possible to infer the bounds of measurement error on $x_o$ or $y_o$ given known genetic associations. The maximum measurement imprecision of $x_o$ is $\rho_{g,x_o}$, because it is known that at least that much of the variance has been explained in $x_o$ by $g$. The minimum is 0, denoting perfectly measured trait values (the same logic applies to $y_o$). It is possible to simulate what the inferred causal direction would be for all values within these bounds. 
+As we show in S2 Text it is possible to infer the bounds of measurement error on $x_o$ or $y_o$ given known genetic associations. The maximum measurement imprecision of $x_o$ is $\rho_{g,x_o}$, because it is known that at least that much of the variance has been explained in $x_o$ by $g$. The minimum is 0, denoting perfectly measured trait values (the same logic applies to $y_o$). It is possible to simulate what the inferred causal direction would be for all values within these bounds. 
 
-To evaluate how reliable, $R$, the inference of the causal direction is to potential measurement error in $x$ and $y$ we need to predict the values of $\rho_{gy} - \rho_{gx}$ for those values of measurement error. We offer two tools in which to do this. First, the user can provide values of measurement error for $x$ and $y$ and obtain a revised inference of the causal direction. Second, we integrate over the entire range of $\rho_{gy} - \rho_{gx}$ values for possible measurement error values, assuming that any measurement error value is equally likely. Across all possible values of measurement error in $x$ and $y$ we find the volume that agrees with the inferred direction of causality and the volume that disagrees with the inferred direction of causality, and take the ratio of these two values. A ratio $R=1$ indicates that the inferred causal direction is highly sensitive to measurement error, because equal weight of the measurement error parameter space supporting both directions of causality. In general, the $R$ value denotes that the inferred direction of causality is $R$ times more likely to be the empirical result than the opposite direction. Full details are provided in Supplementary text 2.
+To evaluate how reliable, $R$, the inference of the causal direction is to potential measurement error in $x$ and $y$ we need to predict the values of $\rho_{gy} - \rho_{gx}$ for those values of measurement error. We offer two tools in which to do this. First, the user can provide values of measurement error for $x$ and $y$ and obtain a revised inference of the causal direction. Second, we integrate over the entire range of $\rho_{gy} - \rho_{gx}$ values for possible measurement error values, assuming that any measurement error value is equally likely. Across all possible values of measurement error in $x$ and $y$ we find the volume that agrees with the inferred direction of causality and the volume that disagrees with the inferred direction of causality, and take the ratio of these two values. A ratio $R=1$ indicates that the inferred causal direction is highly sensitive to measurement error, because equal weight of the measurement error parameter space supports each direction of causality. In general, the $R$ value denotes that the inferred direction of causality is $R$ times more likely to be the empirical result than the opposite direction (S2 Text).
 
 
 ### Simulations
@@ -323,7 +323,7 @@ y_o & = \alpha_{my} + \beta_{my} y + \epsilon_{my} \\
 \end{aligned}
 $$
 
-where non-differential measurement error is represented by a noise (measurement imprecision) term $\epsilon_{m*} \sim N(0, \sigma^2_{m*})$, and measurement bias terms $\alpha_{m*}$ and $\beta_{m*}$ for the exposure variable $x$ and the outcome variable $y$. Note that following the first section of the Results we no longer include the bias terms for simplicity. We have formulated the the non-causal model as:
+where non-differential measurement error is represented by a noise (measurement imprecision) term $\epsilon_{m*} \sim N(0, \sigma^2_{m*})$, and measurement bias terms $\alpha_{m*}$ and $\beta_{m*}$ for the exposure variable $x$ and the outcome variable $y$. Note that following the first section of the Results we no longer include the bias terms for simplicity. We have formulated the non-causal model as:
 
 $$
 \begin{aligned}
@@ -344,12 +344,12 @@ n & = \{100, 1000, 10000\}
 \end{aligned}
 $$
 
-giving a total of 432 combinations of parameters. Simulations using each of these sets of variables were performed 100 times, and the CIT and MR methods were applied to each in order to evaluate the causal association of the simulated variables. Similar patterns of results were obtained for different values of $cor(g, x)$ and $cor(g, u)$.
+giving a total of 432 combinations of parameters. Simulations using each of these sets of variables were performed 100 times, and the CIT and MR methods were applied to each in order to evaluate the causal association of the simulated variables. Similar patterns of results were obtained for different values of $cor(g, x)$.
 
 
 ## Applied example using two sample MR
 
-Two sample MR [@Pierce2013] was performed using the summary statistics for genetic influences on gene expression and DNA methylation. To do this we obtained a list of `r nrow(qtl_orig)` gene expression - DNA methylation associations as reported in Shakhbazov et al [-@Shakhbazov2016]. These were filtered to be located on the same chromosome, have robust correlations after correcting for multiple testing, and to share a SNP that had a robust cis-acting effect on both the DNA methylation probe and the gene expression probe. Because only summary statistics were available (effect, standard error, effect allele, sample size, p-values) for the instrumental SNP on the methylation and gene expression levels, the Steiger test of two independent correlations was used to infer the direction of causality for each of the associations. The Wald ratio test was then used to estimate the causal effect size for the estimated direction for each association.
+Two sample MR [@Pierce2013] was performed using summary statistics for genetic influences on gene expression and DNA methylation. To do this we obtained a list of `r nrow(qtl_orig)` gene expression - DNA methylation associations as reported in Shakhbazov et al [-@Shakhbazov2016]. These were filtered to be located on the same chromosome, have robust correlations after correcting for multiple testing, and to share a SNP that had a robust cis-acting effect on both the DNA methylation probe and the gene expression probe. Because only summary statistics were available (effect, standard error, effect allele, sample size, p-values) for the instrumental SNP on the methylation and gene expression levels, the Steiger test of two independent correlations was used to infer the direction of causality for each of the associations. The Wald ratio test was then used to estimate the causal effect size for the estimated direction for each association.
 
 All analysis was performed using the R programming language [@RCoreTeam2015] and code is made available at [https://github.com/explodecomputer/causal-directions](https://github.com/explodecomputer/causal-directions) and implemented in the MR-Base (http://wwww.mrbase.org) platform [@Hemani2016].
 
@@ -358,7 +358,7 @@ All analysis was performed using the R programming language [@RCoreTeam2015] and
 
 ### Mediation-based causal inference under measurement error
 
-In the causal inference test (CIT), the 4th condition (see Methods) employs mediation for causal inference, and can be expressed as $cov(g, y - \hat{y}) = 0$, where $\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_o$. When measurement error in scale and imprecision is introduced, such that $y_o$ is the measured value of $y$, it can be shown using basic covariance properties (Supplementary text 1) that
+In the causal inference test (CIT), the 4th condition (see Methods) employs mediation for causal inference, and can be expressed as $cov(g, y - \hat{y}) = 0$, where $\hat{y} = \hat{\alpha}_x + \hat{\beta}_x x_o$. When measurement error in scale and imprecision is introduced, such that $y_o$ is the measured value of $y$, it can be shown using basic covariance properties (S1 Text) that
 
 $$
 \begin{aligned}
@@ -381,18 +381,18 @@ We performed simulations to verify that this problem does arise using the CIT me
 
 If we do not know whether the SNP $g$ has a primary influence on $x$ or $y$ then CIT can attempt to infer the causal direction. Though bi-directional MR can be used to orient causal directions [@Timpson2011], this requires knowledge of a valid instrument for each trait, and we were motivated to develop the MR Steiger method that could operate on summary data to orient the direction of causality using the same conditions as the CIT, where the underlying biology of a single SNP is not fully understood. We go on to explore the scenarios in which the method is likely to return the correct or incorrect causal directions.
 
-We performed simulations to compare the power and type 1 error rates of MR and CIT in detecting a causal association between simulated variables under different levels of imprecision simulated in the exposure. Comparing the performance of methods with different sets of assumptions can be difficult, but a basic comparison is shown in `r cfig("causality_exists_tpr")`. We observe that the CIT is more conservative under the null model of no association owing to the omnibus test statistic comprising several statistical tests. The FDR using a p-value threshold of 0.05 appears to be close to 0, whereas for the MR Steiger method the FDR is around 0.05. Using the same p-value thresholds to declare significance in the non-null simulations, the general trend appears to be that the CIT power reduces as measurement error in the exposure increases more steeply than that of the MR Steiger method. 
+We performed simulations to compare the power and type 1 error rates of MR and CIT in detecting a causal association between simulated variables under different levels of imprecision simulated in the exposure. Comparing the performance of methods with different sets of assumptions can be difficult, but a basic comparison is shown in `r cfig("causality_exists_tpr")`. We observe that the CIT is more conservative under the null model of no association owing to the omnibus test statistic comprising several statistical tests. The FDR using a p-value threshold of 0.05 appears to be close to zero, whereas for the MR Steiger method the FDR is around 0.05. Using the same p-value thresholds to declare significance in the non-null simulations, the general trend appears to be that the CIT power reduces as measurement error in the exposure increases more steeply than that of the MR Steiger method. 
 
-For a particular association, it is of interest to identify the range of possible measurement error values for which the method will give results that agree or disagree with the empirically inferred causal direction (`r cfig("steiger_sensitivity_plot")`a, Supplementary text 2). This metric can be used to evaluate the reliability of MR Steiger test.
+For a particular association, it is of interest to identify the range of possible measurement error values for which the method will give results that agree or disagree with the empirically inferred causal direction (`r cfig("steiger_sensitivity_plot")`a, S2 Text). This metric can be used to evaluate the reliability of MR Steiger test.
 
-We show that in the presence of measurement imprecision, $d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}$ (Supplementary text 2) determines the range of parameters around which the MR Steiger test is liable to provide the wrong direction of causality (*i.e.* if $d>0$ then the MR Steiger test is likely to be correct about the causal direction). `r cfig("steiger_sensitivity_plot")`b shows that when there is no measurement error in $x$, the MR Steiger test is unlikely to infer the wrong direction of causality even if there is measurement error in $y$. It also shows that in most cases where $x$ is measured with error, especially when the causal effect between $x$ and $y$ is not very large, the sensitivity of the MR Steiger test to measurement error is relatively low.
+We show that in the presence of measurement imprecision, $d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}$ (S2 Text) determines the range of parameters around which the MR Steiger test is liable to provide the wrong direction of causality (*i.e.* if $d>0$ then the MR Steiger test is likely to be correct about the causal direction). `r cfig("steiger_sensitivity_plot")`b shows that when there is no measurement error in $x$, the MR Steiger test is unlikely to infer the wrong direction of causality even if there is measurement error in $y$. It also shows that in most cases where $x$ is measured with error, especially when the causal effect between $x$ and $y$ is not very large, the sensitivity of the MR Steiger test to measurement error is relatively low.
 
-Unmeasured confounding between the exposure and outcome can also give rise to problems with the MR Steiger approach (Supplementary text 3). The relationship between unmeasured confounding and causal orientation is complex across the parameter space of possible confounding values (Supplementary figure 2). Based on the range of parameter values that we explored, when the magnitude of the observational variance explained between the exposure and the outcome is below 0.2 the MR Steiger method is unlikely to return the incorrect causal direction due to unmeasured confounding.
+Unmeasured confounding between the exposure and outcome can also give rise to problems with the MR Steiger approach (S3 Text). The relationship between unmeasured confounding and causal orientation is complex across the parameter space of possible confounding values (S2 Fig). Based on the range of parameter values that we explored, when the magnitude of the observational variance explained between the exposure and the outcome is below 0.2 the MR Steiger method is unlikely to return the incorrect causal direction due to unmeasured confounding.
 
 
 ### Comparison of CIT and MR Steiger for obtaining the correct direction of causality
 
-We used simulations to explore the performance of the MR Steiger approach in comparison to CIT for different levels of measurement error. The performance was compared in terms of the rate at which evidence of a causal relationship is obtained for the correct direction of causality, and the rate at which evidence of a causal relationship is obtained where the reported direction of causality is incorrect. Simulations were performed for two models, one for a "causal model" where there was a causal relationship between $x$ and $y$; and one for a "non-causal model" where $x$ and $y$ were not causally related, but had a confounded association induced by the SNP $g$ influencing a confounder variable $u$.
+We used simulations to explore the performance of the MR Steiger approach in comparison to CIT for different levels of measurement error. The performance was compared in terms of the rate at which evidence of a causal relationship is obtained for the correct direction of causality, and the rate at which evidence of a causal relationship is obtained where the reported direction of causality is incorrect. Simulations were performed for two models, one for a "causal model" where there was a causal relationship between $x$ and $y$; and one for a "non-causal model" where $x$ and $y$ were not causally related, but had a confounded association induced by the SNP $g$ influencing $x$ and $y$ independently.
 
 `r cfig("cit_mr_comparison_figure")`a shows that, for the "causal model", the MR analysis is indeed liable to infer the wrong direction of causality when $d < 0$, and that this erroneous result is more likely to occur with increasing sample size. However, the CIT is in general more fallible to reporting a robust causal association for the wrong direction of causality. When $d > 0$ we find that in most cases the MR Steiger method has greater power to obtain evidence for causality than CIT, and always obtains the correct direction of causality. The CIT, unlike the MR Steiger test, is able to distinguish the "non-causal model" from the "causal model" (Methods, `r cfig("cit_mr_comparison_figure")`b), but it is evident that measurement error will often lead the CIT to identify the causal model as true, when in fact the underlying model is this non-causal model.
 
@@ -428,70 +428,71 @@ The overarching result from our simulations is that, regardless of the method us
 ## Figures
 
 
-![](../images/dag-01.png)
+<!-- ![](../images/dag-01.png) -->
 
 `r fig_nums("dag_figure")`
 
-\newpage
+<!-- \newpage -->
 
+<!-- 
 ```{r cit_measurement_error_figure, fig.width=10, fig.height=10 }
 
 ```	
-
+ -->
 `r fig_nums("cit_measurement_error_figure")`
 
-\newpage
+<!-- \newpage -->
 
 
-```{r causality_exists_tpr, fig.width=10, fig.height=10 }
+<!-- ```{r causality_exists_tpr, fig.width=10, fig.height=10 }
 
 ```
-
+ -->
 `r fig_nums("causality_exists_tpr")`
 
-\newpage
+<!-- \newpage -->
 
-```{r steiger_sensitivity_plot, fig.width=12, fig.height=6 }
+<!-- ```{r steiger_sensitivity_plot, fig.width=12, fig.height=6 }
 
 ```
-
+ -->
 `r fig_nums("steiger_sensitivity_plot")`
 
-\newpage
+<!-- \newpage -->
 
-
+<!-- 
 ```{r cit_mr_comparison_figure, fig.width=10, fig.height=10 }
 
 ```
-
+ -->
 `r fig_nums("cit_mr_comparison_figure")`
 
-\newpage
+<!-- \newpage -->
 
 
-```{r shakhplot}
+<!-- ```{r shakhplot}
 
 ```
-
+ -->
 `r fig_nums("shakhplot")`
 
-\newpage
+<!-- \newpage -->
 
 
-\newpage
+<!-- \newpage -->
 
 ## Supplementary information
 
-**Supplementary text 1** The influence of measurement error in the exposure on mediation-based estimated
+**S1 Text. The influence of measurement error in the exposure on mediation-based estimated**
 
-**Supplementary text 2** Sensitivity analysis for measurement error on the MR Steiger test
+**S2 Text. Sensitivity analysis for measurement error on the MR Steiger test**
 
-**Supplementary text 3** The influence of unmeasured confounding on the inference of causal directions
+**S3 Text. The influence of unmeasured confounding on the inference of causal directions**
 
-**Supplementary figure 1** Illustrative simulations ($n = 5000$) showing the results from CIT analysis under a model of confounding. Here, the phenotypes $x$ and $y$ are not causally related, but there is a genetic effect and a confounder both influencing each phenotype. Each point represents a single simulation. Where power is high (when the absolute values of the $x$ and $y$ axes are large) the CIT returns a significant result ($p < 0.01$) when testing the causal effect of $x$ on $y$, and when testing the causal effect of $y$ on $x$. 
+**S1 Fig. Influence of confounding on CIT.** Illustrative simulations ($n = 5000$) showing the results from CIT analysis under a model of confounding. Here, the phenotypes $x$ and $y$ are not causally related, but there is a genetic effect and a confounder both influencing each phenotype. Each point represents a single simulation. Where power is high (when the absolute values of the $x$ and $y$ axes are large) the CIT returns a significant result ($p < 0.01$) when testing the causal effect of $x$ on $y$, and when testing the causal effect of $y$ on $x$. 
 
 
-**Supplementary figure 2** Graph representing the unmeasured confounding parameters that will lead to the MR Steiger test returning the wrong causal direction. Columns of boxes represent different signed values of the observational variance explained between $x$ and $y$ ($R^2_{xy}$).
+**S2 Fig. Influence of confounding on MR Steiger.** Graph representing the unmeasured confounding parameters that will lead to the MR Steiger test returning the wrong causal direction. Columns of boxes represent different signed values of the observational variance explained between $x$ and $y$ ($R^2_{xy}$).
 
 \newpage
 

@@ -1,0 +1,172 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Supplementary materials: Orienting the causal relationship between imprecisely measured traits using GWAS summary data},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Supplementary materials: Orienting the causal relationship between
+imprecisely measured traits using GWAS summary data}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{}
+  \preauthor{}\postauthor{}
+  \date{}
+  \predate{}\postdate{}
+
+
+\begin{document}
+\maketitle
+
+\subsection{S3 Text. The influence of unmeasured confounding on the
+inference of causal
+directions}\label{s3-text.-the-influence-of-unmeasured-confounding-on-the-inference-of-causal-directions}
+
+We have assumed no unmeasured confounding in these simulations.
+Unmeasured confounding will however have potentially large influences on
+mediation-based methods for inferring causal directions, and can also
+adversely influence the estimate of the causal direction for the Steiger
+test.
+
+\subsubsection{Unmeasured confounding in
+mediation}\label{unmeasured-confounding-in-mediation}
+
+Including an unmeasured confounder, \(u\), after ignoring intercept
+terms the exposure \(x\) and outcome \(y\) variables can be modelled as
+
+\[
+\begin{aligned}
+y & = \beta_x x + \beta_{uy} u + \epsilon_x \\
+x & = \beta_g g + \beta_{ux} u + \epsilon_g
+\end{aligned}
+\]
+
+The observational estimate of the causal effect of \(x\) on \(y\),
+\(\hat{\beta}_x\) is obtained from
+
+\[
+\begin{aligned}
+\hat{\beta}_x & = cov(x, y) / var(x) \\
+& = \frac{\beta_g^2 \beta_x var(g) + \beta_{ux}^2 \beta_x var(u) + \beta_x var(\epsilon_g)} {\beta_g^2 var(g) + \beta_{ux}^2 var(u) + var(\epsilon_g)}
+\end{aligned}
+\]
+
+From this it is clear that \(\beta_x\) and \(\hat{\beta}_x\) will differ
+when both \(\beta_{uy}\) and \(\beta_{ux}\) are non-zero. Relating to
+mediation, where we attempt to test if \(g\) associates with \(y\) after
+adjusting \(y\) for \(x\), such that
+
+\[
+\hat{y}^* = \hat{\beta}_x x
+\]
+
+and
+
+\[
+\begin{aligned}
+cov(g, y - \hat{y}^*) & = cov(g, \beta_x x + \beta_{uy} u + \epsilon_x - \hat{\beta}_x x) \\
+& = cov(g, (\beta_x - \hat{\beta}_x)(\beta_g g + \beta_ux u + \epsilon_x)) \\
+& = (\beta_x - \hat{\beta}_x) var(g)
+\end{aligned}
+\]
+
+should any amount of unmeasured confounding exist, therefore, there will
+remain an association between \(g\) and \(y|x\), which will introduce
+errors in inferring causal directions.
+
+\subsubsection{Unmeasured confounding in the MR Steiger
+test}\label{unmeasured-confounding-in-the-mr-steiger-test}
+
+Similarly, we can investigate the extent to which unmeasured confounding
+will lead to the wrong causal direction between \(x\) and \(y\) using
+the MR Steiger test, evaluating the liability for the inequality
+\(cor(g,x)^2 > cor(g,y)^2\) being incorrect. After some algebra
+
+\[
+cor(g,x)^2 = \frac{\beta_g^2}{\beta_g^2var(g) + \beta_{ux}^2 var(u) + var(\epsilon_x)}
+\]
+
+and
+
+\[
+cor(g,y)^2 = \frac{\beta_x^2 \beta_g^2 var(g)^2} {\hat{\beta}_x^2 \beta_g^2 var(g) + \hat{\beta}_x^2 \beta_{ux}^2 var(u) + \beta_{uy}^2 var(u) + var(\epsilon_y)}
+\]
+
+S2 fig shows the relationship between the magnitude of the correlations
+between \(x\), \(y\) and the confounder \(u\) for a range of
+\(\beta_{xy} = (-2,2)\), \(\beta_{gx} = 0.1\) and a range of confounder
+effects. The pattern of results were similar for different values of
+\(\beta_{gx}\). We note that in most cases for the parameter values
+explored, where the observational absolute \(\hat{R}^2_{xy}\) is less
+than 0.2, unmeasured confounding will not incur the wrong causal
+direction in the MR Steiger test.
+
+
+\end{document}

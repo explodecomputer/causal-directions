@@ -1,0 +1,175 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Supplementary materials: Orienting the causal relationship between imprecisely measured traits using GWAS summary data},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+  \title{Supplementary materials: Orienting the causal relationship between
+imprecisely measured traits using GWAS summary data}
+  \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+  \author{}
+  \preauthor{}\postauthor{}
+  \date{}
+  \predate{}\postdate{}
+
+
+\begin{document}
+\maketitle
+
+\subsection{S1 Text. The influence of measurement error in the exposure
+on mediation-based
+estimated}\label{s1-text.-the-influence-of-measurement-error-in-the-exposure-on-mediation-based-estimated}
+
+We assume the following model
+
+\[
+\begin{aligned}
+x   & = \alpha_g + \beta_g g + \epsilon_g \\
+x_o & = \alpha_{mx} + \beta_{mx} x + \epsilon_{mx} \\
+y   & = \alpha_x + \beta_x x + \epsilon_x \\
+y_o & = \alpha_{my} + \beta_{my} y + \epsilon_{my}
+\end{aligned}
+\]
+
+where \(x\) is the exposure on the outcome \(y\), \(g\) is an instrument
+that has a direct effect on \(x\), \(x_o\) is the measured quantity of
+\(x\), where measurement error is incurred from linear transformation in
+\(\alpha_{mx}\) and \(\beta_{mx}\) and imprecision from
+\(\epsilon_{mx}\), and \(y_o\) is the measured quantity of \(y\), where
+measurement error is incurred from linear transformation in
+\(\alpha_{my}\) and \(\beta_{my}\) and imprecision from
+\(\epsilon_{my}\). Our objective is to estimate the expected magnitude
+of association between \(g\) and \(y\) after conditioning on \(x\).
+Under the CIT, this is expected to be \(cov(g, y_o - \hat{y}_o) = 0\)
+when \(x\) causes \(y\), where
+\(\hat{y}_o = \hat{a}_{x_o} + \hat{\beta}_{x_o} x_o\) is the predicted
+value of \(y_o\) using the measured value of \(x_o\).
+
+We can split \(cov(g, y_o - \hat{y}_o)\) into two parts, \(cov(g, y_o)\)
+and \(cov(g, \hat{y}_o)\).
+
+\textbf{Part 1}
+
+\[
+\begin{aligned}
+cov(g, y_o) & = cov(g, \beta_{my} y) \\
+            & = cov(g, \beta_{my} \beta_x x) \\
+            & = cov(g, \beta_{my} \beta_x \beta_g g) \\
+            & = \beta_{my} \beta_x \beta_g var(g)
+\end{aligned}
+\]
+
+\textbf{Part 2}
+
+\[
+\begin{aligned}
+cov(g, \hat{y}_o) & = cov(g, \hat{\beta}_{x_o} x_o) \\
+                  & = cov(g, \hat{\beta}_{x_o} \beta_{mx} x) \\
+                  & = cov(g, \hat{\beta}_{x_o} \beta_{mx} \beta_g g) \\
+                  & = \hat{\beta}_{x_o} \beta_{mx} \beta_g var(g)
+\end{aligned}
+\]
+
+Simpifying further
+
+\[
+\begin{aligned}
+\hat{\beta}_{x_o} & = \frac{cov(y_o, x_o)} {var(x_o)} \\
+                  & = \frac{cov(\beta_{my} y, \beta_{mx} x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \\
+                  & = \frac{\beta_{mx} \beta_{my} cov(y, x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \\
+                  & = \frac{\beta_{mx} \beta_{my} \beta_x var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})}
+\end{aligned}
+\]
+
+which can be substituted back to give
+
+\[
+\begin{aligned}
+cov(g, \hat{y}_o) & = \frac{\beta_{my} \beta_x \beta_g var(g) \beta_{mx}^2 var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \\
+                  & = \frac{\beta_{mx}^2 var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_{mx})} \times \beta_{my} \beta_x \beta_g var(g)
+\end{aligned}
+\]
+
+Finally
+
+\[
+\begin{aligned}
+cov(g, y_o - \hat{y}_o) & = \beta_{my} \beta_x \beta_g var(g) - \frac{\beta_{mx}^2 var(x)} {\beta_{mx}^2 var(x) + var(\epsilon_m)} \times \beta_{my} \beta_x \beta_g var(g)
+\end{aligned}
+\]
+
+thus \(cov(g, y_o - \hat{y}_o) = 0\) if the measurement imprecision in
+\(x_o\) is \(var(\epsilon_m) = 0\). However if there is any imprecision
+then the condition \(cov(g, y_o - \hat{y}_o) = 0\) will not hold.
+
+
+\end{document}

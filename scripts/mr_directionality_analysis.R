@@ -666,7 +666,7 @@ temp1$lab[temp1$r_ab==0] <- "Type 1 error"
 ggplot(subset(temp1, r_ab %in% c(0, 0.6) & r_za == "cor(x,g) = 0.01" & noiseb %in% c("cor(Y,Yo) = 0.4")), aes(x=noisea, y = prop_causality_exists)) +
 geom_bar(stat="identity", position="dodge", aes(fill=as.factor(test))) +
 facet_grid(lab ~ n) +
-labs(y="False positive rate", x = expression(epsilon[mx]), fill="Test") +
+labs(y="Discovery rate", x = expression(epsilon[mx]), fill="Test") +
 ylim(c(0,1))
 
 
