@@ -94,7 +94,7 @@ School of Social and Community Medicine, Bristol, UK
 * Correspondence to:
 \href{mailto:g.hemani@bristol.ac.uk}{\nolinkurl{g.hemani@bristol.ac.uk}}
 
-\subsubsection{Abstract}\label{abstract}
+\section{Abstract}\label{abstract}
 
 Inference about the causal structure that induces correlations between
 two traits can be achieved by combining genetic associations with a
@@ -118,7 +118,7 @@ We emphasise that, where possible, implementing MR and appropriate
 sensitivity analyses alongside other approaches such as CIT is important
 to triangulate reliable conclusions about causality.
 
-\subsubsection{Author summary}\label{author-summary}
+\section{Author summary}\label{author-summary}
 
 Understanding the causal relationships between pairs of traits is
 crucial for unravelling the causes of disease. To this end, results from
@@ -136,7 +136,7 @@ factor, we point out that is it crucial to acknowledge that systematic
 differences in measurement error between the platforms could influence
 such conclusions.
 
-\subsection{Introduction}\label{introduction}
+\section{Introduction}\label{introduction}
 
 Observational measures of the human phenome are growing ever more
 abundant, but using these data to make causal inference is notoriously
@@ -318,7 +318,7 @@ these different causal inference techniques have varying strengths and
 weaknesses, triangulation of evidence from as many sources as possible
 should be practiced in causal inference {[}38{]}.
 
-\subsubsection{Model}\label{model}
+\subsection{Model}\label{model}
 
 We model a system whereby some exposure \(x\) has a causal influence
 \(\beta_x\) on an outcome \(y\) such that
@@ -385,9 +385,9 @@ complete linkage disequilibrium with the causal variant) will reduce
 power in MR but will not incur bias {[}3,13,32{]}. We also assume that
 measurement error in the exposure and the outcome are uncorrelated.
 
-\subsection{Results}\label{results}
+\section{Results}\label{results}
 
-\subsubsection{Mediation-based causal inference under measurement
+\subsection{Mediation-based causal inference under measurement
 error}\label{mediation-based-causal-inference-under-measurement-error}
 
 In the causal inference test (CIT), the 4th condition (see Methods)
@@ -431,7 +431,7 @@ in the wrong direction. Also of concern here is that increasing sample
 size does not solve the issue, indeed it only strengthens the apparent
 evidence for the incorrect inference.
 
-\subsubsection{Using MR Steiger to infer the direction of
+\subsection{Using MR Steiger to infer the direction of
 causality}\label{using-mr-steiger-to-infer-the-direction-of-causality}
 
 If we do not know whether the SNP \(g\) has a primary influence on \(x\)
@@ -485,7 +485,7 @@ magnitude of the observational variance explained between the exposure
 and the outcome is below 0.2 the MR Steiger method is unlikely to return
 the incorrect causal direction due to unmeasured confounding.
 
-\subsubsection{Comparison of CIT and MR Steiger for obtaining the
+\subsection{Comparison of CIT and MR Steiger for obtaining the
 correct direction of
 causality}\label{comparison-of-cit-and-mr-steiger-for-obtaining-the-correct-direction-of-causality}
 
@@ -514,7 +514,7 @@ able to distinguish the ``non-causal model'' from the ``causal model''
 often lead the CIT to identify the causal model as true, when in fact
 the underlying model is this non-causal model.
 
-\subsubsection{The causal relationship between gene expression and DNA
+\subsection{The causal relationship between gene expression and DNA
 methylation
 levels}\label{the-causal-relationship-between-gene-expression-and-dna-methylation-levels}
 
@@ -552,7 +552,7 @@ CI 0.36 - 1.03), Figure 6c), suggesting that reducing methylation levels
 at a controlling CpG typically leads to increased gene expression
 levels, consistent with expectation {[}40{]}.
 
-\subsection{Discussion}\label{discussion}
+\section{Discussion}\label{discussion}
 
 Researchers are often confronted with the problem of making causal
 inferences using a statistical framework on observational data. In the
@@ -678,9 +678,9 @@ to strengthen causal inference, and any putative results should be
 accompanied with appropriate sensitivity analysis that assesses their
 robustness under varying levels of measurement error.
 
-\subsection{Methods}\label{methods}
+\section{Methods}\label{methods}
 
-\subsubsection{CIT test}\label{cit-test}
+\subsection{CIT test}\label{cit-test}
 
 Here we describe how the CIT method {[}4{]} is implemented in the R
 package \emph{R/cit} {[}18{]}. Assume an exposure \(x\) is instrumented
@@ -758,7 +758,7 @@ For the purposes of compiling simulation results we use an arbitrary
 not good practice to rely on p-values for making causal inference, nor
 is it reliable to depend on arbitrary significance thresholds {[}53{]}.
 
-\subsubsection{MR causal test}\label{mr-causal-test}
+\subsection{MR causal test}\label{mr-causal-test}
 
 Two stage least squares (2SLS) is a commonly used technique for
 performing MR when the exposure, outcome and instrument data are all
@@ -873,7 +873,7 @@ inference of the causal direction (S2 Text). Third, some levels of
 unmeasured confounding between the exposure and the outcome could lead
 to inference of the wrong causal direction (S3 Text).
 
-\subsubsection{Causal direction sensitivity analysis for measurement
+\subsection{Causal direction sensitivity analysis for measurement
 error}\label{causal-direction-sensitivity-analysis-for-measurement-error}
 
 The Steiger test for inferring if \(x \rightarrow y\) is based on
@@ -912,7 +912,7 @@ parameter space supports each direction of causality. In general, the
 times more likely to be the empirical result than the opposite direction
 (S2 Text).
 
-\subsubsection{Simulations}\label{simulations}
+\subsection{Simulations}\label{simulations}
 
 Simulations were conducted by creating variables of sample size \(n\)
 for the exposure \(x\), the measured values of the exposure \(x_o\), the
@@ -967,7 +967,7 @@ methods were applied to each in order to evaluate the causal association
 of the simulated variables. Similar patterns of results were obtained
 for different values of \(cor(g, x)\).
 
-\subsubsection{Applied example using two sample
+\subsection{Applied example using two sample
 MR}\label{applied-example-using-two-sample-mr}
 
 Two sample MR {[}30{]} was performed using summary statistics for
@@ -990,127 +990,6 @@ code is made available at
 \url{https://github.com/explodecomputer/causal-directions} and
 implemented in the MR-Base (\url{http://wwww.mrbase.org}) platform
 {[}26{]}.
-
-\newpage
-
-\subsection{Figures}\label{figures}
-
-Figure 1: Gene expression levels (blue blocks) and DNA methylation
-levels (green triangles) may be correlated but the causal structure is
-unknown. If a SNP (yellow circle) is associated with both DNA
-methylation and gene expression levels then it can be used as an
-instrument, but there are three basic competing models for these
-variables. The causal inference test (CIT) attempts to distinguish
-between them. a) Gene expression causes methylation. The left figure
-shows that the SNP influences gene expression levels that in turn
-influence methylation levels. The right figure shows the directed
-acyclic graph that represents this model. Faded symbols represent the
-measured values whereas solid symbols represent the true values. b) The
-same as in A, except the causal direction is from DNA methylation to
-Gene expression. c) A model of confounding, where gene expression and
-DNA methylation are not causally related, but the SNP influences them
-each through separate pathways or a confounder.
-
-Figure 2: The CIT was performed on simulated variables where the
-exposure influenced the outcome and the exposure was instrumented by a
-SNP. The test statistic from CIT when testing if the exposure caused the
-outcome (the true model) is in red, and the test for the outcome causing
-the exposure (false model) is in green. Rows of plots represent the
-sample sizes used for the simulations. As measurement imprecision
-increases (decreasing values on x-axis) the test statistic for the
-incorrect model gets stronger and the test statistic for the correct
-model gets weaker.
-
-Figure 3: Outcomes were simulated to be unrelated to the exposure
-(bottom plot, showing false positive rates on the y-axis) or causally
-influenced by the exposure (top plot, showing true positive rates on the
-y-axis) with varying degrees of measurement imprecision applied to the
-exposure variable (x axis). Results for MR and CIT were compared for
-varying sample sizes (columns of boxes).
-
-Figure 4: a) We can predict the values the MR Steiger test would take
-(z-axis) for different potential values of measurement error (x and y
-axes), drawn here as the blue surface. When \(\rho_{g,y} > \rho_{g,x}\),
-as denoted by the range of values where the blue surface is above the
-black plane, those values of measurement error lead to our observed MR
-Steiger test inferring the wrong causal direction. Where the blue
-surface lies below the black plane, these measurement error values
-support the inferred causal direction of X to Y. A measure of
-reliability, therefore, is the ratio of the negative and positive
-volumes of the total space bound by the blue and black surfaces,
-\(R = \frac{V_{z \geq 0}}{ - V_{z < 0} }\). In this case, where
-\(\rho_{g,x}^2 = 0.01\) and \(\rho_{x,y}^2 = 0.1\), the \(R = 4.40\),
-which means that 4.40 times as much of the possible measurement error
-values are in support of the \(x \rightarrow y\) direction of causality
-than \(y \rightarrow x\). b) Plots depicting the parameter space in
-which the function \(d = cor(x, x_O) - cor(x,y)cor(y, y_O)\) is
-negative. When \(d\) is negative the MR Steiger test is liable to infer
-the wrong direction of causality. Shaded regions show the parameter
-space where \(d\) is negative. The graph shows that for the majority of
-the parameter space of the function, \(d\) is positive, especially where
-causal relationships are relatively weak.
-
-Figure 5: a) Outcome \(y\) was simulated to be caused by exposure \(x\)
-as shown in the graph, with varying degrees of measurement error applied
-to both. CIT and MR were used to infer evidence for causality between
-the exposure and outcome, and to infer the direction of causality. The
-columns of graphs denote intervals for he value of
-\(d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}\), such that when \(d\) is
-negative we expect the MR Steiger test to be more likely to be wrong
-about the direction of causality. Rows of graphs represent the sample
-size used in the simulations. For the CIT method, outcome 1 denoted
-evidence for causality with correct model, outcomes 2 or 3 denoted
-evidence for causality with incorrect model, and outcome 4 denoted no
-evidence for causality. b) As in (a) except the simulated model was
-non-causal, and a genetic confounder induces an association between
-\(x\) and \(y\). Neither CIT nor MR are able to identify this model, so
-any significant associations in MR are deemed to be incorrect, while
-outcomes 1 or 2 for the CIT are deemed to be incorrect.
-
-Figure 6: Using 458 putative associations between DNA methylation and
-gene expression we used the MR Steiger test to infer the direction of
-causality between them. a) The rightmost bar shows the proportion of
-associations for each of the two possible causal directions (colour key)
-assuming no measurement error in either gene expression or DNA
-methylation levels. The proportions change when we assume different
-levels of measurement error in gene expression levels (x-axis) or DNA
-methylation levels (columns of boxes). If there is systematically higher
-measurement error in one platform than the other it will appear to be
-less likely to be the causal factor. b) The relationship between the
-Pearson correlation between DNA methylation and gene expression levels
-(x-axis) and the causal estimate (scaled to be in standard deviation
-units, y-axis). c) Distribution of estimated causal effect sizes,
-stratified into associations inferred to be due to DNA methylation
-causing expression (blue) and expression causing DNA methylation (red).
-
-\subsection{Supplementary information}\label{supplementary-information}
-
-\textbf{S1 Text. The influence of measurement error in the exposure on
-mediation-based estimated}
-
-\textbf{S2 Text. Sensitivity analysis for measurement error on the MR
-Steiger test}
-
-\textbf{S3 Text. The influence of unmeasured confounding on the
-inference of causal directions}
-
-\textbf{S1 Fig. Influence of confounding on CIT.} Illustrative
-simulations (\(n = 5000\)) showing the results from CIT analysis under a
-model of confounding. Here, the phenotypes \(x\) and \(y\) are not
-causally related, but there is a genetic effect and a confounder both
-influencing each phenotype. Each point represents a single simulation.
-Where power is high (when the absolute values of the \(x\) and \(y\)
-axes are large) the CIT returns a significant result (\(p < 0.01\)) when
-testing the causal effect of \(x\) on \(y\), and when testing the causal
-effect of \(y\) on \(x\).
-
-\textbf{S2 Fig. Influence of confounding on MR Steiger.} Graph
-representing the unmeasured confounding parameters that will lead to the
-MR Steiger test returning the wrong causal direction. Columns of boxes
-represent different signed values of the observational variance
-explained between \(x\) and \(y\) (\(R^2_{xy}\)).
-
-\newpage
 
 \subsection{References}\label{references}
 
@@ -1464,6 +1343,126 @@ University; 2015. Available:
 57. R Core Team. R: A Language and Environment for Statistical Computing
 {[}Internet{]}. Vienna, Austria: R Foundation for Statistical Computing;
 2015. Available: \url{https://www.r-project.org/}
+
+\newpage
+
+\section{Figures}\label{figures}
+
+Figure 1: Gene expression levels (blue blocks) and DNA methylation
+levels (green triangles) may be correlated but the causal structure is
+unknown. If a SNP (yellow circle) is associated with both DNA
+methylation and gene expression levels then it can be used as an
+instrument, but there are three basic competing models for these
+variables. The causal inference test (CIT) attempts to distinguish
+between them. a) Gene expression causes methylation. The left figure
+shows that the SNP influences gene expression levels that in turn
+influence methylation levels. The right figure shows the directed
+acyclic graph that represents this model. Faded symbols represent the
+measured values whereas solid symbols represent the true values. b) The
+same as in A, except the causal direction is from DNA methylation to
+Gene expression. c) A model of confounding, where gene expression and
+DNA methylation are not causally related, but the SNP influences them
+each through separate pathways or a confounder.
+
+Figure 2: The CIT was performed on simulated variables where the
+exposure influenced the outcome and the exposure was instrumented by a
+SNP. The test statistic from CIT when testing if the exposure caused the
+outcome (the true model) is in red, and the test for the outcome causing
+the exposure (false model) is in green. Rows of plots represent the
+sample sizes used for the simulations. As measurement imprecision
+increases (decreasing values on x-axis) the test statistic for the
+incorrect model gets stronger and the test statistic for the correct
+model gets weaker.
+
+Figure 3: Outcomes were simulated to be unrelated to the exposure
+(bottom plot, showing false positive rates on the y-axis) or causally
+influenced by the exposure (top plot, showing true positive rates on the
+y-axis) with varying degrees of measurement imprecision applied to the
+exposure variable (x axis). Results for MR and CIT were compared for
+varying sample sizes (columns of boxes).
+
+Figure 4: a) We can predict the values the MR Steiger test would take
+(z-axis) for different potential values of measurement error (x and y
+axes), drawn here as the blue surface. When \(\rho_{g,y} > \rho_{g,x}\),
+as denoted by the range of values where the blue surface is above the
+black plane, those values of measurement error lead to our observed MR
+Steiger test inferring the wrong causal direction. Where the blue
+surface lies below the black plane, these measurement error values
+support the inferred causal direction of X to Y. A measure of
+reliability, therefore, is the ratio of the negative and positive
+volumes of the total space bound by the blue and black surfaces,
+\(R = \frac{V_{z \geq 0}}{ - V_{z < 0} }\). In this case, where
+\(\rho_{g,x}^2 = 0.01\) and \(\rho_{x,y}^2 = 0.1\), the \(R = 4.40\),
+which means that 4.40 times as much of the possible measurement error
+values are in support of the \(x \rightarrow y\) direction of causality
+than \(y \rightarrow x\). b) Plots depicting the parameter space in
+which the function \(d = cor(x, x_O) - cor(x,y)cor(y, y_O)\) is
+negative. When \(d\) is negative the MR Steiger test is liable to infer
+the wrong direction of causality. Shaded regions show the parameter
+space where \(d\) is negative. The graph shows that for the majority of
+the parameter space of the function, \(d\) is positive, especially where
+causal relationships are relatively weak.
+
+Figure 5: a) Outcome \(y\) was simulated to be caused by exposure \(x\)
+as shown in the graph, with varying degrees of measurement error applied
+to both. CIT and MR were used to infer evidence for causality between
+the exposure and outcome, and to infer the direction of causality. The
+columns of graphs denote intervals for he value of
+\(d = \rho_{x, x_o} - \rho_{x,y}\rho_{y,y_o}\), such that when \(d\) is
+negative we expect the MR Steiger test to be more likely to be wrong
+about the direction of causality. Rows of graphs represent the sample
+size used in the simulations. For the CIT method, outcome 1 denoted
+evidence for causality with correct model, outcomes 2 or 3 denoted
+evidence for causality with incorrect model, and outcome 4 denoted no
+evidence for causality. b) As in (a) except the simulated model was
+non-causal, and a genetic confounder induces an association between
+\(x\) and \(y\). Neither CIT nor MR are able to identify this model, so
+any significant associations in MR are deemed to be incorrect, while
+outcomes 1 or 2 for the CIT are deemed to be incorrect.
+
+Figure 6: Using 458 putative associations between DNA methylation and
+gene expression we used the MR Steiger test to infer the direction of
+causality between them. a) The rightmost bar shows the proportion of
+associations for each of the two possible causal directions (colour key)
+assuming no measurement error in either gene expression or DNA
+methylation levels. The proportions change when we assume different
+levels of measurement error in gene expression levels (x-axis) or DNA
+methylation levels (columns of boxes). If there is systematically higher
+measurement error in one platform than the other it will appear to be
+less likely to be the causal factor. b) The relationship between the
+Pearson correlation between DNA methylation and gene expression levels
+(x-axis) and the causal estimate (scaled to be in standard deviation
+units, y-axis). c) Distribution of estimated causal effect sizes,
+stratified into associations inferred to be due to DNA methylation
+causing expression (blue) and expression causing DNA methylation (red).
+
+\subsection{Supplementary information}\label{supplementary-information}
+
+\textbf{S1 Text. The influence of measurement error in the exposure on
+mediation-based estimated}
+
+\textbf{S2 Text. Sensitivity analysis for measurement error on the MR
+Steiger test}
+
+\textbf{S3 Text. The influence of unmeasured confounding on the
+inference of causal directions}
+
+\textbf{S1 Fig. Influence of confounding on CIT.} Illustrative
+simulations (\(n = 5000\)) showing the results from CIT analysis under a
+model of confounding. Here, the phenotypes \(x\) and \(y\) are not
+causally related, but there is a genetic effect and a confounder both
+influencing each phenotype. Each point represents a single simulation.
+Where power is high (when the absolute values of the \(x\) and \(y\)
+axes are large) the CIT returns a significant result (\(p < 0.01\)) when
+testing the causal effect of \(x\) on \(y\), and when testing the causal
+effect of \(y\) on \(x\).
+
+\textbf{S2 Fig. Influence of confounding on MR Steiger.} Graph
+representing the unmeasured confounding parameters that will lead to the
+MR Steiger test returning the wrong causal direction. Columns of boxes
+represent different signed values of the observational variance
+explained between \(x\) and \(y\) (\(R^2_{xy}\)).
+
 
 
 \end{document}
