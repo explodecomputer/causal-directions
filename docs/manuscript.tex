@@ -80,7 +80,7 @@ using GWAS summary data}
   \preauthor{}\postauthor{}
   \predate{\centering\large\emph}
   \postdate{\par}
-  \date{19 November 2017}
+  \date{13 November 2017}
 
 
 \begin{document}
@@ -94,8 +94,7 @@ School of Social and Community Medicine, Bristol, UK
 * Correspondence to:
 \href{mailto:g.hemani@bristol.ac.uk}{\nolinkurl{g.hemani@bristol.ac.uk}}
 
-\hypertarget{abstract}{%
-\subsubsection{Abstract}\label{abstract}}
+\subsubsection{Abstract}\label{abstract}
 
 Inference about the causal structure that induces correlations between
 two traits can be achieved by combining genetic associations with a
@@ -119,8 +118,7 @@ We emphasise that, where possible, implementing MR and appropriate
 sensitivity analyses alongside other approaches such as CIT is important
 to triangulate reliable conclusions about causality.
 
-\hypertarget{author-summary}{%
-\subsubsection{Author summary}\label{author-summary}}
+\subsubsection{Author summary}\label{author-summary}
 
 Understanding the causal relationships between pairs of traits is
 crucial for unravelling the causes of disease. To this end, results from
@@ -138,8 +136,7 @@ factor, we point out that is it crucial to acknowledge that systematic
 differences in measurement error between the platforms could influence
 such conclusions.
 
-\hypertarget{introduction}{%
-\subsection{Introduction}\label{introduction}}
+\subsection{Introduction}\label{introduction}
 
 Observational measures of the human phenome are growing ever more
 abundant, but using these data to make causal inference is notoriously
@@ -321,8 +318,7 @@ these different causal inference techniques have varying strengths and
 weaknesses, triangulation of evidence from as many sources as possible
 should be practiced in causal inference {[}38{]}.
 
-\hypertarget{model}{%
-\subsubsection{Model}\label{model}}
+\subsubsection{Model}\label{model}
 
 We model a system whereby some exposure \(x\) has a causal influence
 \(\beta_x\) on an outcome \(y\) such that
@@ -389,12 +385,10 @@ complete linkage disequilibrium with the causal variant) will reduce
 power in MR but will not incur bias {[}3,13,32{]}. We also assume that
 measurement error in the exposure and the outcome are uncorrelated.
 
-\hypertarget{results}{%
-\subsection{Results}\label{results}}
+\subsection{Results}\label{results}
 
-\hypertarget{mediation-based-causal-inference-under-measurement-error}{%
 \subsubsection{Mediation-based causal inference under measurement
-error}\label{mediation-based-causal-inference-under-measurement-error}}
+error}\label{mediation-based-causal-inference-under-measurement-error}
 
 In the causal inference test (CIT), the 4th condition (see Methods)
 employs mediation for causal inference, and can be expressed as
@@ -437,9 +431,8 @@ in the wrong direction. Also of concern here is that increasing sample
 size does not solve the issue, indeed it only strengthens the apparent
 evidence for the incorrect inference.
 
-\hypertarget{using-mr-steiger-to-infer-the-direction-of-causality}{%
 \subsubsection{Using MR Steiger to infer the direction of
-causality}\label{using-mr-steiger-to-infer-the-direction-of-causality}}
+causality}\label{using-mr-steiger-to-infer-the-direction-of-causality}
 
 If we do not know whether the SNP \(g\) has a primary influence on \(x\)
 or \(y\) then CIT can attempt to infer the causal direction. Though
@@ -492,10 +485,9 @@ magnitude of the observational variance explained between the exposure
 and the outcome is below 0.2 the MR Steiger method is unlikely to return
 the incorrect causal direction due to unmeasured confounding.
 
-\hypertarget{comparison-of-cit-and-mr-steiger-for-obtaining-the-correct-direction-of-causality}{%
 \subsubsection{Comparison of CIT and MR Steiger for obtaining the
 correct direction of
-causality}\label{comparison-of-cit-and-mr-steiger-for-obtaining-the-correct-direction-of-causality}}
+causality}\label{comparison-of-cit-and-mr-steiger-for-obtaining-the-correct-direction-of-causality}
 
 We used simulations to explore the performance of the MR Steiger
 approach in comparison to CIT for different levels of measurement error.
@@ -522,10 +514,9 @@ able to distinguish the ``non-causal model'' from the ``causal model''
 often lead the CIT to identify the causal model as true, when in fact
 the underlying model is this non-causal model.
 
-\hypertarget{the-causal-relationship-between-gene-expression-and-dna-methylation-levels}{%
 \subsubsection{The causal relationship between gene expression and DNA
 methylation
-levels}\label{the-causal-relationship-between-gene-expression-and-dna-methylation-levels}}
+levels}\label{the-causal-relationship-between-gene-expression-and-dna-methylation-levels}
 
 We used the MR Steiger test to infer the direction of causality between
 DNA methylation and gene expression levels between 458 putative
@@ -561,8 +552,7 @@ CI 0.36 - 1.03), Figure 6c), suggesting that reducing methylation levels
 at a controlling CpG typically leads to increased gene expression
 levels, consistent with expectation {[}40{]}.
 
-\hypertarget{discussion}{%
-\subsection{Discussion}\label{discussion}}
+\subsection{Discussion}\label{discussion}
 
 Researchers are often confronted with the problem of making causal
 inferences using a statistical framework on observational data. In the
@@ -688,11 +678,9 @@ to strengthen causal inference, and any putative results should be
 accompanied with appropriate sensitivity analysis that assesses their
 robustness under varying levels of measurement error.
 
-\hypertarget{methods}{%
-\subsection{Methods}\label{methods}}
+\subsection{Methods}\label{methods}
 
-\hypertarget{cit-test}{%
-\subsubsection{CIT test}\label{cit-test}}
+\subsubsection{CIT test}\label{cit-test}
 
 Here we describe how the CIT method {[}4{]} is implemented in the R
 package \emph{R/cit} {[}18{]}. Assume an exposure \(x\) is instrumented
@@ -770,8 +758,7 @@ For the purposes of compiling simulation results we use an arbitrary
 not good practice to rely on p-values for making causal inference, nor
 is it reliable to depend on arbitrary significance thresholds {[}53{]}.
 
-\hypertarget{mr-causal-test}{%
-\subsubsection{MR causal test}\label{mr-causal-test}}
+\subsubsection{MR causal test}\label{mr-causal-test}
 
 Two stage least squares (2SLS) is a commonly used technique for
 performing MR when the exposure, outcome and instrument data are all
@@ -886,9 +873,8 @@ inference of the causal direction (S2 Text). Third, some levels of
 unmeasured confounding between the exposure and the outcome could lead
 to inference of the wrong causal direction (S3 Text).
 
-\hypertarget{causal-direction-sensitivity-analysis-for-measurement-error}{%
 \subsubsection{Causal direction sensitivity analysis for measurement
-error}\label{causal-direction-sensitivity-analysis-for-measurement-error}}
+error}\label{causal-direction-sensitivity-analysis-for-measurement-error}
 
 The Steiger test for inferring if \(x \rightarrow y\) is based on
 evaluating \(\rho_{gx} > \rho_{gy}\). However, \(\rho_{gx}\) (or
@@ -926,8 +912,7 @@ parameter space supports each direction of causality. In general, the
 times more likely to be the empirical result than the opposite direction
 (S2 Text).
 
-\hypertarget{simulations}{%
-\subsubsection{Simulations}\label{simulations}}
+\subsubsection{Simulations}\label{simulations}
 
 Simulations were conducted by creating variables of sample size \(n\)
 for the exposure \(x\), the measured values of the exposure \(x_o\), the
@@ -982,9 +967,8 @@ methods were applied to each in order to evaluate the causal association
 of the simulated variables. Similar patterns of results were obtained
 for different values of \(cor(g, x)\).
 
-\hypertarget{applied-example-using-two-sample-mr}{%
 \subsubsection{Applied example using two sample
-MR}\label{applied-example-using-two-sample-mr}}
+MR}\label{applied-example-using-two-sample-mr}
 
 Two sample MR {[}30{]} was performed using summary statistics for
 genetic influences on gene expression and DNA methylation. To do this we
@@ -1009,8 +993,7 @@ implemented in the MR-Base (\url{http://wwww.mrbase.org}) platform
 
 \newpage
 
-\hypertarget{figures}{%
-\subsection{Figures}\label{figures}}
+\subsection{Figures}\label{figures}
 
 Figure 1: Gene expression levels (blue blocks) and DNA methylation
 levels (green triangles) may be correlated but the causal structure is
@@ -1084,11 +1067,6 @@ non-causal, and a genetic confounder induces an association between
 any significant associations in MR are deemed to be incorrect, while
 outcomes 1 or 2 for the CIT are deemed to be incorrect.
 
-\begin{verbatim}
-## pdf 
-##   2
-\end{verbatim}
-
 Figure 6: Using 458 putative associations between DNA methylation and
 gene expression we used the MR Steiger test to infer the direction of
 causality between them. a) The rightmost bar shows the proportion of
@@ -1105,8 +1083,7 @@ units, y-axis). c) Distribution of estimated causal effect sizes,
 stratified into associations inferred to be due to DNA methylation
 causing expression (blue) and expression causing DNA methylation (red).
 
-\hypertarget{supplementary-information}{%
-\subsection{Supplementary information}\label{supplementary-information}}
+\subsection{Supplementary information}\label{supplementary-information}
 
 \textbf{S1 Text. The influence of measurement error in the exposure on
 mediation-based estimated}
@@ -1135,58 +1112,57 @@ explained between \(x\) and \(y\) (\(R^2_{xy}\)).
 
 \newpage
 
-\hypertarget{references}{%
-\subsection{References}\label{references}}
+\subsection{References}\label{references}
 
 \raggedright
 
 \hypertarget{refs}{}
-\leavevmode\hypertarget{ref-Phillips1991}{}%
+\hypertarget{ref-Phillips1991}{}
 1. Phillips AN, Davey Smith G. How independent are ``independent''
 effects? relative risk estimation when correlated exposures are measured
 imprecisely. Journal of Clinical Epidemiology. Pergamon; 1991;44:
 1223--1231.
 doi:\href{https://doi.org/10.1016/0895-4356(91)90155-3}{10.1016/0895-4356(91)90155-3}
 
-\leavevmode\hypertarget{ref-DaveySmith2002}{}%
+\hypertarget{ref-DaveySmith2002}{}
 2. Davey Smith G, Ebrahim S. Data dredging, bias, or confounding. BMJ.
 2002;325: 1437--8.
 
-\leavevmode\hypertarget{ref-DaveySmith2004}{}%
+\hypertarget{ref-DaveySmith2004}{}
 3. Davey Smith G, Ebrahim S. Mendelian randomization: prospects,
 potentials, and limitations. International journal of epidemiology.
 2004;33: 30--42.
 doi:\href{https://doi.org/10.1093/ije/dyh132}{10.1093/ije/dyh132}
 
-\leavevmode\hypertarget{ref-Millstein2009}{}%
+\hypertarget{ref-Millstein2009}{}
 4. Millstein J, Zhang B, Zhu J, Schadt EE. Disentangling molecular
 relationships with a causal inference test. BMC genetics. 2009;10: 23.
 doi:\href{https://doi.org/10.1186/1471-2156-10-23}{10.1186/1471-2156-10-23}
 
-\leavevmode\hypertarget{ref-Aten2008}{}%
+\hypertarget{ref-Aten2008}{}
 5. Aten JE, Fuller TF, Lusis AJ, Horvath S. Using genetic markers to
 orient the edges in quantitative trait networks: the NEO software. BMC
 systems biology. 2008;2: 34.
 doi:\href{https://doi.org/10.1186/1752-0509-2-34}{10.1186/1752-0509-2-34}
 
-\leavevmode\hypertarget{ref-Waszak2015}{}%
+\hypertarget{ref-Waszak2015}{}
 6. Waszak SM, Delaneau O, Gschwind AR, Kilpinen H, Raghav SK, Witwicki
 RM, et al. Variation and genetic control of chromatin architecture in
 humans. Cell. Elsevier Inc. 2015;162: 1039--1050.
 doi:\href{https://doi.org/10.1016/j.cell.2015.08.001}{10.1016/j.cell.2015.08.001}
 
-\leavevmode\hypertarget{ref-Houle2011}{}%
+\hypertarget{ref-Houle2011}{}
 7. Houle D, Pélabon C, Wagner G, Hansen T. Measurement and meaning in
 biology. The Quarterly Review of Biology. 2011;86: 3--34. Available:
 \url{http://www.jstor.org/stable/10.1086/658408}
 
-\leavevmode\hypertarget{ref-Hernan2009}{}%
+\hypertarget{ref-Hernan2009}{}
 8. Hernán M a, Cole SR. Invited Commentary: Causal diagrams and
 measurement bias. American journal of epidemiology. 2009;170: 959--62;
 discussion 963--4.
 doi:\href{https://doi.org/10.1093/aje/kwp293}{10.1093/aje/kwp293}
 
-\leavevmode\hypertarget{ref-Harper2013}{}%
+\hypertarget{ref-Harper2013}{}
 9. Harper KN, Peters B a, Gamble MV. Batch effects and pathway analysis:
 two potential perils in cancer studies involving DNA methylation array
 analysis. Cancer epidemiology, biomarkers \& prevention : a publication
@@ -1194,209 +1170,209 @@ of the American Association for Cancer Research, cosponsored by the
 American Society of Preventive Oncology. 2013;22: 1052--60.
 doi:\href{https://doi.org/10.1158/1055-9965.EPI-13-0114}{10.1158/1055-9965.EPI-13-0114}
 
-\leavevmode\hypertarget{ref-Chen2013a}{}%
+\hypertarget{ref-Chen2013a}{}
 10. Chen Y-a, Lemire M, Choufani S, Butcher DT, Grafodatskaya D, Zanke
 BW, et al. Discovery of cross-reactive probes and polymorphic CpGs in
 the Illumina Infinium HumanMethylation450 microarray. Epigenetics :
 official journal of the DNA Methylation Society. 2013;8: 203--9.
 doi:\href{https://doi.org/10.4161/epi.23470}{10.4161/epi.23470}
 
-\leavevmode\hypertarget{ref-Houseman2012}{}%
+\hypertarget{ref-Houseman2012}{}
 11. Houseman EA, Accomando WP, Koestler DC, Christensen BC, Marsit CJ,
 Nelson HH, et al. DNA methylation arrays as surrogate measures of cell
 mixture distribution. BMC bioinformatics. 2012;13: 86.
 doi:\href{https://doi.org/10.1186/1471-2105-13-86}{10.1186/1471-2105-13-86}
 
-\leavevmode\hypertarget{ref-Ahima2013}{}%
+\hypertarget{ref-Ahima2013}{}
 12. Ahima RS, Lazar MA. Physiology. The health risk of obesity--better
 metrics imperative. Science (New York, NY). American Association for the
 Advancement of Science; 2013;341: 856--8.
 doi:\href{https://doi.org/10.1126/science.1241244}{10.1126/science.1241244}
 
-\leavevmode\hypertarget{ref-LeCessie2012}{}%
+\hypertarget{ref-LeCessie2012}{}
 13. Cessie S le, Debeij J, Rosendaal FR, Cannegieter SC, Vandenbroucke
 JP. Quantification of bias in direct effects estimates due to different
 types of measurement error in the mediator. Epidemiology (Cambridge,
 Mass). 2012;23: 551--60.
 doi:\href{https://doi.org/10.1097/EDE.0b013e318254f5de}{10.1097/EDE.0b013e318254f5de}
 
-\leavevmode\hypertarget{ref-Blakely2013}{}%
+\hypertarget{ref-Blakely2013}{}
 14. Blakely T, McKenzie S, Carter K. Misclassification of the mediator
 matters when estimating indirect effects. Journal of epidemiology and
 community health. 2013;67: 458--66.
 doi:\href{https://doi.org/10.1136/jech-2012-201813}{10.1136/jech-2012-201813}
 
-\leavevmode\hypertarget{ref-DaveySmith2003}{}%
+\hypertarget{ref-DaveySmith2003}{}
 15. Davey Smith G, Ebrahim S. 'Mendelian randomization': can genetic
 epidemiology contribute to understanding environmental determinants of
 disease? International Journal of Epidemiology. 2003;32: 1--22.
 doi:\href{https://doi.org/10.1093/ije/dyg070}{10.1093/ije/dyg070}
 
-\leavevmode\hypertarget{ref-DaveySmithHemani2014}{}%
+\hypertarget{ref-DaveySmithHemani2014}{}
 16. Davey Smith G, Hemani G. Mendelian randomization: genetic anchors
 for causal inference in epidemiological studies. Human molecular
 genetics. Oxford Univ Press; 2014;23: R89-----R98.
 doi:\href{https://doi.org/10.1093/hmg/ddu328}{10.1093/hmg/ddu328}
 
-\leavevmode\hypertarget{ref-Schadt2005}{}%
+\hypertarget{ref-Schadt2005}{}
 17. Schadt EE, Lamb J, Yang X, Zhu J, Edwards S, GuhaThakurta D, et al.
 An integrative genomics approach to infer causal associations between
 gene expression and disease. Nature Genetics. 2005;37: 710--717.
 doi:\href{https://doi.org/10.1038/ng1589}{10.1038/ng1589}
 
-\leavevmode\hypertarget{ref-Millstein2016}{}%
+\hypertarget{ref-Millstein2016}{}
 18. Millstein J. cit: Causal Inference Test. R package version 1.9
 {[}Internet{]}. 2016. Available:
 \url{http://cran.r-project.org/package=cit}
 
-\leavevmode\hypertarget{ref-Koestler2014}{}%
+\hypertarget{ref-Koestler2014}{}
 19. Koestler DC, Chalise P, Cicek MS, Cunningham JM, Armasu S, Larson
 MC, et al. Integrative genomic analysis identifies epigenetic marks that
 mediate genetic risk for epithelial ovarian cancer. BMC medical
 genomics. BMC Medical Genomics; 2014;7: 8.
 doi:\href{https://doi.org/10.1186/1755-8794-7-8}{10.1186/1755-8794-7-8}
 
-\leavevmode\hypertarget{ref-Liu2013}{}%
+\hypertarget{ref-Liu2013}{}
 20. Liu Y, Aryee MJ, Padyukov L, Fallin MD, Hesselberg E, Runarsson A,
 et al. Epigenome-wide association data implicate DNA methylation as an
 intermediary of genetic risk in rheumatoid arthritis. Nature
 biotechnology. 2013;31: 142--7.
 doi:\href{https://doi.org/10.1038/nbt.2487}{10.1038/nbt.2487}
 
-\leavevmode\hypertarget{ref-Yuan2014}{}%
+\hypertarget{ref-Yuan2014}{}
 21. Yuan W, Xia Y, Bell CG, Yet I, Ferreira T, Ward KJ, et al. An
 integrated epigenomic analysis for type 2 diabetes susceptibility loci
 in monozygotic twins. Nature communications. 2014;5: 5719.
 doi:\href{https://doi.org/10.1038/ncomms6719}{10.1038/ncomms6719}
 
-\leavevmode\hypertarget{ref-Tang2014}{}%
+\hypertarget{ref-Tang2014}{}
 22. Tang Y, Axelsson AS, Spégel P, Andersson LE, Mulder H, Groop LC, et
 al. Genotype-based treatment of type 2 diabetes with an
 \(\alpha\)2A-adrenergic receptor antagonist. Science translational
 medicine. 2014;6: 257ra139.
 doi:\href{https://doi.org/10.1126/scitranslmed.3009934}{10.1126/scitranslmed.3009934}
 
-\leavevmode\hypertarget{ref-Hong2015}{}%
+\hypertarget{ref-Hong2015}{}
 23. Hong X, Hao K, Ladd-Acosta C, Hansen KD, Tsai H-J, Liu X, et al.
 Genome-wide association study identifies peanut allergy-specific loci
 and evidence of epigenetic mediation in US children. Nature
 communications. 2015;6: 6304.
 doi:\href{https://doi.org/10.1038/ncomms7304}{10.1038/ncomms7304}
 
-\leavevmode\hypertarget{ref-Bowden2015}{}%
+\hypertarget{ref-Bowden2015}{}
 24. Bowden J, Davey Smith G, Burgess S. Mendelian randomization with
 invalid instruments: effect estimation and bias detection through Egger
 regression. International Journal of Epidemiology. 2015;44: 512--25.
 
-\leavevmode\hypertarget{ref-Bowden2016b}{}%
+\hypertarget{ref-Bowden2016b}{}
 25. Bowden J, Davey Smith G, Haycock PC, Burgess S. Consistent
 Estimation in Mendelian Randomization with Some Invalid Instruments
 Using a Weighted Median Estimator. Genetic Epidemiology. 2016;40:
 304--314.
 doi:\href{https://doi.org/10.1002/gepi.21965}{10.1002/gepi.21965}
 
-\leavevmode\hypertarget{ref-Hemani2016}{}%
+\hypertarget{ref-Hemani2016}{}
 26. Hemani G, Zheng J, Wade KH, Laurin C, Elsworth B, Burgess S, et al.
 MR-Base: a platform for systematic causal inference across the phenome
 using billions of genetic associations. BioRxiv. 2016;10.1101/07.
 
-\leavevmode\hypertarget{ref-Timpson2011}{}%
+\hypertarget{ref-Timpson2011}{}
 27. Timpson NJ, Nordestgaard BG, Harbord RM, Zacho J, Frayling TM,
 Tybjærg-Hansen a, et al. C-reactive protein levels and body mass index:
 elucidating direction of causation through reciprocal Mendelian
 randomization. International journal of obesity (2005). 2011;35: 300--8.
 doi:\href{https://doi.org/10.1038/ijo.2010.137}{10.1038/ijo.2010.137}
 
-\leavevmode\hypertarget{ref-Richmond2014}{}%
+\hypertarget{ref-Richmond2014}{}
 28. Richmond RC, Davey Smith G, Ness AR, Hoed M den, McMahon G, Timpson
 NJ. Assessing Causality in the Association between Child Adiposity and
 Physical Activity Levels: A Mendelian Randomization Analysis. Ludwig DS,
 editor. PLoS Medicine. 2014;11: e1001618.
 doi:\href{https://doi.org/10.1371/journal.pmed.1001618}{10.1371/journal.pmed.1001618}
 
-\leavevmode\hypertarget{ref-Claussnitzer2015}{}%
+\hypertarget{ref-Claussnitzer2015}{}
 29. Claussnitzer M, Dankel SN, Kim K-H, Quon G, Meuleman W, Haugen C, et
 al. FTO Obesity Variant Circuitry and Adipocyte Browning in Humans. The
 New England journal of medicine. 2015;373: 895--907.
 doi:\href{https://doi.org/10.1056/NEJMoa1502214}{10.1056/NEJMoa1502214}
 
-\leavevmode\hypertarget{ref-Pierce2013}{}%
+\hypertarget{ref-Pierce2013}{}
 30. Pierce BL, Burgess S. Efficient design for Mendelian randomization
 studies: subsample and 2-sample instrumental variable estimators.
 American journal of epidemiology. 2013;178: 1177--84.
 doi:\href{https://doi.org/10.1093/aje/kwt084}{10.1093/aje/kwt084}
 
-\leavevmode\hypertarget{ref-Hernan2004}{}%
+\hypertarget{ref-Hernan2004}{}
 31. Hernán MA, Hernández-Díaz S, Robins JM. A structural approach to
 selection bias. Epidemiology (Cambridge, Mass). 2004;15: 615--25.
 Available: \url{http://www.ncbi.nlm.nih.gov/pubmed/15308962}
 
-\leavevmode\hypertarget{ref-Pierce2012}{}%
+\hypertarget{ref-Pierce2012}{}
 32. Pierce BL, VanderWeele TJ. The effect of non-differential
 measurement error on bias, precision and power in Mendelian
 randomization studies. International Journal of Epidemiology. Oxford
 University Press; 2012;41: 1383--1393.
 doi:\href{https://doi.org/10.1093/ije/dys141}{10.1093/ije/dys141}
 
-\leavevmode\hypertarget{ref-Ashenfelter1994}{}%
+\hypertarget{ref-Ashenfelter1994}{}
 33. Ashenfelter O, Krueger AB. Estimates of the Economic Return to
 Schooling from a New Sample of Twins. The American Economic Review.
 1994;84: 1157--1173.
 doi:\href{https://doi.org/10.1016/S0272-7757(98)00038-7}{10.1016/S0272-7757(98)00038-7}
 
-\leavevmode\hypertarget{ref-Nagarajan2013}{}%
+\hypertarget{ref-Nagarajan2013}{}
 34. Nagarajan R, Scutari M. Impact of noise on molecular network
 inference. PloS one. 2013;8: e80735.
 doi:\href{https://doi.org/10.1371/journal.pone.0080735}{10.1371/journal.pone.0080735}
 
-\leavevmode\hypertarget{ref-Shpitser2010}{}%
+\hypertarget{ref-Shpitser2010}{}
 35. Shpitser I, VanderWeele T, Robins J. On the validity of covariate
 adjustment for estimating causal effects. Proceedings of the Twenty
 Sixth Conference on Uncertainty in Artificial Intelligence (UAI-10).
 2010; 527--536.
 
-\leavevmode\hypertarget{ref-Wang2015}{}%
+\hypertarget{ref-Wang2015}{}
 36. Wang L, Michoel T. Detection of regulator genes and eQTLs in gene
 networks. arXiv. 2015;arXiv:1512. Available:
 \url{http://arxiv.org/abs/1512.05574}
 
-\leavevmode\hypertarget{ref-Lagani2015}{}%
+\hypertarget{ref-Lagani2015}{}
 37. Lagani V, Triantafillou S, Ball G, Tegner J, Tsamardinos I.
 Probabilistic Computational Causal Discovery for Systems Biology.
 Uncertainty in biology: A computational modeling approach. Springer;
 2015. p. 47. Available:
 \href{https://books.google.com/books?id=8SLUCgAAQBAJ\%7B/\&\%7Dpgis=1}{https://books.google.com/books?id=8SLUCgAAQBAJ\{\textbackslash{}\&\}pgis=1}
 
-\leavevmode\hypertarget{ref-Lawlor2017}{}%
+\hypertarget{ref-Lawlor2017}{}
 38. Lawlor DA, Tilling K, Davey Smith G. Triangulation in aetiological
 epidemiology. International Journal of Epidemiology. 2017;19: dyw314.
 doi:\href{https://doi.org/10.1093/ije/dyw314}{10.1093/ije/dyw314}
 
-\leavevmode\hypertarget{ref-Shakhbazov2016}{}%
+\hypertarget{ref-Shakhbazov2016}{}
 39. Shakhbazov K, Powell JE, Hemani G, Henders AK, Martin NG, Visscher
 PM, et al. Shared genetic control of expression and methylation in
 peripheral blood. BMC genomics. BioMed Central; 2016;17: 278.
 doi:\href{https://doi.org/10.1186/s12864-016-2498-4}{10.1186/s12864-016-2498-4}
 
-\leavevmode\hypertarget{ref-Bird2002}{}%
+\hypertarget{ref-Bird2002}{}
 40. Bird A. DNA methylation patterns and epigenetic memory. Genes \&
 development. 2002;16: 6--21.
 doi:\href{https://doi.org/10.1101/gad.947102}{10.1101/gad.947102}
 
-\leavevmode\hypertarget{ref-Cole2014}{}%
+\hypertarget{ref-Cole2014}{}
 41. Cole DA, Preacher KJ. Manifest Variable Path Analysis: Potentially
 Serious and Misleading Consequences Due to Uncorrected Measurement
 Error. Psychological Methods. 2014;19: 300--315.
 doi:\href{https://doi.org/10.1037/a0033805}{10.1037/a0033805}
 
-\leavevmode\hypertarget{ref-Bose2014}{}%
+\hypertarget{ref-Bose2014}{}
 42. Bose M, Wu C, Pankow JS, Demerath EW, Bressler J, Fornage M, et al.
 Evaluation of microarray-based DNA methylation measurement using
 technical replicates: the Atherosclerosis Risk In Communities (ARIC)
 Study. BMC Bioinformatics. 2014;15: 312.
 doi:\href{https://doi.org/10.1186/1471-2105-15-312}{10.1186/1471-2105-15-312}
 
-\leavevmode\hypertarget{ref-Bryant2011}{}%
+\hypertarget{ref-Bryant2011}{}
 43. Bryant PA, Smyth GK, Robins-Browne R, Curtis N, Novak J, Sladek R,
 et al. Technical Variability Is Greater than Biological Variability in a
 Microarray Experiment but Both Are Outweighed by Changes Induced by
@@ -1404,87 +1380,87 @@ Stimulation. Khodursky AB, editor. PLoS ONE. Public Library of Science;
 2011;6: e19556.
 doi:\href{https://doi.org/10.1371/journal.pone.0019556}{10.1371/journal.pone.0019556}
 
-\leavevmode\hypertarget{ref-Zhu2016}{}%
+\hypertarget{ref-Zhu2016}{}
 44. Zhu Z, Zhang F, Hu H, Bakshi A, Robinson MR, Powell JE, et al.
 Integration of summary data from GWAS and eQTL studies predicts complex
 trait gene targets. Nature Genetics. Nature Research; 2016;48: 481--487.
 doi:\href{https://doi.org/10.1038/ng.3538}{10.1038/ng.3538}
 
-\leavevmode\hypertarget{ref-Mancuso2017}{}%
+\hypertarget{ref-Mancuso2017}{}
 45. Mancuso N, Shi H, Goddard P, Kichaev G, Gusev A, Pasaniuc B.
 Integrating Gene Expression with Summary Association Statistics to
 Identify Genes Associated with 30 Complex Traits. The American Journal
 of Human Genetics. 2017;100: 473--487.
 doi:\href{https://doi.org/10.1016/j.ajhg.2017.01.031}{10.1016/j.ajhg.2017.01.031}
 
-\leavevmode\hypertarget{ref-Lee2013c}{}%
+\hypertarget{ref-Lee2013c}{}
 46. Lee SH, Wray NR. Novel genetic analysis for case-control genome-wide
 association studies: quantification of power and genomic prediction
 accuracy. PLoS One. 2013;8: e71494.
 doi:\href{https://doi.org/10.1371/journal.pone.0071494\%20\%5Bdoi\%5D/rPONE-D-13-18776\%20\%5Bpii\%5D}{10.1371/journal.pone.0071494 {[}doi{]}\textbackslash{}rPONE-D-13-18776 {[}pii{]}}
 
-\leavevmode\hypertarget{ref-Do2013}{}%
+\hypertarget{ref-Do2013}{}
 47. Do R, Willer CJ, Schmidt EM, Sengupta S, Gao C, Peloso GM, et al.
 Common variants associated with plasma triglycerides and risk for
 coronary artery disease. Nature Genetics. Nature Research; 2013;45:
 1345--1352. doi:\href{https://doi.org/10.1038/ng.2795}{10.1038/ng.2795}
 
-\leavevmode\hypertarget{ref-Burgess2014a}{}%
+\hypertarget{ref-Burgess2014a}{}
 48. Burgess S, Freitag DF, Khan H, Gorman DN, Thompson SG. Using
 multivariable Mendelian randomization to disentangle the causal effects
 of lipid fractions. PloS one. Public Library of Science; 2014;9:
 e108891.
 doi:\href{https://doi.org/10.1371/journal.pone.0108891}{10.1371/journal.pone.0108891}
 
-\leavevmode\hypertarget{ref-Relton2012}{}%
+\hypertarget{ref-Relton2012}{}
 49. Relton CL, Davey Smith G. Two-step epigenetic Mendelian
 randomization: a strategy for establishing the causal role of epigenetic
 processes in pathways to disease. International journal of epidemiology.
 2012;41: 161--76.
 doi:\href{https://doi.org/10.1093/ije/dyr233}{10.1093/ije/dyr233}
 
-\leavevmode\hypertarget{ref-Varbo2015}{}%
+\hypertarget{ref-Varbo2015}{}
 50. Varbo A, Benn M, Smith GD, Timpson NJ, Tybjaerg-Hansen A,
 Nordestgaard BG. Remnant cholesterol, low-density lipoprotein
 cholesterol, and blood pressure as mediators from obesity to ischemic
 heart disease. Circulation research. 2015;116: 665--73.
 doi:\href{https://doi.org/10.1161/CIRCRESAHA.116.304846}{10.1161/CIRCRESAHA.116.304846}
 
-\leavevmode\hypertarget{ref-Burgess2015}{}%
+\hypertarget{ref-Burgess2015}{}
 51. Burgess S, Daniel RM, Butterworth AS, Thompson SG. Network Mendelian
 randomization: using genetic variants as instrumental variables to
 investigate mediation in causal pathways. International journal of
 epidemiology. 2015;44: 484--95.
 doi:\href{https://doi.org/10.1093/ije/dyu176}{10.1093/ije/dyu176}
 
-\leavevmode\hypertarget{ref-Richmond2016}{}%
+\hypertarget{ref-Richmond2016}{}
 52. Richmond RC, Hemani G, Tilling K, Davey Smith G, Relton CL.
 Challenges and novel approaches for investigating molecular mediation.
 Human molecular genetics. Oxford University Press; 2016;25: R149--R156.
 doi:\href{https://doi.org/10.1093/hmg/ddw197}{10.1093/hmg/ddw197}
 
-\leavevmode\hypertarget{ref-Sterne2001}{}%
+\hypertarget{ref-Sterne2001}{}
 53. Sterne JAC, Smith GD. Sifting the evidence---what's wrong with
 significance tests? BMJ. 2001;322: 226--231.
 
-\leavevmode\hypertarget{ref-Henningsen2007}{}%
+\hypertarget{ref-Henningsen2007}{}
 54. Henningsen A, Hamann JD. systemfit : A Package for Estimating
 Systems of Simultaneous Equations in R. Journal of Statistical Software.
 2007;23: 1--40.
 doi:\href{https://doi.org/10.18637/jss.v023.i04}{10.18637/jss.v023.i04}
 
-\leavevmode\hypertarget{ref-Steiger1980}{}%
+\hypertarget{ref-Steiger1980}{}
 55. Steiger JH. Tests for comparing elements of a correlation matrix.
 Psychological Bulletin. 1980;87: 245--251.
 doi:\href{https://doi.org/10.1037/0033-2909.87.2.245}{10.1037/0033-2909.87.2.245}
 
-\leavevmode\hypertarget{ref-Revelle2015}{}%
+\hypertarget{ref-Revelle2015}{}
 56. Revelle W. psych: Procedures for Psychological, Psychometric, and
 Personality Research {[}Internet{]}. Evanston, Illinois: Northwestern
 University; 2015. Available:
 \url{http://cran.r-project.org/package=psych}
 
-\leavevmode\hypertarget{ref-RCoreTeam2015}{}%
+\hypertarget{ref-RCoreTeam2015}{}
 57. R Core Team. R: A Language and Environment for Statistical Computing
 {[}Internet{]}. Vienna, Austria: R Foundation for Statistical Computing;
 2015. Available: \url{https://www.r-project.org/}
