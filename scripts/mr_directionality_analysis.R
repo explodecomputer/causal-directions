@@ -775,7 +775,7 @@ qtl <- group_by(me, rxx_o, ryy_o) %>%
 		y <- qtl_orig
 		y$rxx_o <- x$rxx_o[1]
 		y$ryy_o <- x$ryy_o[1]
-		return(y)
+		y
 	})
 
 qtl$r_exp <- NA
@@ -931,7 +931,8 @@ p1 <- ggplot(subset(temp, key=="n"), aes(x=as.factor(rxx_o), y=value)) +
 geom_bar(stat="Identity", aes(fill=dir), position="stack") +
 geom_hline(yintercept = nrow(qtl_orig)/2, linetype="dotted") +
 facet_grid(. ~ ryy_o_lab) +
-labs(x="cor(E,Eo)", y="Count", fill=NULL, title="a)")
+labs(x="cor(E,Eo)", y="Count", fill=NULL, title="a)") +
+theme(strip.text=element_text(size=7), axis.text.x=element_text(size=7))
 
 
 p2 <- ggMarginal(
@@ -955,8 +956,9 @@ geom_density(aes(fill=dir), alpha=0.9) +
 labs(fill=NULL, x=TeX("$\\beta_{MR}$"), title="c)") +
 theme(legend.position="none")
 
+tiff("Fig6-2.tif", width=15.93, height=10.75, unit="cm", res=110)
 grid.arrange(p1, p3, p4, ncol=2, layout_matrix=rbind(c(1,1), c(2,3)))
-
+dev.off()
 
 ## ---- shakhtab ----
 

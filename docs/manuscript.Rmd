@@ -470,10 +470,10 @@ All analysis was performed using the R programming language [@RCoreTeam2015] and
 <!-- \newpage -->
 
 
-<!-- ```{r shakhplot}
+```{r shakhplot}
 
 ```
- -->
+
 `r fig_nums("shakhplot")`
 
 <!-- \newpage -->
